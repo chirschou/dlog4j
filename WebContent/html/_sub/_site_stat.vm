@@ -1,0 +1,18 @@
+<div class="module_title"><b>$text.ui("label.site_stat")</b></div>
+<div class="module_content">
+	<ul>
+    	#set($ssi = $STAT_tool.get_site_stat_info($g_site))
+    	#set($dsi = $STAT_tool.get_dlog_stat_info($g_site))
+    	<li>建站时间: $date.format("yyyy/MM/dd", ${g_site.createTime})</li>
+    	<li>日记：$!{dsi.article} 篇</li>
+    	<li>照片：$!{dsi.photo} 张</li>
+    	<li>话题：$!{dsi.topic} 篇</li>
+    	<li>评论：$!{dsi.replyCount} 篇</li>
+    	<li>注册用户：<a href="$dlog.root()/html/users.vm?sid=${g_site.id}">$!{dsi.user}</a></li>
+    	<li>今日访问：$!{ssi.uvToday}</li>
+    	<li>本周访问：$!{ssi.uvThisWeek}</li>
+    	<li>本月访问：$!{ssi.uvThisMonth}</li>
+    	<li>全部访问：$!{ssi.uvTotal}</li>
+	</ul>
+</div>
+<div class="module_foot"></div>

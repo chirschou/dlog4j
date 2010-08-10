@@ -1,0 +1,125 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of DLOG4J
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_guestbook.vm")
+#set($page_title="留言本")
+###############################################################################
+#set($MSGS_PER_PAGE = 10)
+#set($p_page = $dlog.param("page",1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+
+#set($msg_count = $dlog.get_guest_msg_count($g_site))
+#set($page_count = $dlog.page_count($msg_count, $MSGS_PER_PAGE))
+
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			共有留言&nbsp;<b>${msg_count}</b>&nbsp;篇&nbsp;&nbsp;每页显示&nbsp;<b>${MSGS_PER_PAGE}</b>&nbsp;篇&nbsp;&nbsp;第&nbsp;<b>${p_page}</b>&nbsp;页&nbsp;&nbsp;共&nbsp;<b>${page_count}</b>&nbsp;页
+		</div>
+		<div class="pagecontent_right fright">
+			#if($page_count > 1)
+            <form name="dform" action=""><!-- 翻页控制条 -->
+            <input type="hidden" name="sid" value="$g_site_id"/>
+                #if($p_page > 1)
+                <a href="?sid=${g_site_id}">首页</a>#end
+                #if($p_page>1)<a href="?sid=${g_site_id}&amp;page=$pre_page">上页</a>#end
+                #if($p_page < $page_count)<a href="?sid=${g_site_id}&amp;page=$next_page">下页</a>#end
+                #if($p_page < $page_count)<a href="?sid=${g_site_id}&amp;page=$page_count">尾页</a>#end
+                    到<select name="page" onchange="dform.submit();">
+                    #foreach($p in [1..$page_count])
+                    <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                    #end
+                </select>&nbsp;页
+            </form>
+            #end
+		</div>        
+	</div>
+	<div class="spacer_10"></div>
+</div>
+#if($msg_count > 0)
+<div class="page_content">
+    <div align="right">
+    	<a href="#rplform">&lt;我要留言&gt;</a>
+    </div>
+    #set($msgs = $dlog.list_guest_msgs($g_site, $p_page, $MSGS_PER_PAGE))
+	$dlog.set_cookie("guestbook",${msgs.get(0).id},31536000)
+    #set($is_owner = $dlog.is_owner($g_site, $g_user))
+	#foreach($msg in $msgs)
+	<div class="guestbook">
+		<div class="module_guestbook_title">
+			<div>
+			<div class="fleft">留言者:
+			<a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${msg.user.id}">${msg.user.nickname}</a>            
+			&nbsp;&nbsp;<span class="en8pt">$date.format("yyyy/MM/dd HH:mm",${msg.createTime})</span>
+			</div>
+			#if($is_owner)
+            <div class="fright"><a href="$link.setAction("html/guestbook")?sid=${g_site_id}&amp;page=${p_page}&amp;eventSubmit_Delete=${msg.id}" onclick="return confirm('您确认要删除此条留言信息嘛？');">$html.img("icon_delete.gif",null,"DEL","absmiddle",0)</a>&nbsp;</div>
+			#end
+			</div>
+			<div class="spacer_1"></div>
+		</div>
+		<div class="spacer_5"></div>
+		<div class="module_guestbook_content">${msg.content}</div>
+		<div class="spacer_5"></div>
+		<div class="module_guestbook_reply">
+		#if(!$dlog.is_empty($msg.reply))
+			站长答复<span class="en8pt">($date.format("yyyy/MM/dd HH:mm",$msg.replyTime))</span>：${msg.reply}
+        #elseif($is_owner)
+            <a href="javascript:show_div('replyForm${msg.id}');">&lt;我要答复&gt;</a>
+            <div class="bvsection" id="replyForm${msg.id}">
+                <form action="$link.setAction("html/guestbook")" method="post">
+				<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+                <input type="hidden" name="id" value="${msg.id}"/>
+                <input type="hidden" name="sid" value="$g_site_id"/>
+                <input type="hidden" name="page" value="$p_page"/>
+                <textarea name="reply" style="WIDTH: 280px; HEIGHT: 50px"></textarea><br/>
+				<input class="button" type="button" value="取消" onclick="javascript:hide_div('replyForm${msg.id}');"/>
+                <input class="button" type="submit" name="eventSubmit_Reply" value="答复"/>
+                </form>
+            </div>
+		#end
+		</div>
+	</div>
+	#end
+</div>
+#end
+<div class="page_footer">
+	<form name="rpl_form" action="$link.setAction("html/guestbook")#rpl_form" method="post">
+	<a name="rplform"></a><b>请输入您的留言内容</b>
+    #if($messages.exist())<font color="red"><b>$!messages.getAll()</b></font>#end
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+	<textarea name="content" style="width: 95%; height: 150px">$!{form.getBean().content}</textarea><br/>
+	<input type="submit" class="button" name="eventSubmit_Create" value="发表留言" />
+	<input type="button" class="button" name="btn_return" value="返回上页" onclick="history.go(-1)" />
+	</form>
+</div>
+<script type="text/javascript">
+    window.onload = function()
+    {
+        var sBasePath = document.location.pathname.substring(0,document.location.pathname.lastIndexOf('html')) ;    
+        var oFCKeditor = new FCKeditor( 'content' ) ;
+        oFCKeditor.BasePath    = sBasePath ;
+        oFCKeditor.Width = "95%";
+        oFCKeditor.Height = 150;
+        oFCKeditor.ToolbarSet = "Basic";
+        oFCKeditor.ReplaceTextarea() ;
+    }    
+</script>

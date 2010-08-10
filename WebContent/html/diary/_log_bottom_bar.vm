@@ -1,0 +1,55 @@
+#if($log)
+    <a href="$dlog.root()/html/diary/?sid=$g_site_id&amp;cat_id=$log.catalog.id">${log.catalog.name}</a> |
+    $text.ui("label.diary.comment")(<a href="$dlog.root()/html/diary/showlog.vm?sid=$g_site_id&amp;cat_id=$catalog_id&amp;log_id=${log.id}#replies">${log.replyCount}</a>) |
+    $text.ui("label.diary.view")(${log.viewCount}) |
+    $text.ui("label.diary.trackback")(#if(${log.trackBackCount}>0)<a href="$dlog.root()/html/trackbacks.vm?sid=$g_site_id&amp;log_id=${log.id}">#end${log.trackBackCount}#if(${log.trackBackCount}>0)</a>#end) |
+    #if(!$no_bookmark_link)
+    <a href="#" onclick="bookmark('${log.id}','$link.encodeURL(${log.title})') ;return false;">
+		$html.img("bookmark.gif","保存此文为书签",null,"absmiddle",0)
+    </a>
+    #end
+    #if($DIARY_tool.can_user_edit_diary($g_user, $log))
+    <a href="$link.setAction("html/diary")?sid=${g_site_id}&amp;id=${log.id}&amp;eventSubmit_Delete=${log.id}&amp;fromPage=$link.encodeURL($dlog.get_request_url())" onclick="return confirm('您确实要将该日记移到垃圾箱吗？');">
+		$html.img("icon_delete.gif","移到垃圾箱",null,"absmiddle",0)
+    </a>
+    <a href="$dlog.root()/html/diary/editlog.vm?sid=$g_site_id&amp;log_id=$log.id">
+		$html.img("icon_edit.gif","编辑此文",null,"absmiddle",0)
+    </a>
+	#if($dlog.is_superior($g_user))
+	#if(${log.type}==0)
+    <a href="#" onclick="mark_as_elite('${log.id}',1) ;return false;">
+		$html.img("elite.gif","设为精华",null,"absmiddle",0)
+    </a>
+	#else
+    <a href="#" onclick="mark_as_elite('${log.id}',0) ;return false;">
+		$html.img("un_elite.gif","取消精华",null,"absmiddle",0)
+    </a>
+	#end
+	#end
+    #end
+    #if(!$prototype_enabled)	
+    <script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    	function bookmark(log_id,log_title){
+    		var random = Math.random()+'';
+    		var url = '$link.setAction("html/bookmark")?sid=$g_site_id&parentId='+log_id+'&parentType=1&eventSubmit_Add='+random+'&title='+log_title;		
+        	var myAjax = new Ajax.Request(url,
+        	    {method: 'get', onComplete: ajax_diary_response}
+        	);
+    	}
+		#if($dlog.is_superior($g_user))
+    	function mark_as_elite(log_id, elite){
+    		var random = Math.random()+'';
+    		var url = '$link.setAction("html/diary")?sid=${g_site_id}&eventSubmit_MarkDiaryAsElite='+log_id+'&r='+random+'&elite='+elite;		
+        	var myAjax = new Ajax.Request(url,
+        	    {method: 'get', onComplete: ajax_diary_response}
+        	);
+    	}
+		#end
+    	function ajax_diary_response(originalRequest) {
+    		alert(originalRequest.responseText);
+        }
+    </script>
+    	#set($prototype_enabled = true)
+    #end
+#end

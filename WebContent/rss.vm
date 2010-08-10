@@ -1,0 +1,87 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  To generate RSS version 2
+##
+###############################################################################
+#set($_temp_nothing = $response.setContentType("text/xml;charset=UTF-8"))
+#set($_temp_site_id = $dlog.param("sid",-1))
+#set($_temp_type_id = $dlog.param("tid",1))
+#set($_temp_catalog_id = $dlog.param("cid",-1))
+#set($g_site = $dlog.site($_temp_site_id))
+## visit stat
+#if($g_site)
+#set($site_name = ${g_site.friendlyName})
+#else
+#set($site_name = $app_name)
+#end
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+    <title><![CDATA[$text.html(${site_name})]]></title> 
+    <link>#if($g_site)${g_site.siteURL("${link.getContextURL()}/")}#else${link.getContextURL()}#end</link> 
+    <description><![CDATA[$!text.html(${g_site.detail})]]></description>
+    <language>zh-CN</language>
+    <pubDate>#if($g_site)$date.format("EEE, d MMM yyyy HH:mm:ss Z",${g_site.createTime})#else$date.get("EEE, d MMM yyyy HH:mm:ss Z")#end</pubDate>
+    <copyright>DLOG.CN</copyright>
+    <generator>DLOG4J v3(http://dlog4j.sourceforge.net)</generator>
+	#if($_temp_type_id == 1)
+    	#set($logs = $DIARY_tool.list_diary($g_site, null, $_temp_catalog_id, -1,-1,-1, 1, 10))
+        #foreach($log in $logs)
+        <item>
+            <link>${link.getContextURL()}/html/diary/showlog.vm?sid=${log.site.id}&amp;log_id=${log.id}</link>
+            <title><![CDATA[${log.title}]]></title>
+            <author><![CDATA[$text.html(${log.author})]]></author>
+            <category><![CDATA[$text.html(${log.catalog.name})]]></category>
+            <pubDate>$date.format("EEE, d MMM yyyy HH:mm:ss Z",${log.writeTime})</pubDate>
+            <guid>${log.site.id}_${_temp_type_id}_${_temp_catalog_id}_${log.id}_$date.format("yyyyMMddHHmmss",${log.writeTime})</guid>
+            <description><![CDATA[${log.previewContent}]]></description>
+        </item>        
+    	#end
+	#elseif($_temp_type_id==2)		
+    	#set($logs = $PHOTO_tool.list_photos($g_site, null, $_temp_catalog_id, -1, 1, 10))
+        #foreach($log in $logs)
+        <item>
+            <link>${link.getContextURL()}/html/photo/show.vm?sid=${log.site.id}&amp;pid=${log.id}</link>
+            <title><![CDATA[${log.name}]]></title>
+            <author><![CDATA[$text.html(${log.author})]]></author>
+            <category><![CDATA[$text.html(${log.album.name})]]></category>
+            <pubDate>$date.format("EEE, d MMM yyyy HH:mm:ss Z",${log.createTime})</pubDate>
+            <guid>${log.site.id}_${_temp_type_id}_${_temp_catalog_id}_${log.id}_$date.format("yyyyMMddHHmmss",${log.createTime})</guid>
+            <description><![CDATA[<a href="${link.getContextURL()}/html/photo/show.vm?sid=${log.site.id}&amp;pid=${log.id}"><img src="${link.getContextURL()}${log.previewURL}" border="0"/></a><br/>$!{log.desc}]]></description>
+        </item>        
+    	#end
+	#elseif($_temp_type_id==4)
+		#if($_temp_catalog_id > 0)
+			#set($bbs_fourm = $BBS_tool.forum($g_site, $_temp_catalog_id))
+			#set($topics = $BBS_tool.topics($g_site, $bbs_fourm, 1, 20))
+		#else
+			#set($topics = $BBS_tool.all_topics($g_site, 1, 20))
+		#end
+        #foreach($log in $topics)
+        <item>
+            <link>${link.getContextURL()}/html/bbs/topic.vm?sid=${log.site.id}&amp;fid=${log.forum.id}&amp;tid=${log.id}</link>
+            <title><![CDATA[${log.title}]]></title>
+            <author>$text.html(${log.user.nickname})</author>
+            <category>$text.html(${log.forum.name})</category>
+            <pubDate>$date.format("EEE, d MMM yyyy HH:mm:ss Z",${log.createTime})</pubDate>
+            <guid>${log.site.id}_${_temp_type_id}_${_temp_catalog_id}_${log.id}_$date.format("yyyyMMddHHmmss",${log.createTime})</guid>
+            <description><![CDATA[$!{log.content}]]></description>
+        </item>        
+    	#end
+	#end
+</channel>
+</rss>
+#set($_tmp_stat_result = $STAT_tool.execute($request,$response,$g_site, 3))

@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ERROR</title>
+    <style type="text/css">
+    <!--
+        body {font-family: arial,sans-serif}
+		#error{padding:20px}
+		#title_bar{background-color:#dd0000;padding:8px;padding-left:20px;font-size:16pt;font-weight:bold;color:#ffff00}
+		#info{padding-top:20px;padding-bottom:20px;color:#0000aa}
+        #error_detail{padding:2px;background-color:#eeeeee;}
+		#error_time{padding:2px;font-size:8pt}
+    //-->
+    </style>
+</head>
+
+<body>
+<div id="error">
+  <div id="title_bar">$escape.html("！！！ 错 误 ！！！")</div>
+    <div id="info">
+      <h2>$escape.html("您访问的页面发生错误!")</h2>
+		$escape.html("请将此错误信息报告给我们的系统管理员，以便我们尽快为您解决该问题。")<br/><br/>        
+		$escape.html("您可以通过电子邮件：")<a href="mailto:dlog4j@gmail.com">dlog4j@gmail.com</a> $escape.html("将下面的信息发送给我们。")<br/><br/>
+	    $escape.html("感谢您对我们的大力支持！")(<a href="#" onclick="history.go(-1);return false;">$escape.html("回到上页")</a>)
+    </div>
+	<div id="error_detail">
+		<pre>$!dlog.exception()</pre>
+	</div>
+	<div id="error_time">$date.get("yyyy-MM-dd HH:mm:ss")</div>
+</div>
+</body>
+</html>

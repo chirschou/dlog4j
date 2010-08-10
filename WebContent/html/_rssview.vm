@@ -1,0 +1,20 @@
+#set($linkid=$dlog.param("linkid",-1))
+#set($linkbean = $dlog.get_link($linkid))
+#set($page_title=${linkbean.title})
+#set($channel = $dlog.fetch_channel(${linkbean.type}, ${linkbean.url}))
+#if($channel)
+    <h2><a href="$channel.link" target="_blank">$escape.html(${linkbean.title})</a>共有$dlog.sizeof(${channel.items})篇文章</h2>
+	<p align="right">$!{channel.description}</p>
+    <hr size="1" color="#cccccc" noshade/>
+    #foreach($item in $channel.items)
+    <a href="${item.link}" target="_blank" title="点击阅读全文">
+		<span class="rss_item_title">
+		<b>${velocityCount}. $!{item.title}</b>
+		</span>
+    </a>
+	<div class="rss_item_content">$!{item.description}</div>
+	<div class="spacer_20"></div>
+    #end
+#else
+    #show_msg_box("频道抓取失败，请检查是否填错频道的类型或者是写错URL地址。")
+#end

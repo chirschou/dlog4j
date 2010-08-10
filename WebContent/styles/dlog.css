@@ -1,0 +1,37 @@
+/* ======================================================================== */
+/* style of personal home page 												*/
+/* ======================================================================== */
+
+/* global */
+body,table,td,select,input,textarea,div {font-size: 12px; font-family: "Verdana", "Verdana"}
+body{ 
+	background-color: #ffffff;
+	color: #000000;
+	padding:20px;
+	margin:0;
+}
+
+/* table */
+.table {background-color: #cccccc}
+.table_head {background-color: #eeeeee}
+.table_cell {background-color: #ffffff}
+
+/* form */
+.form{font-size:9pt;padding:0;border-top:#CCCCCC 1px solid}
+.form_row{padding:0;margin:0 0 1px 0;border-top:#CCCCCC 1px solid}
+.form_row_title{width:80px;padding:5px 10px;text-align:left;font-size:9pt;color:#444444;background-color:#F4F4F4;border-right:#CCCCCC 1px solid}
+.form_row_content{line-height:20px;font-size:9pt;color:orange;padding:3px 0 2px 0;text-align:left}
+.form_row_content B{padding:6px;font-size:10.5pt;color:#666}
+.form_row_content img{padding:0;margin:0}
+.form_row_content select{margin:0px 10px;background-color:#F8F8F8;font-size:9pt}
+.form_row_content input{padding:0 2px;margin:0 0 0 10px;background-color:#F8F8F8;font-size:9pt}
+.form_row_content textarea{padding:6px;margin:0 0 10px 10px;background-color:#F8F8F8;font-size:9pt}
+.form_row_submit input{margin:10px 0 0 5px;font-size:9pt}
+.form_note{font-size:9pt;padding:10px 10px;margin:1px 0;background:orange;color:#FFFFFF}
+.form_field_tip{PADDING:5px 10px;EXT-ALIGN:left;FONT-SIZE:10.5pt;color:#000}
+
+.page_top{padding:5px}
+.page_body{padding:5px}
+.page_footer{padding:5px}
+
+#status_bar{font-size:9pt;padding:5px}

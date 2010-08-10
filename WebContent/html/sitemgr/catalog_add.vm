@@ -1,0 +1,104 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  add catalog view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="增加日记分类")
+###############################################################################
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>增加日记分类</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+#show_error_msg()
+<div class="page_content">
+	<div class="setting">
+    	<div class="setting_top"></div>
+    	<div class="setting_body">			
+			#set($cform = $form.getBean())
+            <form action="$link.setAction("html/sitemgr/catalog")" method="post">
+            <input type="hidden" name="sid" value="$g_site_id"/>
+            <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+            <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+        	<div class="form">
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						分类名
+            		</div>
+            		<div class="form_row_content">
+						<input type="text" size="20" maxlength="20" name="name" value="$!{cform.name}">
+        				#struts_message("name")
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						分类权限
+            		</div>
+            		<div class="form_row_content">
+						<input type="radio" name="type" value="1" checked="true"/>公开
+						<input type="radio" name="type" value="0"/>私人
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						分类位置
+            		</div>
+            		<div class="form_row_content">
+						<select name="id">
+                            #foreach($cat in $g_site.catalogs)
+                            <option value="$cat.id">${cat.name}</option>
+                            #end
+                        </select>
+						
+						<input type="radio" name="direction" value="1"/>之前
+						<input type="radio" name="direction" value="2" checked="true"/>之后
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						内容类别
+            		</div>
+            		<div class="form_row_content">
+						#parse("/html/_sub/_type_select_bar.vm")
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+        			<div class="form_row_submit">
+						<input type="submit" name="eventSubmit_CreateCatalog" value="创建分类" />
+                        <input type="reset" value="重新填写" />
+                        <input type="button" value="返回" onclick="history.go(-1)" />
+        			</div>
+            	</div>
+        	</div>
+        	</form>
+    	</div>
+    	<div class="setting_footer"></div>
+    </div>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

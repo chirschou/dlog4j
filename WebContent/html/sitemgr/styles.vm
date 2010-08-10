@@ -1,0 +1,107 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of style setting
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="网站样式设置")
+#alert_msg("site")
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>网站样式设置</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<form action="$link.setAction("html/sitemgr/site")" method="POST" enctype="multipart/form-data">
+<div class="page_content">
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <input type="hidden" name="id" value="$g_site_id"/>
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+	<div class="form">
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				网站布局
+    		</div>
+    		<div class="form_row_content">
+				#set($l_files = $dlog.layouts())
+				<select name="layoutFile" onchange="preview(options[selectedIndex].value)">
+					#foreach($l_file in $l_files)
+					<option value="${l_file.name}" #if(${g_site.style.layout}==${l_file.name})selected#end>${l_file.name}</option>
+					#end
+				</select>
+				布局预览图如下
+			</div>
+    	</div>
+		<div class="form_row" align="center">
+			<p><img id="img_layout_preview" src="" align="absmiddle" /></p>
+		</div>
+		<div class="form_row">			
+    		<div class="form_row_title fleft">网站样式</div>
+    		<div id="site_style_of_layout"></div>
+			<div class="spacer_1"></div>
+    	</div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">LOGO文件</div>
+    		<div class="form_row_content">
+				<input type="file" size="40" maxlength="20" name="logoFile" disabled="true"/>
+				#struts_message("logoFile")
+			</div>
+    	</div>
+		<div class="form_row">
+			<div class="form_row_submit">
+				<input type="submit" name="eventSubmit_UpdateStyle" value="更新样式" />
+				<input type="reset" value="重新选择" />
+				<input type="reset" value="返回上页" onclick="history.go(-1)" />
+			</div>
+    	</div>
+	</div>
+	<div class="spacer_10"></div>
+</div>
+</form>
+<div class="page_bottom"></div>
+			
+<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+function preview(layout){
+	var img = '$dlog.root()/styles/' + layout + '/main.gif';
+	document.images['img_layout_preview'].src=img;				
+	var url = '$dlog.root()/html/sitemgr/_styles_of_layout.vm?layout='+layout+'&r='+Math.random();
+	var myAjax = new Ajax.Request(url,
+	    {method: 'get', onComplete: show_styles}
+	);
+}
+function show_styles(originalRequest) {
+	var d = $('site_style_of_layout');
+	d.innerHTML = originalRequest.responseText;
+}
+#if(${g_site.style.layout})
+	preview("${g_site.style.layout}");
+#else
+	preview("1");
+#end
+</script>
+<style type="text/css">
+<!--
+	#site_style_of_layout{padding:2px}
+//-->
+</style>

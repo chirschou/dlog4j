@@ -1,0 +1,56 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  drafts view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_diary.vm")
+###############################################################################
+#set($log_id = $dlog.param("log_id",-1))
+#set($log = $DIARY_tool.diary($g_site, $g_user, $log_id))
+#set($page_title="Trackbacks of '${log.title}'")
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>引用《<a href="$dlog.root()/html/diary/showlog.vm?sid=$g_site_id&amp;log_id=$log_id">$text.html(${log.title})</a>》的文章共有${log.trackbacks.size()}篇!</b>
+		</div>
+		<div class="pagecontent_right fright">
+		</div>        
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<hr size="1" noshade color="#CCCCCC">
+	<table cellspacing="1" cellpadding="3" border="0" class="table" width="100%">
+		<tr class="table_head">
+			<td nowrap></td>
+			<td nowrap>网站</td>
+			<td nowrap>文章标题</td>
+			<td nowrap>摘要</td>
+			<td nowrap>引用时间</td>
+		</tr>
+	#foreach($tb in ${log.trackbacks})
+		<tr class="table_cell">
+			<td nowrap>$velocityCount</td>
+			<td nowrap>$text.html(${tb.blogName})</td>
+			<td nowrap><a href="${tb.url}" target="_blank">$text.html(${tb.title})</a></td>
+			<td nowrap>$text.html(${tb.excerpt})</td>
+			<td nowrap>$date.format("yyyy/MM/dd", ${tb.trackTime})</td>
+		</tr>
+	#end
+	</table>
+</div>
+<div class="page_footer"></div>

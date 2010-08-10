@@ -1,0 +1,20 @@
+#set($replies = $PHOTO_tool.list_photo_replies($g_site, 1, 11, $g_user))
+#if($replies.size()>0)
+##最新相册评论
+<div class="module_title"><b>$text.ui("label.diary.top_comment")</b></div>
+<div class="module_content">
+	<ul>
+    	#foreach($reply in $replies)
+            #if($velocityCount<=10)
+    		#set($rc = $dlog.abbreviate($dlog.plain_text(${reply.content}), 14))
+    		#if($dlog.is_empty($rc))#set($rc="[无文本内容]")#end
+    			<li><a href="$dlog.root()/html/photo/show.vm?sid=$g_site_id&amp;pid=${reply.photo.id}#${reply.id}">${rc}</a></li>
+            #end                
+        #end
+        ##if($replies.size()>10)
+    	<li class="module_more"><a href="$dlog.root()/html/photo/replies.vm?sid=$g_site_id#${replies.get(0).id}">more...</a></li>
+        ##end
+	</ul>
+</div>
+<div class="module_foot"></div>
+#end

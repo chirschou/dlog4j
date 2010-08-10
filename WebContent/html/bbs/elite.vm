@@ -1,0 +1,156 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  elite topics list
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_bbs.vm")
+#set($page_title="精华区")
+###############################################################################
+#set($forum_id = $dlog.param("fid",-1))
+#set($forum = $BBS_tool.forum($g_site, $forum_id))
+#set($PAGE_SIZE = 20)
+#set($p_page = $dlog.param("page", 1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+#set($elite_count = $BBS_tool.elite_count($g_site, $forum))
+#set($page_count = $dlog.page_count($elite_count, $PAGE_SIZE))
+#set($topics = $BBS_tool.elite_topics($g_site, $forum, $p_page, $PAGE_SIZE))
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="fleft">
+			<a href="$dlog.root()/html/bbs/?sid=$g_site_id">论坛首页</a>&nbsp;&raquo;&nbsp;
+			#if($forum)
+				<a href="forum.vm?sid=$g_site_id&amp;fid=$!{forum.id}">$text.html($forum.name)</a>&nbsp;&raquo;&nbsp;
+			#end
+			<a href="elite.vm?sid=$g_site_id">精华区</a>
+		</div>
+		<div class="pagecontent_right fright">
+			#invoke("_fast_jump.vm")
+		</div>
+	</div>
+	<div class="line_dashed"></div>
+</div>
+<div class="page_content">
+	<div class="bbs">
+    	<div class="bbs_top">
+			<div class="spacer_10"></div>
+			#if($forum)
+			<div class="bbs_forum_title">
+				<b>$text.html(${forum.name})</b>
+				<br />$!{forum.desc}
+				<br />主题总数：${forum.topicCount}&nbsp;篇
+				#if(${forum.lastTopic})
+					<br/>最后发表时间：$!date.format("yy/MM/dd HH:mm", ${forum.lastPostTime})&nbsp;作者：<a href="$dlog.root()/html/bbs/topic.vm?sid=$g_site_id&amp;fid=${forum.id}&amp;tid=${forum.lastTopic.id}">$text.html(${forum.lastUsername})&nbsp;&raquo;</a>
+				#end
+			</div>
+			#end
+			<div class="spacer_10"></div>
+			<div class="forum_nav">
+				<a class="thread_new" href="$dlog.root()/html/bbs/new_topic.vm?sid=$g_site_id&amp;fid=$!{forum.id}">发新帖</a>
+                <a class="thread_search" href="$dlog.root()/html/bbs/search.vm?sid=$g_site_id&amp;fid=$!{forum.id}">搜索论坛</a>
+                <a class="thread_back" href="$dlog.root()/html/bbs/?sid=$g_site_id">返回论坛列表</a>
+			</div>
+			<div class="spacer_10"></div>
+			<div class="pager_nav">
+				<form name="dform" action="">
+    			<div class="fleft">
+    				共有精华帖子${elite_count}篇 每页显示${PAGE_SIZE}篇 共${page_count}页 第${p_page}页
+        		</div>
+        		<div class="fright">
+    				#if($page_count > 1)
+                        <input type="hidden" name="sid" value="$g_site_id" />
+						<input type="hidden" name="fid" value="$forum.id" />
+    					#if($p_page > 1)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}">首页</a>#end
+                        #if($p_page>1)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}&amp;page=$pre_page">上页</a>#end
+                        #if($p_page < $page_count)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}&amp;page=$next_page">下页</a>#end
+                        #if($p_page < $page_count)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}&amp;page=$page_count">尾页</a>#end
+    					转到&nbsp;
+						<select name="page" onchange="dform.submit();">
+                        #foreach($p in [1..$page_count])
+							<option value="$p"#if($p_page==$p) selected#end>$p</option>
+						#end
+						</select>&nbsp;页
+					#end
+				</div>
+				</form>
+			</div>
+    	</div>
+    	<div class="bbs_body">
+			<div class="spacer_10"></div>
+			#foreach($topic in $topics)
+			<div class="thread_list">
+				<a href="topic.vm?sid=$g_site_id&amp;fid=$!{forum.id}&amp;tid=${topic.id}">
+					#if($topic.top)
+						<img src="$dlog.style($g_site, "pic/thread_top.gif")" alt="top" align="absmiddle" border="0" />
+					#elseif($$topic.elite)
+							<img src="$dlog.style($g_site, "pic/thread_query.gif")" alt="query" align="absmiddle" border="0" />
+						#else
+							<img src="$dlog.style($g_site, "pic/thread_new.gif")" alt="new" align="absmiddle" border="0" />
+					#end
+					<b>$text.html(${topic.title})</b></a>
+				&nbsp;&nbsp;<a href="topic.vm?sid=$g_site_id&amp;fid=${forum.id}&amp;tid=${topic.id}">浏览帖子&nbsp;&raquo;</a>
+				<div class="spacer_5"></div>
+				<div class="line_solid"></div>
+				<div class="spacer_5"></div>
+				作者：<a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${topic.user.id}">$text.html($topic.username)</a>
+				&nbsp;&nbsp;发表时间：$date.format("MM-dd HH:mm:ss", ${topic.createTime})
+				&nbsp;&nbsp;点击：${topic.viewCount}&nbsp;&nbsp;回复：${topic.replyCount}
+				#if($topic.lastReply)
+        			<br>最后回复：$date.format($topic.lastReplyTime)
+        			&nbsp;最后回复作者：<a href="topic.vm?sid=$g_site_id&amp;fid=$!{forum.id}&amp;tid=${topic.id}#${topic.lastReply.id}">$text.html($topic.lastUsername)&nbsp;&raquo;</a>
+                #end
+			</div>
+			<div class="spacer_10"></div>
+			#end			
+    	</div>
+		#if($topics.size()>5)
+    	<div class="bbs_footer">
+			<form name="dform_2" action="">
+			<div class="fleft">
+				共有精华帖子${elite_count}篇 每页显示${PAGE_SIZE}篇 共${page_count}页 第${p_page}页
+    		</div>
+    		<div class="fright">
+				#if($page_count > 1)
+                    <input type="hidden" name="sid" value="$g_site_id" />
+                    <input type="hidden" name="fid" value="$forum.id" />
+                    #if($p_page > 1)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}">首页</a>#end
+                    #if($p_page>1)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}&amp;page=$pre_page">上页</a>#end
+                    #if($p_page < $page_count)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}&amp;page=$next_page">下页</a>#end
+                    #if($p_page < $page_count)<a href="?sid=${g_site_id}&amp;fid=$!{forum.id}&amp;page=$page_count">尾页</a>#end
+					转到&nbsp;
+					<select name="page" onchange="dform_2.submit();">
+                        #foreach($p in [1..$page_count])
+                        <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                        #end
+					</select>
+					&nbsp;页
+                #end
+    		</div>
+			</form>
+			<div class="spacer_10"></div>
+			<div class="forum_nav">
+    			<a class="thread_new" href="$dlog.root()/html/bbs/new_topic.vm?sid=$g_site_id&amp;fid=$!{forum.id}">发新帖</a>
+                <a class="thread_search" href="$dlog.root()/html/bbs/search.vm?sid=$g_site_id&amp;fid=$!{forum.id}">搜索论坛</a>
+                <a class="thread_back" href="$dlog.root()/html/bbs/?sid=$g_site_id">返回论坛列表</a>
+			</div>
+			<div class="spacer_10"></div>
+    	</div>
+		#end
+    </div>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

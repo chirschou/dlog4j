@@ -1,0 +1,58 @@
+div{
+	word-break:break-all;
+	padding:0;
+	margin:0;
+	font-family:Tahoma,Helvetica,Sans-Serif, Simsun;
+}
+td{
+	word-break:break-all;
+	font-family:Tahoma,Helvetica,Sans-Serif, Simsun;
+}
+img{border:0;}
+form{margin:0;padding:0;}
+
+/* font (6-13.5 pt) */
+.en6pt{font-size:6pt;font-family:Tahoma,Helvetica,Sans-Serif, Simsun}
+.en7pt{font-size:7pt;font-family:Tahoma,Helvetica,Sans-Serif, Simsun}
+.en8pt{font-size:7pt;font-family:Tahoma,Helvetica,Sans-Serif, Simsun}
+.en9pt{font-size:9pt;font-family:Tahoma,Helvetica,Sans-Serif, Simsun}
+.en105pt{font-size:10.5pt;font-family:Tahoma,Helvetica,Sans-Serif, Simsun}
+.en135pt{font-size:13pt;font-family:Tahoma,Helvetica,Sans-Serif, Simsun}
+.nowrap{white-space:nowrap}
+.setfont{display:block;text-align:right;padding:5px}
+
+/* spacer (1-20 px) */
+.spacer_1{font-size:0;line-height:0;width:1px;height:1px;clear:both}
+.spacer_2{font-size:0;line-height:0;width:2px;height:2px;clear:both}
+.spacer_5{font-size:0;line-height:0;width:5px;height:5px;clear:both}
+.spacer_10{font-size:0;line-height:0;width:10px;height:10px;clear:both}
+.spacer_20{font-size:0;line-height:0;width:20px;height:20px;clear:both}
+.clear{clear:both}
+
+/* line */
+.line_dashed {font-size:0;line-height:0;width:100%;margin:0;clear:both;border-top:#cccccc 1px dashed}
+.line_solid {font-size:0;line-height:0;width:100%;margin:0;clear:both;border-top:#cccccc 1px solid}
+
+/* float */
+.fleft{float:left}
+.fright{float:right}
+
+/* text-align */
+.tleft{text-align:left}
+.tright{text-align:right}
+.tcenter{text-align:center}
+
+/* font color */
+.red{color:red}
+.black{color:black}
+.white{color:white}
+.yellow{color:yellow}
+.blue{color:blue}
+
+/* vertical-align */
+.vtop{vertical-align:top}
+.vbottom{vertical-align:bottom}
+.vmiddle{vertical-align:middle}
+
+.bvsection {display:none;font-size:9pt}
+.error_msg {padding:0 0 0 2px;margin:0 auto;height:25px;color:#ff0000;font-weight:bold;font-size:9pt;line-height:25px}

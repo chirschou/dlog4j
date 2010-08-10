@@ -1,0 +1,87 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  show all users
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($page_title="注册用户列表")
+
+#set($LOGS_PER_PAGE = 50)
+#set($p_page = $dlog.param("page",1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+
+#set($user_count = $USER_tool.user_count($g_site))
+#set($page_count = $dlog.page_count($user_count, $LOGS_PER_PAGE))
+<table width="100%" border="0">
+<tr height="25">
+    <td valign="top">
+        共有注册用户${user_count}个 每页显示${LOGS_PER_PAGE}个 第${p_page}页 共${page_count}页
+    </td>
+    #if($page_count > 1)
+    <td align="right" valign="top">
+        #if($p_page > 1)
+        <a href="?sid=$g_site_id">首页</a>#end
+        #if($p_page>1)<a href="?sid=$g_site_id&amp;page=$pre_page">上页</a>#end
+        #if($p_page < $page_count)<a href="?sid=$g_site_id&amp;page=$next_page">下页</a>#end
+        #if($p_page < $page_count)<a href="?sid=$g_site_id&amp;page=$page_count">尾页</a>#end
+            到<select name="page">
+            #foreach($p in [1..$page_count])
+            <option value="$p">$p</option>
+            #end
+          </select>页
+    </td>
+    #end
+</tr>
+</table>    
+<table width="100%" border="0" cellpadding="3" cellspacing="1" class="table">
+<tr class="table_head">
+    <td></td>
+    <td>昵称</td>
+    <td></td>
+    <td>电子邮件</td>
+    <td>登记时间</td>
+    <td>最近访问时间</td>
+    <td></td>
+</tr>
+## $catalog_id 已经在_catalog_and_calendar.vm中定义
+#set($users = $USER_tool.list_users($g_site, $p_page, $LOGS_PER_PAGE))
+#foreach($user in $users)
+#set($show_user_url = "$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${user.id}")
+<tr class="table_cell">
+	#set($idx = ($p_page - 1)*$LOGS_PER_PAGE)
+	#set($idx = $idx + $velocityCount)
+    <td>${idx}</td>
+    <td><a href="$show_user_url">$text.html(${user.nickname})</a></td>
+	<td align="center">
+		#if(${user.onlineStatus}==1)
+		$html.img("online.gif","当前在线",null,"absmiddle",0)
+		#else
+		$html.img("offline.gif","当前离线",null,"absmiddle",0)
+		#end
+	</td>
+    <td><a href="mailto:$!{user.contactInfo.email}">$!{user.contactInfo.email}</a></td>
+    <td nowrap>$date.format("yyyy-MM-dd",${user.regTime})</td>
+    <td nowrap>$!date.format("yy-MM-dd HH:mm",${user.lastTime})</td>
+    <td>
+        <a href="$dlog.root()/dlog/sendmsg.vm?sid=$g_site_id&amp;uid=${user.id}" title="给该用户发送短消息">
+			$html.img("sendmsg.gif","发送短消息","MSG","absmiddle",0)
+        </a>
+    </td>
+</tr>
+#end
+</table>

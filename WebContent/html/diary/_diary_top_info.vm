@@ -1,0 +1,18 @@
+<div class="module_title"><b>$text.ui("label.diary.top_comment")</b></div>
+<div class="module_content">
+	<ul>
+	#set($replies = $DIARY_tool.list_diary_replies($g_site, 1, 11, $g_user))
+    #foreach($reply in $replies)
+        #if($velocityCount<=10)
+		#set($rc = $dlog.abbreviate($dlog.plain_text(${reply.content}), 14))
+		#if($dlog.is_empty($rc))#set($rc="[无文本内容]")#end
+        ##&nbsp;${velocityCount}.
+		<li><a href="$dlog.root()/html/diary/showlog.vm?sid=$g_site_id&amp;log_id=${reply.diary.id}#${reply.id}">${rc}</a></li>
+        #end                
+    #end
+    #if($replies.size()>10)
+        <li class="module_more"><a href="$dlog.root()/html/diary/j_replies.vm?sid=$g_site_id#${replies.get(0).id}">more...</a></li>
+	#end
+	</ul>
+</div>
+<div class="module_foot"></div>

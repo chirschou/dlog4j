@@ -1,0 +1,85 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  move diary view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="移动日记")
+###############################################################################
+#if(!$dlog.is_owner($g_site, $g_user))
+#invoke("_illegal_access.vm")
+#else
+#set($catalog_id = $dlog.param("cat_id",-1))
+<div id="inner_contenttop">
+	<div class="adcontent"></div>
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>移动日记</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+#if($messages.exist("catalog"))
+	#show_msg_box($!messages.get("catalog"))
+#end
+<div id="inner_contentmodule">
+	<div class="inner_module">
+    	<div class="im_title"><div class="im_titleleft"></div><div class="im_titleright"></div>
+    	</div>
+    	<div class="im_content">			
+			<form action="$link.setAction("html/sitemgr/catalog")" method="post">
+            <input type="hidden" name="sid" value="$g_site_id"/>
+            <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+            <input type="hidden" name="fromCatalog" value="$catalog_id"/>
+        	<div class="admin_module">
+				<div class="am_setting">
+            		<div class="admin_module_listcontent_30 fleft">
+						您要将&nbsp;<b>[${g_site.catalog($catalog_id).name}]</b>分类中的所有日记移动到:
+            		</div>
+            		<div class="am_content">
+						<select name="toCatalog">
+                            #foreach($cat in $g_site.catalogs)
+                                #if($catalog_id != $cat.id)
+                                <option value="$cat.id">${cat.name}</option>
+                                #end
+                            #end
+        					<option value="-1">垃圾箱</option>
+                        </select>
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="am_setting">
+        			<div class="am_submit">
+						<input type="submit" name="eventSubmit_MoveToCatalog" value="移动" />
+						<input type="button" value="返回" onclick="history.go(-1)" />
+        			</div>
+            	</div>
+        	</div>
+        	</form>
+    	</div>
+    	<div class="im_foot"><div class="im_footleft"></div><div class="im_footright"></div>
+    	</div>
+    </div>
+	<div class="spacer_10"></div>
+</div>
+<div id="inner_contentbottom">
+	<div class="spacer_1"></div>
+</div>
+#end

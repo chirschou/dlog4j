@@ -1,0 +1,76 @@
+<form action="$link.setAction("html/reply")" method="post" onsubmit="return validateReplyForm(this);">
+	<div class="reply">
+		<a name="#reply"></a><b>≡≡≡ 发表评论 ≡≡≡</b><br/>
+		#if($reply_to_edit) 
+            #set($author=${reply_to_edit.author})
+            #set($author_url=${reply_to_edit.authorURL})
+            #set($author_email=${reply_to_edit.authorEmail})
+        #else 
+            #set($author = ${g_user.nickname})
+            #set($author_url = ${g_user.contactInfo.homePage})
+            #set($author_email = ${g_user.contactInfo.email})
+		#end
+		#if($reply_to_edit)
+        <input type="hidden" name="reply_id" value="${reply_to_edit.id}"/>#end
+        <input type="hidden" name="clientType" value="0"/>
+        <input type="hidden" name="sid" value="$g_site_id"/>
+        <input type="hidden" name="pid" value="${_photo.id}"/>
+        <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+        <input type="hidden" name="parentId" value="${_photo.id}"/>
+		#if($reply_to_edit)
+        <input type="hidden" value="HTML" name="eventSubmit_UpdatePhotoReply" />
+        #else
+        <input type="hidden" value="HTML" name="eventSubmit_AddPhotoReply" />
+        #end
+        <div class="comment_form">
+			<div class="comment_form_item">
+				<b>称呼:</b>&nbsp;<input type="text" name="author" value="$!escape.html($author)" size="10" maxlength="20"/>
+        	</div>
+			<div class="comment_form_item">
+				邮箱:&nbsp;<input type="text" name="authorEmail" value="$!author_email" size="20" maxlength="50"/>
+        	</div>
+            <div class="comment_form_item">
+				网址:&nbsp;<input type="text" name="authorURL" value="$!author_url" size="20" maxlength="50"/>
+        	</div>
+			<div class="comment_form_item">
+				<div class="spacer_5"></div>
+				<textarea name="content" style="WIDTH: 100%; HEIGHT: 150px">$!{reply_to_edit.content}</textarea>
+        	</div>
+            <div class="comment_form_item">
+				#if($reply_to_edit)
+                <input type="submit" value="更新评论" class="button" name="eventSubmit_UpdatePhotoReply" />
+                #else
+                <input type="submit" value="添加评论" class="button" name="eventSubmit_AddPhotoReply" />
+                #end
+        	</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+    window.onload = function()
+    {
+        var sBasePath = document.location.pathname.substring(0,document.location.pathname.lastIndexOf('html')) ;    
+        var oFCKeditor = new FCKeditor( 'content' ) ;
+        oFCKeditor.BasePath    = sBasePath ;
+        oFCKeditor.Height = 180;
+        oFCKeditor.ToolbarSet = "Basic";
+        oFCKeditor.ReplaceTextarea() ;
+    }
+    
+    function validateReplyForm(theForm)
+    {
+        with(theForm){
+            if(is_empty(author.value)){
+                alert("username is required.");
+                author.focus();
+                return false;
+            }
+            if(not_empty(authorEmail.value) && !is_email(authorEmail.value)){
+                alert("email error.");
+                authorEmail.focus();
+                return false;
+            }
+        }
+        return true;
+    }
+</script>

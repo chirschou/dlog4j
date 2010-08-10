@@ -1,0 +1,26 @@
+#set($objs = $SEARCH_tool.search_topic($g_site, $g_user, $key))
+<b>论坛:</b>共有<b>$!{objs.size()}</b>项符合<b>${key}</b>的查询结果，(搜索用时<b>${SEARCH_tool.get_search_time()}</b>毫秒)<br/><br/>
+#if($objs && $objs.size() > 0)
+<table cellspacing=1 cellpadding=3 width="100%" border="0" class="table">
+<tr class="table_head">
+    <td nowrap><b>序号</b></td>
+    <td align="center"><b>文章标题</b></td>
+    <td align="center"><b>发表时间</b></td>
+    <td align="center"><b>作者</b></td>
+    <td align="center"><b>所在论坛</b></td>
+</tr>
+#foreach($obj in $objs)
+<tr class="table_cell">
+    <td align="right" nowrap><b>${velocityCount}</b></td>
+    <td >&nbsp;&nbsp;
+        <a href="$dlog.root()/html/bbs/topic.vm?sid=${obj.site.id}&amp;fid=${obj.forum.id}&amp;tid=$obj.id">$text.html(${obj.title})</a>
+    </td>
+    <td nowrap>$date.format("yyyy/MM/dd",${obj.createTime})</td>
+    <td nowrap>$text.html(${obj.user.nickname})</td>
+    <td nowrap>
+        [<a href="$dlog.root()/html/bbs/forum.vm?sid=${obj.site.id}&amp;fid=${obj.forum.id}">$text.html(${obj.forum.name})</a>]
+    </td>
+</tr>
+#end
+</table>
+#end

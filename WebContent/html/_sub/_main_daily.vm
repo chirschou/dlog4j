@@ -1,0 +1,64 @@
+#if(!$TOP_DIARY_COUNT)
+	#set($TOP_DIARY_COUNT = 10)
+#end
+<div class="diary">
+	<div class="left_panels">
+		<div class="panel">
+        	<div class="panel_head">
+    			<div class="fleft"><B>最新日记</B></div>
+    			<div class="fright"><a href="$dlog.root()/html/diary/?sid=$g_site_id">更多...</a></div>
+        		<div class="spacer_1"></div>
+        	</div>
+			#set($logs = $DIARY_tool.top_diary($g_site, $g_user, 1, $TOP_DIARY_COUNT, false))
+			#if($logs && $logs.size()>0)
+				#set($top_log = $DIARY_tool.diary(${logs.get(0).id}))
+        		<div class="panel_top">
+					<a href="$dlog.root()/html/diary/showlog.vm?sid=${top_log.site.id}&amp;log_id=${top_log.id}">
+					$text.html(${top_log.title})
+					</a>
+				</div>
+				<div class="panel_top_body">
+					$dlog.abbreviate($dlog.plain_text(${top_log.content}), 60)
+				</div>
+				<div class="spacer_5"></div>
+				<div class="line_dashed"></div>
+			#end
+    		<div class="panel_body">
+				#foreach($log in $logs)
+				#if($velocityCount>1)
+    			<a href="$dlog.root()/html/diary/showlog.vm?sid=${log.site.id}&amp;log_id=${log.id}"><img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>&nbsp;$text.html(${log.title})</a><br/>
+				#end
+				#end
+    		</div>
+    	</div>
+	</div>
+	<div class="right_panels">		
+		<div class="panel">
+        	<div class="panel_head">
+    			<div class="fleft"><B>最新热门日记</B></div>
+        		<div class="spacer_1"></div>
+        	</div>
+			#set($logs = $DIARY_tool.list_hot_articles($g_site, 30, $TOP_DIARY_COUNT))
+			#if($logs && $logs.size()>0)
+				#set($top_log = $DIARY_tool.diary(${logs.get(0).id}))
+        		<div class="panel_top">
+					<a href="$dlog.root()/html/diary/showlog.vm?sid=${top_log.site.id}&amp;log_id=${top_log.id}">
+					$text.html(${top_log.title})
+					</a>
+				</div>
+				<div class="panel_top_body">
+					$dlog.abbreviate($dlog.plain_text(${top_log.content}), 60)
+				</div>
+				<div class="spacer_5"></div>
+				<div class="line_dashed"></div>
+			#end
+    		<div class="panel_body">
+				#foreach($log in $logs)
+				#if($velocityCount>1)
+    			<a href="$dlog.root()/html/diary/showlog.vm?sid=${log.site.id}&amp;log_id=${log.id}"><img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>&nbsp;$text.html(${log.title})</a><br/>
+				#end
+				#end
+    		</div>
+    	</div>
+	</div>
+</div>

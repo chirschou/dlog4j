@@ -1,0 +1,133 @@
+#set($page_title="注册个人网记")
+
+<div class="page_top"></div>
+<div class="page_content">
+    #show_error_msg()
+    #set($sform = $form.getBean())
+	#if(${g_user.ownSiteId}>0)
+	<div class="form_note"><b>对不起,该用户已经注册有<a href="$dlog.root()/?sid=${g_user.ownSiteId}">个人网记</a>,不允许再注册</b></div>
+	#else
+    <form name="sform" action="$link.setAction("dlog/site")" method="post">
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <h3>请填写网站基本信息:</h3>
+	<div class="form">
+	<div class="form_note">
+		<li><b>粗体字</b> 部分必须填写</li>
+		<li><b>网站英文名用途: 你可以通过地址:${link.getContextURL()}/[英文名]来访问你的网站.</b></li>
+		<li><b>网站中文名使你的网站区别于人且充满个性的名称，例如：网记.</b></li>
+		<li><b>网站标题是用来设置在浏览器标题栏的内容，如果没有填写则会自动设置为网站的中文名.</b></li>
+	</div>
+	<div class="spacer_1"></div>
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			<b>网站英文名:</b>
+		</div>
+		<div class="form_row_content">
+            <input type="text" size="20" maxlength="20" id="uniqueName" name="uniqueName" value="$!{sform.uniqueName}"/>
+    		<a href="#" onclick="validateSname($F('uniqueName'));return false;">检测英文名</a>
+            #struts_message("uniqueName")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			<b>网站中文名:</b>
+		</div>
+		<div class="form_row_content">
+            <input type="text" size="20" maxlength="20" id="friendlyName" name="friendlyName" value="$!{sform.friendlyName}"/>
+    		<a href="#" onclick="validateCname($F('friendlyName'));return false;">检测中文名</a>
+            #struts_message("friendlyName")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			网站标题:
+		</div>
+		<div class="form_row_content">
+            <input type="text" size="40" maxlength="100" name="title" value="$!{sform.title}"/>
+            #struts_message("title")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	<!--
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			网站域名:
+		</div>
+		<div class="form_row_content">
+            <input type="text" size="20" maxlength="100" name="url" value="$!{sform.url}"/>
+            #struts_message("url")不包括{http://}
+		</div>
+	</div>
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			ICP证号:
+		</div>
+		<div class="form_row_content">
+            <input type="text" size="20" maxlength="20" name="icpNumber" value="$!{sform.icpNumber}"/>(Just for Chinese)
+            #struts_message("icpNumber")
+		</div>
+	</div>
+	-->
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			网站宣言:
+		</div>
+		<div class="form_row_content">
+            <textarea name="detail" rows="5" cols="42">$!{sform.detail}</textarea>
+            #struts_message("detail")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	<div class="form_row">
+		<div class="form_row_submit">
+            <input type="submit" name="eventSubmit_CreateSite" value="现在注册" #if(${g_user.ownSiteId}>0)disabled="true"#end/>
+            <input type="reset" value="重新填写" #if(${g_user.ownSiteId}>0)disabled="true"#end/>
+    		<input type="button" value="返回上页" onclick="history.go(-1)"/>
+    		<input type="button" value="返回首页" onclick="location.href='$dlog.root()/#if($g_site)?sid=${g_site_id}#end';"/>
+		</div>
+	</div>
+	</div>
+    </form>
+	#end
+</div>
+<div class="page_bottom"></div>
+<script src="$dlog.root()/js/common.js" type="text/javascript"></script>
+<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+	function validateSname(uname){
+		if(is_empty(uname)){
+			alert("请输入网站英文标识名");
+			document.sform.uniqueName.focus();
+			return;
+		}
+		var url = '$link.setAction("validate")';
+		var args = 'eventSubmit_ValidateSitename=' + uname;
+		
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'post', parameters: args, onComplete: ajax_response}
+    	);
+	}
+	function validateCname(uname){
+		if(is_empty(uname)){
+			alert("请输入网站中文名");
+			document.sform.friendlyName.focus();
+			return;
+		}
+		var url = '$link.setAction("validate")';
+		var args = 'eventSubmit_ValidateSitecname=' + uname;
+		
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'post', parameters: args, onComplete: ajax_response}
+    	);
+	}
+	function ajax_response(originalRequest) {
+		if(originalRequest.status==200){
+			if(not_empty(originalRequest.responseText))
+				alert(originalRequest.responseText);
+			else
+				alert("您输入的信息有效.");
+		}
+    }
+</script>

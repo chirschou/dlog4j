@@ -1,0 +1,244 @@
+#set($PAGE_SIZE = 20)
+#set($catalog_id = $dlog.param("cat_id", -1))
+#set($prev_diary = $DIARY_tool.prev_diary($g_site, $g_user, $catalog_id, $log_id))
+#set($next_diary = $DIARY_tool.next_diary($g_site, $g_user, $catalog_id, $log_id))
+#set($p_page = $dlog.param("page",1))
+#set($page_count = $dlog.page_count(${log.replyCount}, $PAGE_SIZE))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+<div class="page_top">
+	<div class="pagecontent">
+		#if($prev_diary || $next_diary)
+		<div class="pagecontent_left fleft">
+			#if($next_diary)
+				<a href="?sid=$g_site_id&amp;cat_id=$catalog_id&amp;log_id=${next_diary.id}" class="cprevious">上篇：${next_diary.title}</a>
+			#end
+		</div>
+		<div class="pagecontent_right fright">
+			#if($prev_diary)
+				<a href="?sid=$g_site_id&amp;cat_id=$catalog_id&amp;log_id=${prev_diary.id}" class="cnext">下篇：${prev_diary.title}</a>
+			#end
+		</div>
+		#end
+		<div class="clear"></div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="main_module">
+		<div class="diary_title">
+			#invoke("_log_title_bar.vm")
+    	</div>
+		
+		<div class="line_dashed"></div>
+		<div class="diary_content">
+			$!{log.content}
+            #if($log && ${log.bgSound})
+            
+			<div id="mplayer_div" align="center">
+            <embed id="mplayer" src="${log.bgSound.url}" align="baseline" border="0" width="460" height="50"
+                type="application/x-mplayer2"
+                pluginspage="http://www.microsoft.com/isapi/redir.dll?prd=windows&amp;sbp=mediaplayer&amp;ar=media&amp;sba=plugin&amp;"
+                name="MediaPlayer" showcontrols="1" showpositioncontrols="1"
+                showaudiocontrols="1" showtracker="0" showdisplay="0"
+                showstatusbar="1" autosize="0"
+                showgotobar="0" showcaptioning="0" autostart="1" autorewind="0"
+                animationatstart="0" transparentatstart="0" allowscan="1"
+                enablecontextmenu="0" clicktoplay="0" invokeurls="1"
+                defaultframe="datawindow">
+            </embed><br />
+			如果您无法播放歌曲,请先确定是否已经安装<a href="http://download.microsoft.com/download/9/4/0/94072943-9188-4a60-b31f-3031f18404e4/mpsetup.exe" target="_blank"><b>Windows media player</b></a>软件<br/>
+			或者歌曲类型是否被<b>Microsoft Media Player</b>所支持。<br/>
+			另外请使用IE浏览器。
+            </div>
+			
+			<div class="spacer_20"></div>
+			#end
+			<div class="spacer_20"></div>
+			#if($dlog.not_empty(${log.keyword}))
+			<div class="keyword">
+				<b>关键字:</b>
+				#foreach($tag in ${log.keywords})
+					<a href="$dlog.root()/html/showtag.vm?sid=$g_site_id&amp;type=1&amp;tag=$link.encodeURL($tag)"><b>$text.html(${tag})</b></a>&nbsp;
+				#end
+			</div>
+			
+			#end
+			<div class="trackback">
+				<b>引用地址:</b>
+				<span class="en9pt">
+				$link.getContextURL()/html/trackback.do?id=${log.id}&amp;type=1 (<a href="#" onclick="return copy_to_clipboard('$link.getContextURL()/html/trackback.do?log_id=${log.id}&amp;type=1')">复制地址</a>)
+				</span>
+			</div>
+			
+		</div>
+		<div class="line_dashed"></div>
+		<div class="diary_foot">
+			#invoke("_log_bottom_bar.vm")
+    	</div>
+	</div>
+</div>
+
+<div class="page_footer">
+	#if(${log.status} != 5)
+	###if(${log.replyCount} > 0)
+	#if(${log.replyCount} > 0)
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<a name="#replies"></a><b>≡≡≡ 网友评论 ≡≡≡</b>
+		</div>
+		<div class="pagecontent_right fright">
+			##日记评论分页
+			#if($page_count > 1)
+				<form name="dform" action="#replies"><!-- 翻页控制条 -->
+				第<b>${p_page}</b>页,共<b>${page_count}</b>页
+				<input type="hidden" name="sid" value="$g_site_id" />
+                <input type="hidden" name="cat_id" value="$log.catalog.id" />
+                <input type="hidden" name="log_id" value="$log.id" />
+				#set($base_url = "?sid=${g_site_id}&amp;cat_id=${log.catalog.id}&amp;log_id=${log.id}")
+                #if($p_page > 1)<a href="$base_url#replies">首页</a>#end
+                #if($p_page>1)<a href="${base_url}&amp;page=$pre_page#replies">上页</a>#end
+                #if($p_page < $page_count)<a href="${base_url}&amp;page=$next_page#replies">下页</a>#end
+                #if($p_page < $page_count)<a href="${base_url}&amp;page=$page_count#replies">尾页</a>#end
+                    到 <select name="page" onchange="dform.submit();">
+                    #foreach($p in [1..$page_count])
+                    <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                    #end
+					</select> 页
+				</form>
+			#end
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="spacer_1"></div>
+	#set($reply_id = $dlog.param("reply_id",-1))
+	#set($replies = $DIARY_tool.replies($g_site,$g_user,$log,$p_page, $PAGE_SIZE, true))
+    #foreach($reply in ${replies})
+    #if(${reply.id} == $reply_id) #set($reply_to_edit = $reply) #end
+	<div class="comment">
+		<div class="comment_title"><a name="$reply.id"></a>	
+			<div class="fleft">		
+			#if($dlog.not_empty($reply.authorURL))
+				<a href="$reply.authorURL"><b>$text.html($reply.author)</b></a>
+    		#elseif($reply.user)
+    			<a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${reply.user.id}"><b>$text.html($reply.author)</b></a>
+			#else
+				<b>$text.html($reply.author)</b>
+    		#end
+    		网友说：
+			#if($reply.client.type == 1)
+				$html.img("mobile.gif",null,"wap","absmiddle",0)
+			#end
+			</div>
+			<div class="fright">
+			$date.format("yyyy/MM/dd HH:mm",${reply.replyTime}) &nbsp;&nbsp;
+            #if($g_user && ($dlog.is_owner($g_site,$g_user) || (${reply.user} && ${reply.user.id}==$g_user_id)))
+              <a href="#" onclick="if(confirm('您真的要删除该评论吗？')) deleteRForm_${reply.id}.submit(); return false;"">$html.img("icon_delete.gif",null,"del","absmiddle",0)</a>
+              <a href="showlog.vm?sid=$g_site_id&amp;log_id=${reply.diary.id}&reply_id=${reply.id}#reply">$html.img("icon_edit.gif",null,"edit","absmiddle",0)</a> 
+            <form name="deleteRForm_${reply.id}" action="$link.setAction("html/reply")" method="post">
+                <input type="hidden" name="sid" value="${g_site_id}" />
+                <input type="hidden" name="log_id" value="${reply.diary.id}" />
+                <input type="hidden" name="fromPage" value="$dlog.get_request_url()" />
+                <input type="hidden" name="eventSubmit_DeleteDiaryReply" value="${reply.id}" />
+            </form>
+            #end
+			</div>
+		</div>
+		<div class="comment_content">
+			#if(${reply.ownerOnly}==0 || $dlog.is_owner($g_site,$g_user) || ($g_user && ${g_user.id}==${reply.user.id})) 
+                ${reply.content}
+            #else
+                <i>[此评论只能由评论者或者是写日记的人可以查阅。]</i>
+            #end
+		</div>
+		<div class="comment_footer"></div>
+	</div>
+	#end
+	#end
+	#if(${log.lock}==0 && ${log.status}==0)
+	<div class="reply">
+		<script language="javascript" src="res://AlxRes.dll/SCRIPT/dsn.class.js"></script>
+		<script language="javascript">function doTryAlexa(){try{aborted();return 1;}catch(e){return 0;}}</script>
+        <form action="$link.setAction("html/reply")" method="post" onsubmit="return validateReplyForm(this);">
+        #if($reply_to_edit) 
+            #set($author=${reply_to_edit.author})
+            #set($author_url=${reply_to_edit.authorURL})
+            #set($author_email=${reply_to_edit.authorEmail})
+        #elseif($g_user) 
+            #set($author = ${g_user.nickname})
+            #set($author_url = ${g_user.contactInfo.homePage})
+            #set($author_email = ${g_user.contactInfo.email})
+        #end
+		
+        <div class="comment_form">
+			<a name="#reply"></a><b>≡≡≡ 发表评论 ≡≡≡</b><br/>
+			#if($reply_to_edit)<input type="hidden" name="reply_id" value="${reply_to_edit.id}"/>#end
+			<input type="hidden" name="alexa" id="IsAlexaUser"/>
+            <input type="hidden" name="clientType" value="0" />
+            <input type="hidden" name="sid" value="$g_site_id" />
+            <input type="hidden" name="log_id" value="${log.id}" />
+            <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()" />
+            <input type="hidden" name="parentId" value="${log.id}" />
+			#if($reply_to_edit)
+            <input type="hidden" value="HTML" name="eventSubmit_UpdateDiaryReply" />
+            #else
+            <input type="hidden" value="HTML" name="eventSubmit_AddDiaryReply" />
+			#end
+			<div class="comment_form_item">
+       			称呼:&nbsp;<input type="text" name="author" value="$!escape.html($author)" size="10" maxlength="20" />
+        	</div>
+			<div class="comment_form_item">
+				邮箱:&nbsp;<input type="text" name="authorEmail" value="$!author_email" size="20" maxlength="50" />&nbsp;{可选}
+        	</div>
+            <div class="comment_form_item">
+				网址:&nbsp;<input type="text" name="authorURL" value="$!author_url" size="20" maxlength="50" />&nbsp;{可选}
+				<input type="checkbox" name="ownerOnly" value="1" #if($reply_to_edit && ${reply_to_edit.ownerOnly}==1)checked#end/>此评论只有我和写日记的人查阅
+        	</div>
+			<div class="comment_form_item">
+        		<textarea name="content" style="height:150px;width:100%">$!{reply_to_edit.content}</textarea>
+        	</div>
+            <div class="comment_form_item">
+				#if($reply_to_edit)
+                <input type="submit" value="更新评论" class="button" name="eventSubmit_UpdateDiaryReply" />
+                #else
+                <input type="submit" value="添加评论" class="button" name="eventSubmit_AddDiaryReply" />
+				#end
+        	</div>
+		</div>
+        </form>
+	</div>	
+    <script type="text/javascript">
+        window.onload = function()
+        {
+            var sBasePath = document.location.pathname.substring(0,document.location.pathname.lastIndexOf('html')) ;    
+            var oFCKeditor = new FCKeditor( 'content' ) ;
+            oFCKeditor.BasePath    = sBasePath ;
+            oFCKeditor.Height = 180;
+            oFCKeditor.ToolbarSet = "Basic";
+            oFCKeditor.ReplaceTextarea() ;
+        }
+        
+        function validateReplyForm(theForm)
+        {
+            with(theForm){
+                if(is_empty(author.value)){
+                    alert("username is required.");
+                    author.focus();
+                    return false;
+                }
+                if(not_empty(authorEmail.value) && !is_email(authorEmail.value)){
+                    alert("email error.");
+                    authorEmail.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+		function SetFont(size){
+        	document.getElementById("imlog_content").style.fontSize=size
+        }
+		document.getElementById("IsAlexaUser").value=doTryAlexa();
+    </script>
+    #end
+    #end
+</div>

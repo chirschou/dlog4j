@@ -1,0 +1,72 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  tag for photo
+##
+###############################################################################
+#set($PAGE_SITE = 20)
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($tag = $dlog.param("tag",""))
+#set($p_page = $dlog.param("page",1))
+#set($page_title=$tag)
+
+<div class="show_tag">
+<div class="page_top">
+<form action="">
+	<input type="hidden" name="sid" value="$g_site_id" />
+	相册关键字:
+	<input type="text" name="tag" value="$!{tag}" size="20" />
+	<input type="submit" name="" value="搜索关键字" />
+</form>
+#set($hot_tags = $TAG_tool.list_hot_tags($g_site, 5))
+#if($hot_tags.size()>0)
+	热门关键字:
+	#foreach($t_tag in $hot_tags)
+		#if($velocityCount>1),#end
+		<a href="?sid=$g_site_id&amp;type=$tag_type&amp;tag=${t_tag}">${t_tag}</a>
+	#end
+#end
+</div>
+<div class="page_content">
+<hr size="1" color="#cccccc" noshade/>
+#set($start_time = $dlog.current_timestamp())
+#set($diary_c = $TAG_tool.photo_count_of_tag($g_site, $tag))
+#if($diary_c>0)
+	#set($diarys = $TAG_tool.photos_of_tag($g_site, $tag, $p_page, $PAGE_SITE))
+#end
+#set($time_used = $dlog.time_consume($start_time))
+共有照片 <b>${diary_c}</b> 张，查询耗时 <b>${time_used}</b> 毫秒。
+<hr size="1" color="#cccccc" noshade/>
+#if($diarys)
+	#set($page_count = $dlog.page_count($diary_c, $PAGE_SITE))
+	#if($page_count > 1)
+	#foreach($p_idx in [1..$page_count])
+	<a href="?sid=$g_site_id&amp;page=${p_idx}&amp;tag=$link.encodeURL($tag)">${p_idx}</a>&nbsp;
+	#end
+	<br />
+	#end
+	#foreach($photo in $diarys)
+		<a href="$dlog.root()/html/photo/show.vm?sid=${photo.site.id}&amp;aid=${photo.album.id}&amp;pid=${photo.id}" title="$text.html(${photo.name})"><img src="$photo.previewURL" border="0" alt="${photo.name}" /></a>
+	#end
+	<br />
+	#if($page_count > 1)
+	#foreach($p_idx in [1..$page_count])
+	<a href="?sid=$g_site_id&amp;page=${p_idx}&amp;tag=$link.encodeURL($tag)">${p_idx}</a>&nbsp;
+	#end
+	#end
+#end
+</div>
+</div>

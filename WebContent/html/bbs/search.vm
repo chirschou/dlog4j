@@ -1,0 +1,149 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of discussion channel
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_bbs.vm")
+#set($page_title="讨论区搜索")
+###############################################################################
+#set($forum_id = $dlog.param("fid",-1))
+#set($forum = $BBS_tool.forum($g_site, $forum_id))
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="fleft">
+			<a href="$dlog.root()/html/bbs/?sid=$g_site_id">讨论区首页</a>&nbsp;&raquo;&nbsp;
+            #if($forum)
+            	<a href="forum.vm?sid=$g_site_id&amp;fid=$forum_id">${forum.name}</a>&nbsp;&raquo;&nbsp;
+			#end
+			高级搜索
+		</div>
+		<div class="pagecontent_right fright">
+		</div>
+	</div>
+	<div class="line_dashed"></div>
+</div>
+<div class="page_content">
+	<div class="bbs">
+    	<div class="bbs_top">
+			<div class="form_note">
+    			<b>搜索讨论区内容</b>
+        		<br />你可以选择搜索所有内容或是根据讨论区或时间搜索，同时你还可以根据用户名或用户ID过滤结果!
+			</div>
+			<form name="frm_search" action="$link.setAction("html/bbs/search")#result">
+            <input type="hidden" name="sid" value="$g_site_id" />
+            <input type="hidden" name="page" value="1" />
+			<div class="form">
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						关键字
+            		</div>
+            		<div class="form_row_content">
+						<input maxLength="100" size="40" name="key" value="$!{param.key}" />&nbsp;&nbsp;
+						<input type="submit" value=" 搜 索 " />
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						选择范围
+            		</div>
+            		<div class="form_row_content">
+						<select style="WIDTH: 180px" name="fid" onchange="fForm.submit()" size="1">
+                            <option value="-1">所有讨论区</option>
+                            #foreach($f in $BBS_tool.forums($request, $g_site, $g_user))
+                            <option value="${f.id}" #if($forum && ${forum.id}==${f.id})selected#end>
+                                &nbsp;&#8226;&nbsp;$text.html(${f.name})
+                            </option>
+                            #end
+        				</select>
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						时间范围
+            		</div>
+            		<div class="form_row_content">
+						<select size="1" name="dateRange">
+                            <option value="0" selected>任何时间</option>
+                            <option value="7" #if($param && $!{param.dateRange}==7)selected #end>最近一周</option>
+                            <option value="30" #if($param && $!{param.dateRange}==30)selected #end>最近一月</option>
+                            <option value="365" #if($param && $!{param.dateRange}==365)selected #end>最近一年</option>
+                        </select>
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						用户名
+            		</div>
+            		<div class="form_row_content">
+						<input maxLength="50" name="user" value="$!{param.user}" />&nbsp;&nbsp;{用户名称或者ID号}
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+				<div class="form_row">
+					<div class="form_row_title fleft">
+						每页结果
+            		</div>
+        			<div class="form_row_content">
+        				<select size="1" name="numResults">
+                            <option value="10" #if($param && ${param.numResults}==10)selected #end>10</option>
+                            <option value="15" #if($param && ${param.numResults}==15)selected #end>15</option>
+                            <option value="30" #if($param && ${param.numResults}==30)selected #end>30</option>
+            			</select>
+        			</div>
+            	</div>
+        		<div class="form_row">&nbsp;</div>
+        	</div>
+			</form>
+			<div class="spacer_10"></div>
+    	</div>
+		#if($results)
+		<a name="result"></a>
+    	<div class="bbs_body tcenter">
+			<div align="left">
+				搜索关键字&nbsp;<b>[$text.html(${param.key})]</b>&nbsp;&nbsp;共有&nbsp;<b>${results.size()}</b>&nbsp;篇主题符合&nbsp;&nbsp;耗时&nbsp;<b>${time}</b>&nbsp;毫秒
+			</div>
+			<div class="spacer_10"></div>
+			#foreach($topic in $results)
+			<div class="thread_list">
+				<div class="thread_topic">
+    				#if(${topic.top})
+    					<img src="$dlog.style($g_site, "images/thread_top.gif")" alt="top" align="absmiddle" border="0" />
+    				#elseif(${topic.elite})
+    					<img src="$dlog.style($g_site, "images/thread_query.gif")" alt="query" align="absmiddle" border="0" />					
+    				#end
+    				<a href="topic.vm?sid=$g_site_id&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">$text.html(${topic.title})</a>
+				</div>
+				<div class="spacer_5"></div>
+				<div class="line_solid"></div>
+				<div class="spacer_1"></div>
+				<div class="thread_info">
+    				作者：<a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${topic.user.id}">$text.html(${topic.user.nickname})</a>
+    				&nbsp;&nbsp;发表时间：$date.format("yyyy-MM-dd HH:mm", ${topic.createTime})    				
+				</div>
+			</div>
+			<div class="spacer_10"></div>
+			#end
+    	</div>
+    	<div class="bbs_footer"></div>
+		#end
+    </div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_bottom"></div>

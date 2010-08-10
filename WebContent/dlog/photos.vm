@@ -1,0 +1,7 @@
+#invoke("_sub/_global.vm")
+#set($layout = "home.vm")
+#set($page_title = "Õ¯º«œ‡≤·∆µµ¿")
+#set($scope=3)
+
+#invoke("_sub/_photos.vm")
+	

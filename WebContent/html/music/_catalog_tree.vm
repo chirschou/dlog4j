@@ -1,0 +1,17 @@
+<div class="module_title"><b>音乐盒</b></div>
+<div class="module_content">
+	#if($dlog.is_owner($g_site, $g_user))
+		<span class="music_link"><a href="$dlog.root()/html/music/?sid=$g_site_id&amp;box=0">网友推荐的歌曲</a></span>
+	#end
+	#foreach($box in $g_site.musicBoxes)
+		 #set($url = "$dlog.root()/html/music/?sid=$g_site_id&amp;box=${box.id}")
+		 <span class="music_link"><a href="$url">$text.html(${box.name})</a></span>
+	#end
+	#if(!$dlog.is_owner($g_site, $g_user))
+		<span class="music_recommend"><a href="$dlog.root()/html/music/music_intro.vm?sid=$g_site_id&amp;box=$mboxid">我要推荐</a></span>
+	#else
+    	<span class="music_newbox"><a href="$dlog.root()/html/music/mbox_add.vm?sid=$g_site_id">$text.ui("label.music.create_box")</a></span>
+    	<span class="music_newsong"><a href="$dlog.root()/html/music/music_add.vm?sid=$g_site_id">添加歌曲</a></span>
+    #end
+</div>
+<div class="module_foot"></div>

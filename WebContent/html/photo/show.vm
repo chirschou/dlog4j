@@ -1,0 +1,176 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of DLOG4J's photo album
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_photo.vm")
+###############################################################################
+#set($album_id = $dlog.param("aid",-1))
+#set($photo_id = $dlog.param("pid",-1))
+#set($_photo = $PHOTO_tool.photo($g_site, $g_user, $photo_id))
+#if(!$_photo)
+	#show_msg_box("<b>照片没找到，或者是您没有访问的权限 !!!</b>")
+#else
+#set($page_title=${_photo.name})
+#set($nothing = $PHOTO_tool.visit_photo($g_site, $g_user, $_photo))
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>${_photo.name}</b><br/> 
+			<span class="en8pt">$date.format("yyyy/MM/dd HH:mm", ${_photo.createTime})</span>
+		</div>
+		<div class="pagecontent_right fright">
+			<script language="javascript" type="text/javascript">
+    		function open_share_dialog(pid){
+    			#set($share_url = "$dlog.root()${_photo.previewURL}")
+    			var url = "share.vm?sid=$g_site_id&amp;aid=$album_id&amp;pid=${_photo.id}&amp;img=$link.encodeURL($share_url)";
+    			window.open(url,'share',"height=400,width=400,status=yes,toolbar=no,menubar=no,location=no");
+    		}
+    		</script>
+			<a href="#" onclick="open_share_dialog(${_photo.id});return false;">分享相片</a> |
+        	#if(${_photo.photoInfo.width} > 560)
+			#set($img_url = "$dlog.root()${_photo.imageURL}")
+            <a href="show2.vm?img=$link.encodeURL($img_url)" target="_blank">查看原图</a> |#end
+            #set($prev_photo = $PHOTO_tool.prev_photo($g_site, $g_user, $album_id, $_photo.id))
+            #if($prev_photo)
+            <a href="?sid=$g_site_id&amp;aid=$album_id&amp;pid=${prev_photo.id}" title="$text.html(${prev_photo.name})">上一张</a>
+            #end
+            #set($next_photo = $PHOTO_tool.next_photo($g_site, $g_user, $album_id, $_photo.id))
+            #if($next_photo)
+            #if($prev_photo) | #end
+            <a href="?sid=$g_site_id&amp;aid=$album_id&amp;pid=${next_photo.id}" title="$text.html(${next_photo.name})">下一张</a>
+            #end
+            #if($next_photo || $prev_photo) | #end
+            <a href="$dlog.root()/html/photo/?sid=$g_site_id&amp;aid=$album_id">返回相片列表</a>
+		</div>        
+	</div>
+	<div class="line_dashed"></div>
+</div>
+<div class="page_content">
+	<div class="photo">
+    	<div class="photo_content">
+			<div class="photo_detail">
+				<img id="myphoto" src="$dlog.root()${_photo.imageURL}" width="$math.min(500, ${_photo.photoInfo.width})" border="0"/>
+			</div>
+			#if($dlog.not_empty($_photo.photoInfo.manufacturer)||$dlog.not_empty($_photo.photoInfo.model))
+			<div class="spacer_20"></div>
+			#invoke("_show_exif.vm")
+			#end
+			<div class="spacer_20"></div>
+			<div class="photo_detail tleft">$!{_photo.desc}</div>			
+    		<div class="spacer_20"></div>
+			#if($dlog.not_empty($_photo.keyword))
+			<div class="keyword tleft">关键字: &nbsp;
+				#foreach($tag in $_photo.keywords)
+                <a href="$dlog.root()/html/showtag.vm?sid=$g_site_id&amp;type=2&amp;tag=$link.encodeURL($tag)"><b>${tag}</b></a>&nbsp;&nbsp;
+                #end
+			</div>
+			#end
+			<div class="spacer_20"></div>
+		</div>
+    	<div class="photo_foot">		
+			相簿:<a href="$dlog.root()/html/photo/?sid=$g_site_id&amp;aid=${_photo.album.id}">${_photo.album.name}</a>&nbsp;|&nbsp;评论:(${_photo.replyCount})&nbsp;|&nbsp;浏览:(${_photo.viewCount})&nbsp;|&nbsp;
+            #if(!$no_bookmark_link)
+            <a href="#" onclick="bookmark('$photo_id','$link.encodeURL(${_photo.name})') ;return false;">
+				$html.img("bookmark.gif","保存此照片为书签","bookmark","absmiddle",0)
+            </a>
+			<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+            <script type="text/javascript">
+            	function bookmark(log_id,log_title){
+					var random = Math.random()+'';
+            		var url = '$link.setAction("html/bookmark")?sid=$g_site_id&parentId='+log_id+'&parentType=2&eventSubmit_Add='+random+'&title='+log_title;
+                	var myAjax = new Ajax.Request(url,
+                	    {method: 'get', onComplete: save_as_bookmark_response}
+                	);
+            	}
+            	function save_as_bookmark_response(originalRequest) {
+            		alert(originalRequest.responseText);
+                }
+            </script>
+            #end
+            #if($dlog.is_owner($g_site, $g_user))
+            <a href="$link.setAction("html/photo")?sid=$g_site_id&amp;eventSubmit_Delete=${_photo.id}" onclick="return confirm('您确实要删除照片吗？');">
+                $html.img("icon_delete.gif","删除照片","DEL","absmiddle",0)
+            </a>
+            <a href="$dlog.root()/html/photo/edit.vm?sid=$g_site_id&amp;pid=${_photo.id}">
+				$html.img("icon_edit.gif","修改照片","EDIT","absmiddle",0)
+            </a>
+            #end
+    	</div>
+    </div>
+    <div class="spacer_10"></div>	
+</div>
+<div class="page_footer">
+	<div class="spacer_1"></div>
+	#if($_photo.replyCount > 0)
+	<div class="pagecontent">
+		<div class="fleft">
+			<a name="#replies"></a><b>≡≡≡ 网友评论 ≡≡≡</b>
+		</div>
+		<div class="pagecontent_right fright">
+			##日记评论分页
+			##1 2 3 4
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	#set($reply_id = $dlog.param("reply_id",-1))
+    #foreach($reply in $_photo.replies)
+    #if($reply.id == $reply_id) #set($reply_to_edit = $reply) #end
+	<div class="comment">
+		<div class="comment_title">
+			<a name="$reply.id"></a>
+			#if($reply.authorURL)
+				<a href="$reply.authorURL">
+			#end
+			$text.html($reply.author)
+			#if($reply.authorURL)
+				</a>
+			#end
+			网友说：
+			$date.format("yyyy/MM/dd HH:mm",${reply.replyTime}) &nbsp;&nbsp;
+            #if($_photo)
+                #if($g_user && ($dlog.is_owner($g_site,$g_user) || (${reply.user} && ${reply.user.id}==$g_user_id)))
+                  <a href="#" onclick="if(confirm('您真的要删除该评论吗？')) deleteRForm_${reply.id}.submit(); return false;"">
+            		  $html.img("icon_delete.gif",null,"DEL","absmiddle",0)
+                  </a>
+                  <a href="$dlog.root()/html/photo/show.vm?sid=$g_site_id&amp;pid=${reply.photo.id}&reply_id=${reply.id}#reply">
+            		  $html.img("icon_edit.gif",null,"EDIT","absmiddle",0)
+                  </a>
+                <form name="deleteRForm_${reply.id}" action="$link.setAction("html/reply")" method="post">
+                    <input type="hidden" name="sid" value="${g_site_id}" />
+                    <input type="hidden" name="pid" value="${reply.photo.id}" />
+                    <input type="hidden" name="fromPage" value="$dlog.get_request_url()" />
+                    <input type="hidden" name="eventSubmit_DeletePhotoReply" value="${reply.id}" />
+                </form>
+                #end
+            #end
+		</div>
+		<div class="comment_content">
+			${reply.content}
+		</div>
+		<div class="comment_footer">
+		</div>
+	</div>
+	<div class="spacer_10"></div>
+	#end
+	#end
+    #if(${_photo.lock}==0)
+        #invoke("_photo_reply_form.vm")
+	#end
+	<div class="spacer_1"></div>
+</div>
+#end

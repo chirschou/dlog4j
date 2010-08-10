@@ -1,0 +1,26 @@
+#set($objs = $SEARCH_tool.search_user($key))
+共有<b>${objs.size()}</b>项符合<b>${key}</b>的查询结果，(搜索用时<b>${SEARCH_tool.get_search_time()}</b>毫秒)<br/><br/>
+#if($objs && $objs.size() > 0)
+<table cellspacing=1 cellpadding=3 width="100%" border="0" class="table">
+<tr class="table_head">
+    <td nowrap><b>序号</b></td>
+    <td align="center"><b>用户名</b></td>
+    <td align="center"><b>昵称</b></td>
+    <td align="center"><b>性别</b></td>
+    <td align="center"><b>电子邮件</b></td>
+    <td align="center"><b>网站</b></td>
+    <td align="center"><b>注册时间</b></td>
+</tr>
+#foreach($obj in $objs)
+<tr class="table_cell">
+    <td align="right" nowrap><b>${velocityCount}</b></td>
+    <td><a href="$dlog.root()/dlog/viewuser.vm?sid=$obj.site.id&amp;uid=$obj.id">$text.html(${obj.name})</a></td>
+    <td> $text.html(${obj.nickname})</td>
+    <td> $text.get("sex.desc.${obj.sex}","ui") </td>
+    <td> $!{obj.contactInfo.email} </td>
+    <td> $!{obj.contactInfo.homePage} </td>
+    <td nowrap>$date.format("yyyy/MM/dd HH:mm",${obj.regTime})</td>
+</tr>
+#end
+</table>
+#end

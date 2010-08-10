@@ -1,0 +1,7 @@
+<div class="embed_module_top"></div>
+<div class="embed_module">#invoke("_personal.vm")</div>
+<div class="embed_module">#invoke("_links.vm")</div>
+<div class="embed_module">#invoke("_new_users.vm")</div>
+<div class="embed_module">#invoke("_site_stat.vm")</div>
+<div class="embed_module">#invoke("_site_support.vm")</div>
+<div class="embed_module_bottom"></div>

@@ -1,0 +1,26 @@
+#set($objs = $SEARCH_tool.search_diary($g_site, $g_user, $key))
+<b>日记:</b>共有<b>$!{objs.size()}</b>项符合<b>${key}</b>的查询结果，(搜索用时<b>${SEARCH_tool.get_search_time()}</b>毫秒)<br/><br/>
+#if($objs && $objs.size() > 0)
+<table cellspacing=1 cellpadding=3 width="100%" border="0" class="table">
+<tr class="table_head">
+    <td nowrap><b>序号</b></td>
+    <td align="center"><b>标题</b></td>
+    <td align="center"><b>发表时间</b></td>
+    <td align="center"><b>作者</b></td>
+    <td align="center"><b>分类</b></td>
+</tr>
+#foreach($obj in $objs)
+<tr class="table_cell">
+    <td align="right" nowrap><b>${velocityCount}</b></td>
+    <td width="100%">&nbsp;&nbsp;
+        <a href="$dlog.root()/html/diary/showlog.vm?sid=$obj.site.id&amp;log_id=$obj.id">$escape.html(${obj.title})</a>
+    </td>
+    <td nowrap>$date.format("yyyy/MM/dd",${obj.writeTime})</td>
+    <td nowrap>$text.html(${obj.author})</td>
+    <td align="right" nowrap>
+        [<a href="$dlog.root()/html/diary/?sid=${obj.site.id}&amp;cat_id=${obj.catalog.id}">$escape.html(${obj.catalog.name})</a>]
+    </td>
+</tr>
+#end
+</table>
+#end

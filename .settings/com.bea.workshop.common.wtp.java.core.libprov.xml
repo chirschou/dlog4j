@@ -1,0 +1,6 @@
+<install-record>
+  <entry>
+    <facet id="workshop.struts"/>
+    <provider id="struts-downloadable-libraries-provider"/>
+  </entry>
+</install-record>

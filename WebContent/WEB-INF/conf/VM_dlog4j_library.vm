@@ -1,0 +1,85 @@
+#*
+ * Copyright 2005 Liusoft
+ *
+ * $Id: VM_dlog4j_library.vm,v 1.18 2006/05/18 00:48:55 liudong Exp $
+ *#
+
+#macro(html_doctype)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+#end
+ 
+#macro(show_error_msg)
+#if($messages.exist())
+	<div class="error_msg"><b>$!messages.getAll()</b></div>
+#end
+#end
+
+#macro(calendar_setup $__inputField $__displayArea $__button)
+<script type="text/javascript" type="text/javascript">
+    Calendar.setup({
+        inputField     :    "$__inputField",
+        ifFormat       :    "%Y-%m-%d",
+        displayArea    :    "$__displayArea",
+        daFormat       :    "%Y-%m-%d",
+        button         :    "$__button",
+        align          :    "Tl",
+        singleClick    :    true
+    });
+</script>
+#end
+ 
+#macro(alert_msg $__key)						
+#if($messages.exist($__key))
+<script language="javascript">
+	alert("$messages.get($__key)");									
+</script>
+#end
+#end
+ 
+#macro(show_msg_box $__msg)
+<div class="msgbox">
+	${__msg}<br/><br/><a href="#" onclick="history.go(-1);return false;">∑µªÿ…œ“≥</a>
+</div>
+<div class="spacer_1"></div>
+#end
+
+#macro(struts_message $__key)
+#if($messages.exist($__key))&nbsp;<font color="red"><b>$!messages.get($__key)</b></font>#end
+#end
+
+#macro(invoke $__p_page)
+#if($__p_page.startsWith("/"))
+#parse($__p_page)
+#else
+#set($uri = $dlog.current_template())
+#set($path = $uri.substring(0, $uri.lastIndexOf("/")))
+#parse("$path/$__p_page")
+#end
+#end
+ 
+#macro(insert $__p_page)
+    #if($__p_page.startsWith("/"))
+    	#include($__p_page)
+    #else
+        #set($uri = $dlog.current_template())
+        #set($path = $uri.substring(0, $uri.lastIndexOf("/")))
+        #include("$path/$__p_page")
+    #end
+#end
+
+#macro(select_layout $__p_page)
+    #if($g_site)
+        #if($dlog.not_empty(${g_site.style.layout}))
+    		#set($layout="${g_site.style.layout}/$__p_page")
+        #else
+    		#set($layout="1/$__p_page")
+        #end
+    #else
+    	#set($layout="dlog.vm")
+    #end
+#end
+
+#macro(select_css)
+<link href="$dlog.root()/styles/global.css" rel="stylesheet" type="text/css" />
+<link href="$dlog.site_css($g_site)" rel="stylesheet" type="text/css" /> 
+#end

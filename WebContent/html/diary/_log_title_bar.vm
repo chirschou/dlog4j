@@ -1,0 +1,13 @@
+#if($log)
+<h2 class="title">
+	#if(${log.lock}==1)$html.img("lock.gif",null,"lock","absmiddle",0)&nbsp;#end
+	<a href="$dlog.root()/html/diary/showlog.vm?sid=$g_site_id&amp;cat_id=$catalog_id&amp;log_id=${log.id}">${log.title}</a>
+</h2>
+<h4 class="author">
+	$date.format("yyyy/MM/dd",${log.writeTime})&nbsp;
+	$text.ui("label.diary.author"):<a href="$!{log.authorUrl}">${log.author}</a>&nbsp;&nbsp;
+	$text.ui("label.diary.mood"):$html.img("mood/${log.moodLevel}.gif",null,null,"absmiddle",0)
+	$html.img("weather/${log.weather}.gif",${log.weather},${log.weather},"absmiddle",0)&nbsp;
+	$date.format("EEEEE (HH:mm)", ${log.writeTime})
+</h4>
+#end

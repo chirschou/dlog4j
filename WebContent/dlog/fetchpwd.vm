@@ -1,0 +1,43 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  fetch login password
+##
+###############################################################################
+<!DOCTYPE html PUBliC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Keywords" content="DLOG4J,Blog,${g_site.friendlyName}"/>
+    <title>取回登录密码</title>
+</head>
+<body>
+<p>
+<b>请输入您的用户名，系统将会将您的登录密码以邮件的方式发送到你注册时候填写的邮箱中。</b>
+</p>
+#if($messages.exist())
+<p>
+	<b><font color="red">$!messages.getAll()</font></b>
+</p>
+#end
+<form action="$link.setAction("dlog/user")" method="post">
+    用户名: 
+	<input type="text" name="name"/>
+	<input type="submit" name="eventSubmit_FetchPwd" value="获取登录密码" class="button"/>
+	<input type="button" value="关闭" onclick="window.close()" class="button"/>
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+</form>
+</body>
+</html>

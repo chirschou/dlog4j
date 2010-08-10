@@ -1,0 +1,199 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  user login
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_photo.vm")
+#set($page_title="上传照片")
+###############################################################################
+#if(!$dlog.is_owner($g_site, $g_user))
+	#parse("/html/_illegal_access.vm")
+#elseif($g_site.albums.size()==0)
+    #show_msg_box("您还没有创建相簿，现在就[<a href='$dlog.root()/html/photo/album_add.vm?sid=$g_site_id'>创建相簿</a>]！")
+#else
+    #set($album_id = $dlog.param("aid", -1))
+    #set($fbean = $form.getBean())
+	<div class="page_top">
+    	<div class="pagecontent">
+    		<div class="pagecontent_left fleft">
+    			#if($messages.exist())<b><font color='red'>$messages.getAll()</font></b>#end
+    		</div>
+    		<div class="pagecontent_right fright">
+    			相册总空间: <b>${g_site.capacity.photoTotalFriendly}</b>&nbsp;&nbsp;
+    			已用空间: <b>${g_site.capacity.photoUsedFriendly}</b>&nbsp;&nbsp;
+				#if(${g_site.capacity.photoUsed} > ${g_site.capacity.photoTotal})
+				<font color=red><b>无可用空间！</b></font>
+				#else
+    			空间利用率: <b>${g_site.capacity.photoSpacePercent}%</b>
+				#end
+    		</div>
+    	</div>
+    	<div class="spacer_1"></div>
+    </div>
+	<div class="page_content">
+		<form action="$link.setAction("html/photo")" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="sid" value="$g_site_id"/>
+    	<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+        <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+		<input type="hidden" name="eventSubmit_Upload" value="HTML" />    
+		<div class="form">
+			<div class="form_note">
+    			<div class="spacer_5"></div>
+				<li>凡上传包含不良内容（如色情、反动类等）的图片，系统将不另行通知对其行删除，严重情况将关闭站点。</li>
+				<li>凡上传任何非图片内容的文件（如软件、视频及数据文件），系统将在不另行通知情况下对其删除。</li>
+        		<div class="spacer_5"></div>
+    		</div>
+			<div class="spacer_1"></div>
+        	<div class="form_row">
+				<div class="form_row_title fleft">
+        			注意事项:
+        		</div>
+        		<div class="form_row_content">
+					&nbsp;&nbsp;照片支持上传".jpg"和".gif"和格式的图片;
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片名称:
+        		</div>
+        		<div class="form_row_content">
+					<input type="text" name="name" value="$!{fbean.name}" />
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+        	<div class="form_row">
+				<br/>
+				&nbsp;&nbsp;<b>上传的照片总大小请不要超过1兆。</b>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片文件1:
+        		</div>
+        		<div class="form_row_content">
+					<input type="file" name="image" size="50" />
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片文件2:
+        		</div>
+        		<div class="form_row_content">
+					<input type="file" name="image2" size="50" />
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片文件3:
+        		</div>
+        		<div class="form_row_content">
+					<input type="file" name="image3" size="50" />
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片文件4:
+        		</div>
+        		<div class="form_row_content">
+					<input type="file" name="image4" size="50" />
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片文件5:
+        		</div>
+        		<div class="form_row_content">
+					<input type="file" name="image5" size="50" />
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片关键字:
+        		</div>
+        		<div class="form_row_content">
+    				<input type="text" name="keyword" size="30" value="$!{fbean.keyword}" /> 多个关键字用空格隔开
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片描述:
+        		</div>
+        		<div class="form_row_content">
+					&nbsp;&nbsp;支持纯文字介绍 100字以内!
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+			<div class="form_row">
+				<div class="form_row_content">
+        			<div class="spacer_5"></div>
+    				<textarea name="desc" style="width:80%;height:100px">$!{fbean.desc}</textarea>
+            		<div class="spacer_5"></div>
+				</div>
+    		</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			存放相簿:
+        		</div>
+        		<div class="form_row_content">
+    				<select name="album">
+                        #foreach($album in $g_site.albums)
+                        <option value="${album.id}" #if(${album.id}==$album_id)selected#end>$text.html(${album.name})</option>
+                        #foreach($s_album in $album.childs)
+                        <option value="${s_album.id}" #if(${s_album.id}==$album_id)selected#end>                &nbsp;&#8226;&nbsp;$text.html(${s_album.name})</option>
+                        #end
+                        #end
+                    </select>
+                    <input type="checkbox" name="cover" value="1" /> 设为相簿封面
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片属性:
+        		</div>
+        		<div class="form_row_content">
+					<input type="radio" name="status" value="0" checked /> 公开 
+					<input type="radio" name="status" value="2" /> 私人 
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">&nbsp;</div>
+        		<div class="form_row_content">
+					<input type="checkbox" name="autoRotate" value="0"/>关闭自动调整照片方向的功能
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+    			<div class="form_row_submit">
+					<input type="submit" name="eventSubmit_Upload" value="上传照片" #if(${g_site.capacity.photoUsed} > ${g_site.capacity.photoTotal})disabled="true"#end/>    
+					<input type="button" value="返回上页" onclick="history.go(-1)" />
+    			</div>
+        	</div>
+    	</div>
+		</form>
+    </div>
+	<div class="page_bottom"></div>
+#end

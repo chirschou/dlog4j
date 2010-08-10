@@ -1,0 +1,61 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of discussion channel
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_bbs.vm")
+#set($page_title="讨论")
+###############################################################################
+<div class="page_top">
+	<div class="bbs_catalog">&nbsp;请选择讨论区</div>
+	<div class="line_dashed"></div>
+</div>
+<div class="page_content">
+	<div class="bbs">
+		#foreach($forum in $BBS_tool.forums($request, $g_site, $g_user))
+		<div class="bbs_forum">
+			<div class="title ">
+				<!-- Forum Name -->
+				<b>${velocityCount}.&nbsp;<a href="forum.vm?sid=$g_site_id&amp;fid=${forum.id}">${forum.name}</a></b>
+				#if(${forum.status}==1)
+					$html.img("forum_lock.gif",null,null,"absmiddle",0)
+				#end
+				<a href="$dlog.root()/rss.vm?sid=$g_site_id&amp;tid=4&amp;cid=${forum.id}">$html.img("rss.png",null,"RSS","absmiddle",0)</a>				
+			</div>
+			<div class="desc">
+			$!{forum.desc}
+			</div>
+			<div class="activity">
+			#if(${forum.lastPostTime})
+				<b>主题：</b><a href="$dlog.root()/html/bbs/topic.vm?sid=$g_site_id&amp;fid=${forum.id}&amp;tid=${forum.lastTopic.id}">$!{forum.lastTopic.title}&nbsp;&raquo;</a><br/>
+				<b>作者：</b><a href="$dlog.root()/html/bbs/topic.vm?sid=$g_site_id&amp;fid=${forum.id}&amp;tid=${forum.lastTopic.id}">$!{forum.lastUsername}&nbsp;&raquo;</a><br/>
+				<b>发表时间：</b>$!date.format("yyyy/MM/dd HH:mm", ${forum.lastPostTime})<br/>
+			#end
+				<b>主题总数：</b>${forum.topicCount}&nbsp;篇
+			</div>
+		</div>
+        #end
+    </div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_footer">
+	<div class="line_dashed"></div>
+	<div class="pagecontent">
+		$html.img("rss.png",null,"RSS","absmiddle",0)&nbsp;讨论区的RSS链接&nbsp;
+		$html.img("forum_lock.gif",null,null,"absmiddle",0)&nbsp;被锁定的讨论区
+	</div>
+</div>

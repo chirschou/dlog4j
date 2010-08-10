@@ -1,0 +1,20 @@
+<div id="date_tip_bar">
+    #if($g_user)
+		#if(${g_user.ownSiteId}>0)
+			<a href="$dlog.root()/?sid=${g_user.ownSiteId}" title="点击访问我的个人网记">$text.html(${g_user.nickname})</a>
+		#else
+			<a href="$dlog.root()/dlog/myprofile.vm">$text.html(${g_user.nickname})</a>
+		#end
+		您好,&nbsp;&nbsp;
+	#else
+		<a href="$dlog.root()/dlog/login.vm">[登录]</a>
+		<a href="$dlog.root()/dlog/reguser.vm">[注册新用户]</a>
+	#end
+    今天是：$date.get("yyyy年MM月dd日") $!{dlog.festival()}
+</div>
+##根据情况决定是否显示申请个人网记的链接
+#if(!$g_user || ${g_user.ownSiteId}<1)
+<div id="reg_site_bar">
+    <a href="$dlog.root()/dlog/new_site.vm">申请开通个人网记 &gt;&gt;</a>
+</div>
+#end

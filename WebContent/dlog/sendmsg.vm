@@ -1,0 +1,79 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  send short message
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($page_title="发送短消息")
+#set($skip_new_msg = 0)
+#set($uid = $dlog.param("uid",-1))
+#set($msgid = $dlog.param("msgid",-1))
+#set($user = $USER_tool.user($uid))
+#set($msgbean = $dlog.get_msg($msgid))
+#set($msgform = $form.getBean())
+<link rel="stylesheet" type="text/css" media="all" href="$dlog.root()/css/calendar-blue.css" title="win2k-cold-1" />
+<script type="text/javascript" src="$dlog.root()/js/calendar.js"></script>
+<script type="text/javascript" src="$dlog.root()/js/calendar_lang/calendar-en.js"></script>
+<script type="text/javascript" src="$dlog.root()/js/calendar-setup.js"></script>
+
+#if(!$g_user || ${g_user.status}!=0)
+	#show_msg_box("要发送短消息必须先登录，现在就<a href='login.vm?sid=$g_site_id&amp;fromPage=$link.encodeURL($dlog.get_request_url())'>登录</a>。")
+#elseif(!$user || ${user.status}!=0)    
+    #show_msg_box("您要发送留言的用户无效！")
+#else
+    <form action="$link.setAction("dlog/message")" method="post">
+    <h3>请输入要发送给<a href="viewuser.vm?sid=$g_site_id&amp;uid=${user.id}">$text.html(${user.nickname})</a>的短消息内容：</h3><br/>                                        
+    #if($messages.exist())<font color="red"><b>$!messages.getAll()</b></font>#end
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="receiverId" value="$uid"/>
+    <input type="hidden" name="uid" value="$uid"/>
+    <input type="hidden" name="msgID" value="$msgid"/>
+	<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <input type="hidden" name="eventSubmit_SendMsg" value="HTML">
+    <textarea name="content" style="WIDTH: 100%; HEIGHT: 150px">
+        #if($msgform)
+        $!{msgform.content}
+        #elseif($msgbean)
+            <br/><br/>-----短消息原件-----<br/>
+            发送时间: $date.format("yyyy年MM月dd日 HH:mm",$msgbean.sendTime)<br/>
+            内容: ${msgbean.content}
+        #end
+    </textarea><br/>                                        
+	有效时间设置：<span id="show_birth">$!{msgform.expiredTime}</span>
+    <input type="hidden" name="expiredTime" id="f_expired_time" value="$!{msgform.expiredTime}"/>
+    <img id="f_trigger_time" src="$html.image_src("date_sel.gif")" border="0" align="absMiddle"/>&nbsp;&lt;--点击这里设置有效时间
+    #calendar_setup("f_expired_time" "show_birth" "f_trigger_time")
+    <p align="center">
+    <input type="submit" class="button" name="eventSubmit_SendMsg" value="发送短消息">&nbsp;&nbsp;
+	#if($msgbean)
+    <input type="submit" class="button" name="eventSubmit_ReplyMsgAndDeleteOld" value="回复并删除此条短消息">&nbsp;&nbsp;#end
+    <input type="button" class="button" name="btn_return" value="返回短消息箱" onclick="location.href='listmsg.vm?sid=$g_site_id'">
+    <input type="button" class="button" name="btn_return" value="返回上页" onclick="history.go(-1)">
+    </p>
+    </form>
+	<script type="text/javascript" type="text/javascript">
+        window.onload = function()
+        {
+            var sBasePath = document.location.pathname.substring(0,document.location.pathname.lastIndexOf('dlog')) ;    
+            var oFCKeditor = new FCKeditor( 'content' ) ;
+            oFCKeditor.BasePath    = sBasePath ;
+            oFCKeditor.Height = 180;
+            oFCKeditor.ToolbarSet = "Basic";
+            oFCKeditor.ReplaceTextarea() ;
+        }
+    </script>
+#end

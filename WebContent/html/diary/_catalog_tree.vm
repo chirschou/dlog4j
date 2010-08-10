@@ -1,0 +1,33 @@
+#set($catalogs = $DIARY_tool.catalogs($g_site, $g_user, false))
+#set($catalog_id = $dlog.param("cat_id", -1))
+#set($g_trash_count = $DIARY_tool.trash_count($g_site, $g_user))
+#set($g_draft_count = $DIARY_tool.draft_count($g_site, $g_user))
+#set($user_can_blog = $DIARY_tool.user_can_blog($g_site, $g_user))
+<div class="module_title"><b>日记分类</b></div>
+<div class="module_content">
+    #if($user_can_blog)
+		<span class="diary_new"><a href="$dlog.root()/html/diary/addlog.vm?sid=$g_site_id&amp;cat_id=$catalog_id"><b>$text.ui("label.diary.new")</b></a></span>
+	#end
+	#if($dlog.is_owner($g_site,$g_user))
+        <span class="diary_setting"><a href="$dlog.root()/html/sitemgr/catalogs.vm?sid=$g_site_id"><b>$text.ui("label.diary.setting")</b></a></span>
+	#end
+	#if($g_draft_count >= 0 && ($g_draft_count > 0 || $user_can_blog))
+		<span class="diary_draft"><a href="$dlog.root()/html/diary/drafts.vm?sid=$g_site_id"><b>$text.ui("label.diary.draft")($g_draft_count)</b></a></span>
+	#end
+	#if($g_trash_count >= 0)
+		<span class="diary_trash"><a href="$dlog.root()/html/diary/trash.vm?sid=$g_site_id"><b>$text.ui("label.diary.trash")($g_trash_count)</b></a></span>
+	#end
+	#foreach($tmp_cat in $catalogs)
+        #set($url = "$dlog.root()/html/diary/?sid=$g_site_id&amp;cat_id=${tmp_cat.id}")
+        #set($open = 0)
+        #if($tmp_cat.id == $catalog_id) 
+            #set($open = 1) 
+            ##下面的赋值语句为diary.vm所用        
+            #set($catalog_name = "<b>${tmp_cat.name}(${tmp_cat.articleCount})</b>")
+        #else
+            #set($catalog_name = "${tmp_cat.name}(${tmp_cat.articleCount})")
+		#end
+		<span class="diary_link"><a href="$url">${catalog_name}</a></span>
+	#end
+</div>
+<div class="module_foot"></div>

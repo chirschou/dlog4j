@@ -1,0 +1,6 @@
+#set($msg = $request.getAttribute("msg"))
+<div class="msgbox">
+	${msg}<br /><br />
+	<a href="#" onclick="history.go(-1);return false;">返回上页</a><br />
+	<a href="$dlog.root()/">返回首页</a>
+</div>

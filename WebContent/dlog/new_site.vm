@@ -1,0 +1,41 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  new site wizard
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#if($g_user)
+<div class="page_top">
+	<h3>注册个人网记</h3>
+</div>
+<div class="page_content">
+	#invoke("_sub/_reg_site.vm")
+</div>
+#else
+	<h2>注册个人网记只需要两步</h2>
+	<h3>一：注册用户或者使用已注册用户登录</h3>
+	<h3>二：填写个人网记基本信息</h3>
+	<hr/>
+	<h2>第一步请选择：</h2>
+	#set($fromPage = "/dlog/new_site.vm?sid=$g_site_id")
+	<li><h3><a href="login.vm?sid=$g_site_id&amp;fromPage=$link.encodeURL($fromPage)">使用已注册用户登录&gt;&gt;</a></h3></li>
+	<li><h3><a href="reguser.vm?sid=$g_site_id&amp;fromPage=$link.encodeURL($fromPage)">注册新用户&gt;&gt;</a></h3></li>
+	#if(!$g_site)
+	<li><h3><a href="$dlog.root()/">返回网记首页</a></h3></li>
+	#end
+#end
+<div class="page_bottom"></div>

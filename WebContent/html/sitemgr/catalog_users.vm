@@ -1,0 +1,83 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  catalog permission settings view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="日记分类权限设置")
+###############################################################################
+#set($catalog_id = $dlog.param("cat_id", -1))
+#set($catalog = $DIARY_tool.catalog($g_site, $g_user, $catalog_id))
+#if($catalog)
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>日记分类:&nbsp;&nbsp;$text.html(${catalog.name})</b>&nbsp;&nbsp;(类别:$text.get(${catalog.typeDescKey}))
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">		
+	#set($users = $DIARY_tool.list_special_popedom_users_by_catalog($g_site, $g_user, $catalog))
+	#if($users.size()>0)
+	<div class="setting">
+    	<div class="setting_top">
+			<div class="line_dashed"></div>
+			<div class="spacer_5"></div>
+			<div class="form_row_content">
+				<li>
+					有特殊权限的用户共&nbsp;${users.size()}&nbsp;个&nbsp;
+					<a href="catalog_user_add.vm?sid=$g_site_id&amp;cat_id=$catalog_id">
+						$html.img("add.gif",null,null,"absmiddle",0) 添加用户
+					</a>
+				</li>
+			</div>
+		</div>
+		<div class="setting_body">
+			#if($users.size()>0)
+			<table cellspacing="1" cellpadding="3" border="0" class="table" width="100%">
+    			<tr class="table_head">
+        			<td nowrap></td>
+        			<td nowrap>用户名</td>
+            		<td nowrap>取消用户权限</td>
+    			</tr>
+				#foreach($user in $users)
+    			<tr class="table_cell">
+                    <td nowrap>${velocityCount}</td>
+                    <td nowrap><a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${user.id}">$text.html(${user.nickname})</a></td>
+                    <td align="left"><a href="$link.setAction("html/sitemgr/catalog")?sid=$g_site_id&amp;id=$catalog_id&amp;userid=${user.id}&amp;eventSubmit_DeleteCatalogUser">$html.img("icon_delete.gif",null,"DEL","absmiddle",0)</a></td>
+            	</tr>
+    			#end
+    		</table>
+			#end
+    	</div>
+		<div class="am_setting"></div>
+	</div>
+	#else
+		<div class="msgbox">
+        	<b>该分类无特殊权限用户！</b>&nbsp;&nbsp;(<a href="catalog_user_add.vm?sid=$g_site_id&amp;cat_id=$catalog_id">$html.img("add.gif",null,null,"absmiddle",0) 添加用户</a>)<br/><br/><a href="#" onclick="history.go(-1);return false;">返回上页</a>
+        </div>
+    #end
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>
+#else
+    #show_msg_box("非法访问！")
+#end

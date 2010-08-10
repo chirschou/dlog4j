@@ -1,0 +1,24 @@
+<script type="text/javascript">
+window.onload = function()
+{
+    var sBasePath = document.location.pathname.substring(0,document.location.pathname.lastIndexOf('html')) ;    
+    var oFCKeditor = new FCKeditor( 'word' ) ;
+    oFCKeditor.BasePath	= sBasePath ;
+    oFCKeditor.Width = 460;
+    oFCKeditor.Height = 200;
+    oFCKeditor.ToolbarSet = "Basic";
+    oFCKeditor.ReplaceTextarea() ;
+}
+
+function validateBoxForm(theForm)
+{
+    with(theForm){
+        if(is_empty(title.value)){
+            alert("¸èÇúÃû³Æ±ØÐëÌîÐ´.");
+            title.focus();
+            return false;
+        }
+    }
+    return true;
+}
+</script>

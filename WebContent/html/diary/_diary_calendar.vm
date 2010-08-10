@@ -1,0 +1,54 @@
+#set($p_year=$dlog.calendar(1))
+#set($p_month=$dlog.calendar(2))
+#set($p_date=$dlog.calendar(3))
+#set($weeks=$dlog.calendar($p_year,$p_month))
+#set($logc=$DIARY_tool.diary_counts_by_month($g_site, $g_user, $p_year,$p_month))
+
+#set($nextYear = $p_year)
+#set($lastYear = $p_year)
+#set($next_m = $p_month + 1)
+#set($last_m = $p_month - 1)
+#if($next_m>12)
+    #set($next_m=1)
+    #set($nextYear=$nextYear + 1)
+#end
+#if($last_m<1)
+    #set($last_m=12)
+    #set($lastYear=$lastYear - 1)
+#end
+<div class="module_title"><b>$text.ui("label.calendar")</b></div>
+<div class="module_content">
+	<div class="mydate_title">
+    	<a href="$dlog.root()/html/diary/?sid=$g_site_id&amp;year=$lastYear&amp;month=$last_m" class="calendar_next">&laquo;</a>
+		&nbsp;<b>${p_year}</b>&nbsp;<b>${p_month}</b>&nbsp;
+		<a href="$dlog.root()/html/diary/?sid=$g_site_id&amp;year=$nextYear&amp;month=$next_m" class="calendar_next">&raquo;</a>
+	</div>
+	<div class="clear"></div>
+	<div id="mydate">
+		
+        <div><span class="mydate_calendar">$text.ui("label.calendar.7")</span></div>
+    	<div><span class="mydate_calendar">$text.ui("label.calendar.1")</span></div>
+    	<div><span class="mydate_calendar">$text.ui("label.calendar.2")</span></div>
+    	<div><span class="mydate_calendar">$text.ui("label.calendar.3")</span></div>
+    	<div><span class="mydate_calendar">$text.ui("label.calendar.4")</span></div>
+    	<div><span class="mydate_calendar">$text.ui("label.calendar.5")</span></div>
+    	<div><span class="mydate_calendar">$text.ui("label.calendar.6")</span></div>
+        #foreach($week in $weeks)
+            #foreach($d in $week)
+			#set($_css = "mydate_day")
+			#if($dlog.is_today($p_year,$p_month,$d))#set($_css = "mydate_today")#end
+			<div>
+                #if($d > 0)
+                    #set($log_count = $logc.get($d))
+					#if($log_count>0)#set($_css = "calendar_aday")#end
+                    #if($log_count>0)<a class="mydate_countday" href="$dlog.root()/html/diary/?sid=${g_site_id}&amp;year=${p_year}&amp;month=${p_month}&amp;date=${d}" title="$text.ui("label.diary.count",[$log_count])">#end                    
+                    <span class="$_css">${d}</span>
+                    #if($log_count>0)</a>#end
+                #end
+            </div>
+            #end
+		#end
+    </div>
+	<div class="spacer_5"></div>
+</div>
+<div class="module_foot"></div>

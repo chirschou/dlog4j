@@ -1,0 +1,43 @@
+<div class="setting_menu">
+    <div class="setting_top">设置项目</div>
+    
+    <div class="setting_head"><b>基本设置</b></div>
+    <div class="setting_content">
+    	<li><a href="$dlog.root()/dlog/myprofile.vm?sid=$g_site_id">个人资料设置</a></li>
+    	<li><a href="$dlog.root()/html/sitemgr/editsite.vm?sid=$g_site_id">网站基本信息</a></li>
+    	<li><a href="$dlog.root()/html/sitemgr/styles.vm?sid=$g_site_id">网站风格设置</a></li>
+    	<li><a href="$dlog.root()/html/sitemgr/funcs.vm?sid=$g_site_id">网站功能设置</a></li>
+    	<li><a href="$dlog.root()/html/sitemgr/links.vm?sid=$g_site_id">友情链接管理</a></li>
+    </div>
+    <div class="setting_footer"></div>
+    
+    <div class="setting_head"><b>日记</b></div>
+    <div class="setting_content">
+    	<li><a href="$dlog.root()/html/sitemgr/catalogs.vm?sid=$g_site_id">分类管理</a></li>
+    </div>
+    <div class="setting_footer"></div>
+    
+    <div class="setting_head"><b>相册</b></div>
+    <div class="setting_content">
+    	<li><a href="$dlog.root()/html/photo/?sid=$g_site_id">相册管理</a></li>
+    </div>
+    <div class="setting_footer"></div>
+    	
+    <div class="setting_head"><b>音乐盒</b></div>
+    <div class="setting_content">
+    	<li><a href="$dlog.root()/html/music/?sid=$g_site_id">音乐盒管理</a></li>
+    </div>
+    <div class="setting_footer"></div>
+    	
+    <div class="setting_head"><b>讨论</b></div>
+    <div class="setting_content">
+    	<li><a href="$dlog.root()/html/sitemgr/forums.vm?sid=$g_site_id">讨论管理</a></li>
+    </div>
+    <div class="setting_footer"></div>
+    	
+    <div class="setting_head"><b>留言板</b></div>
+    <div class="setting_content">
+    	<li><a href="$dlog.root()/html/guestbook.vm?sid=$g_site_id">留言板管理</a></li>
+    </div>
+    <div class="setting_footer"></div>
+</div>

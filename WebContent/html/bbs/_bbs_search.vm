@@ -1,0 +1,17 @@
+<div class="module_title"><b>搜索</b></div>
+<div class="module_content">
+	<form name="frm_search" action="$link.setAction("html/bbs/search")#result">
+	<input type="hidden" name="sid" value="$g_site_id" />
+	<input type="hidden" name="page" value="1" />
+	<input type="hidden" name="numResults" value="30" />
+	<input size="20" name="key" />
+	<select name="fid">
+		<option value="-1">所有论坛(缺省)</option>
+		<option value>选择论坛:</option>
+		#foreach($forum in $BBS_tool.forums($request, $g_site, $g_user))
+			<option value="${forum.id}">&nbsp;&#8226;&nbsp;$text.html($forum.name)</option>
+        #end
+    </select><input type="submit" value="Go" /><br/><a href="search.vm?sid=$g_site_id">高级搜索</a>
+	</form>
+</div>
+<div class="module_foot"></div>       

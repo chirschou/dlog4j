@@ -1,0 +1,42 @@
+<div class="photo_info">
+	<div class="photo_info_row">
+		<div class="photo_info_title fleft">
+			相机:
+		</div>
+		<div class="photo_info_content">
+			&nbsp;$!{_photo.photoInfo.model} ($!{_photo.photoInfo.manufacturer} )
+		</div>
+	</div>
+	<div class="photo_info_row">
+		<div class="photo_info_title fleft">
+			焦距:
+		</div>
+		<div class="photo_info_content">
+			&nbsp;$!{_photo.photoInfo.focalLength}
+		</div>
+	</div>
+	<div class="photo_info_row">
+		<div class="photo_info_title fleft">
+			ISO:
+		</div>
+		<div class="photo_info_content">
+			&nbsp;$!{_photo.photoInfo.ISO}
+		</div>
+	</div>
+	<div class="photo_info_row">
+		<div class="photo_info_title fleft">
+			光圈:
+		</div>
+		<div class="photo_info_content">
+			&nbsp;$!{_photo.photoInfo.aperture}
+		</div>
+	</div>
+	<div class="photo_info_row">
+		<div class="photo_info_title fleft">
+			曝光:
+		</div>
+		<div class="photo_info_content">
+			&nbsp;$!{_photo.photoInfo.exposureTime}
+		</div>
+	</div>										
+</div>

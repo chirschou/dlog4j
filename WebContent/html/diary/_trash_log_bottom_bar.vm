@@ -1,0 +1,29 @@
+<table border="0" width="100%" class="log_bottom_bar">
+ <tr>
+  #if($log.lastTime)
+  <td>删除时间:$date.format("yyyy-MM-dd HH:mm",$log.lastTime)</td>
+  #end
+  <td align="right" class="log_bottom_bar" nowrap>
+    作者：<a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=$log.owner.id"><span class="log_bottom_bar">${log.owner.nickname}</span></a> |
+    分类：<a href="$dlog.root()/html/diary/?sid=$g_site_id&amp;cat_id=$log.catalog.id"><span class="log_bottom_bar">${log.catalog.name}</span></a></a> |
+    评论(<a href="showlog.vm?sid=$g_site_id&amp;cat_id=$catalog_id&amp;log_id=${log.id}#replies"><span class="log_bottom_bar">${log.replyCount}</span></a></a>) |
+    阅读(${log.viewCount}) |
+    引用(<a href="$dlog.root()/html/trackbacks.vm?sid=$g_site_id&amp;log_id=${log.id}"><span class="log_bottom_bar">${log.trackBackCount}</span></a></a>)
+    |
+    #if($DIARY_tool.can_user_edit_diary($g_user, $log))
+    <a href="#" onclick="if(confirm('您确实要彻底删除该日记吗？')) deleteForm_${log.id}.submit(); return false;">
+		$html.img("icon_delete.gif","彻底删除","del","absmiddle",0)
+    </a>
+    <a href="$link.setAction("html/diary")?sid=$g_site_id&amp;eventSubmit_Undelete=$log.id">
+		$html.img("icon_undelete.gif","恢复此文","restore","absmiddle",0)
+    </a>
+    #end
+  </td>
+ </tr>
+</table>
+<form name="deleteForm_${log.id}" action="$link.setAction("html/diary")" method="post">
+    <input type="hidden" name="sid" value="${g_site_id}"/>
+    <input type="hidden" name="id" value="${log.id}"/>
+    <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+    <input type="hidden" name="eventSubmit_DeleteFromTrash" value="${log.id}"/>
+</form>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">
+<wml>
+<card title="Java自由人登录">
+<p>  
+	用户名:<input type="text" name="username" size="15"/>
+     密码:<input type="text" name="password" size="15"/>
+	<br/>
+	<anchor>现在登录
+		<go href="/wap/user.do" method="get">
+    		<postfield name="name" value="$(username)"/>
+    		<postfield name="password" value="$(password)"/>
+    		<postfield name="eventSubmit_Login" value="WML"/>
+		</go>
+	</anchor><br/>
+	<a href="/wap/index.vm">返回首页</a>
+</p>
+</card>
+</wml>

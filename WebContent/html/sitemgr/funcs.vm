@@ -1,0 +1,115 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  functions setting
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="网站功能设置")
+###############################################################################
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>网站功能设置</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="setting">
+    	<div class="setting_top">
+			<div class="line_dashed"></div>
+			<div class="spacer_5"></div>
+			<div class="form_row_content">
+				<li>你可以关闭或者启用网站的某个功能！</li>
+				<li>同时你可以自己给功能起个名称,名称不能超过8个汉字或者16个字符.</li>
+			</div>
+		</div>
+    	<div class="setting_body">
+			#show_error_msg()	
+            <form action="$link.setAction("/html/sitemgr/site")" method="post">
+			<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+            <input type="hidden" name="sid" value="$g_site_id"/>
+            <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+        	<div class="form">
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						日记
+            		</div>
+            		<div class="form_row_content">
+						显示名称<input type="text" name="diaryName" value="$text.diary($g_site)"/>
+        				<input type="checkbox" name="statusDiary" value="1" #if(${g_site.functionStatus.diary}!=2)checked#end>开启
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						相册
+            		</div>
+            		<div class="form_row_content">
+						显示名称<input type="text" name="photoName" value="$text.photo($g_site)"/>
+        				<input type="checkbox" name="statusPhoto" value="1" #if(${g_site.functionStatus.photo}!=2)checked#end>开启
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						音乐
+            		</div>
+            		<div class="form_row_content">
+						显示名称<input type="text" name="musicName" value="$text.music($g_site)"/>
+        				<input type="checkbox" name="statusMusic" value="1" #if(${g_site.functionStatus.music}!=2)checked#end>开启
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						讨论
+            		</div>
+            		<div class="form_row_content">
+						显示名称<input type="text" name="forumName" value="$text.bbs($g_site)"/>
+        				<input type="checkbox" name="statusForum" value="1" #if(${g_site.functionStatus.forum}!=2)checked#end>开启
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						留言簿
+            		</div>
+            		<div class="form_row_content">
+						显示名称<input type="text" name="guestbookName" value="$text.guestbook($g_site)"/>
+        				<input type="checkbox" name="statusGuestbook" value="1" #if(${g_site.functionStatus.guestbook}!=2)checked#end>开启
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+        			<div class="form_row_submit">
+        				<input type="submit" name="eventSubmit_UpdateFuncs" value="现在提交" />
+        				<input type="reset" value="重新填写" />
+        				<input type="reset" value="返回上页" onclick="history.go(-1)" />
+        			</div>
+            	</div>
+        	</div>
+        	</form>
+    	</div>
+    	<div class="setting_footer"></div>
+    </div>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

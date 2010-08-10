@@ -1,0 +1,139 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  forums settings view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="论坛管理")
+###############################################################################
+#set($forum_id = $dlog.param("fid", -1))
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>论坛管理</b>&nbsp;&nbsp;共有${g_site.forums.size()}个论坛(<a href="forum_add.vm?sid=$g_site_id">$html.img("add.gif",null,null,"absmiddle",0)&nbsp;增加</a>)
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="setting">
+    	<div class="setting_top">
+			<div class="line_dashed"></div>
+			<div class="spacer_5"></div>
+			<div class="form_row_content">
+				<li>你可以进行论坛的排序管理！</li>
+				<li>你可以编辑论坛名称！</li>
+				<li>你可以对私有论坛添加访问用户！</li>
+			</div>
+		</div>
+    	<div class="setting_body">	
+			<table cellspacing="1" cellpadding="3" border="0" width="100%" class="table">
+    			<tr class="table_head">
+        			<td nowrap>论坛名</td>
+        			<td nowrap>帖子数</td>
+					<td>类型</td>
+					<td>特权</td>
+        			<td>说明</td>
+        			<td nowrap>排序</td>
+        			<td nowrap>排序</td>
+        			<td nowrap>设置</td>
+            		<td nowrap>删除</td>
+    			</tr>
+    			#foreach($forum in $g_site.forums)
+                #if($forum_id == $forum.id)
+                    #set($edit_forum = $forum)
+                #end
+    			<tr class="table_cell">
+    				<td nowrap>${forum.name}</td>
+                    <td nowrap>${forum.topicCount}篇</td>	
+					<td>$text.ui("forum.status.${forum.status}")</td>
+                    <td><a href="#" title="查看并设置可访问该讨论区的用户">$html.img("users.gif",null,null,"absmiddle",0)</a></td>
+					<td>$!{forum.desc}&nbsp;&nbsp;</td>
+                    <td align="center">#if($velocityCount != 1)<a href="$link.setAction("html/sitemgr/bbs")?sid=$g_site_id&amp;eventSubmit_MoveUp=$forum.id">$html.img("arrow_up.gif",null,"up","absmiddle",0)</a>#else&nbsp;#end </td>
+                    <td align="center">#if($velocityCount < $g_site.forums.size())<a href="$link.setAction("html/sitemgr/bbs")?sid=$g_site_id&amp;eventSubmit_MoveDown=$forum.id">$html.img("arrow_down.gif",null,"down","absmiddle",0)</a>#else&nbsp;#end</td>
+                    <td align="center"><a href="?sid=$g_site_id&amp;fid=$forum.id#edit">$html.img("settings.gif",null,"setting","absmiddle",0)</a></td>
+                    <td align="center">#if(${forum.topicCount}<=0)<a href="$link.setAction("html/sitemgr/bbs")?sid=$g_site_id&amp;eventSubmit_DeleteForum=$forum.id">$html.img("icon_delete.gif",null,"del","absmiddle",0)</a>#else&nbsp;#end</td>
+            	</tr>
+    			#end
+    		</table>
+    	</div>
+    	<div class="setting_footer">
+			<div class="spacer_10"></div>
+			#if($edit_forum)
+        	<a name="edit"></a>
+        	<div>
+        		<b>更改论坛分类</b>
+        	</div>
+        	<form action="$link.setAction("html/sitemgr/bbs")" method="post">
+            <input type="hidden" name="id" value="$edit_forum.id"/>
+            <input type="hidden" name="fid" value="$edit_forum.id"/>
+            <input type="hidden" name="sid" value="$g_site_id"/>
+            <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+            <input type="hidden" name="fromPage" value="$dlog.root()/html/sitemgr/forums.vm?sid=$g_site_id"/>
+        	<div class="form">
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						论坛名
+            		</div>
+            		<div class="form_row_content">
+						<input type="text" size="30" maxlength="20" name="name" value="$!{edit_forum.name}">
+						#struts_message("name")
+        			</div>
+            	</div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						论坛状态
+            		</div>
+            		<div class="form_row_content">
+						<input type="radio" name="status" value="0" #if($edit_forum.status==0)checked#end>启用
+        				<input type="radio" name="status" value="1" #if($edit_forum.status==1)checked#end>锁定
+        				<input type="radio" name="status" value="3" #if($edit_forum.status==3)checked#end>隐藏
+                        #struts_message("name")
+        			</div>
+            	</div>
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						论坛说明
+            		</div>
+            		<div class="form_row_content">
+						&nbsp;&nbsp;100字以内！
+        			</div>
+            	</div>
+				<div class="form_row">
+            		<div class="form_row_content">
+						<div class="spacer_5"></div>
+						<textarea name="desc" rows="5" cols="68">$!{edit_forum.desc}</textarea>
+						#struts_message("name")
+        			</div>
+            	</div>
+        		<div class="form_row">
+        			<div class="form_row_submit">
+						<input type="submit" name="eventSubmit_UpdateForum" value="更新论坛" />
+						<input type="reset" value="重新填写" />
+        			</div>
+            	</div>
+        	</div>
+        	</form>
+			#end
+		</div>
+    </div>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

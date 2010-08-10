@@ -1,0 +1,58 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  显示某个实体的所有评论信息
+##  入口参数
+##  entity_id : 实体编号
+##  entity_type : 实体类型
+##
+###############################################################################
+#set($entity_id = 1482)
+#set($entity_type = 1)
+#set($__from_page = $link.encodeURL($dlog.get_request_url()))
+#set($replies = $COMMENT_tool.comments($entity_id,$entity_type,0,0,true,true))
+<div id="comments">
+#foreach($reply in ${replies})
+<div class="comment">
+	<div class="comment_title"><a name="$reply.id"></a>	
+		<div class="fleft">		
+		#if($dlog.not_empty(${reply.author.url}))
+			<a href="${reply.author.url}"><b>$text.html(${reply.author.name})</b></a>
+		#elseif(${reply.author.id}>0)
+			<a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${reply.user.id}"><b>$text.html(${reply.author.name})</b></a>
+		#else
+			<b>$text.html(${reply.author.name})</b>
+		#end
+		网友说：#if(${reply.client.type}==2)$html.img("mobile.gif",null,"wap","absmiddle",0)#end
+		</div>
+		<div class="fright">
+		$date.format("yyyy/MM/dd HH:mm",${reply.createTime}) &nbsp;&nbsp;
+        #if($g_user && ($dlog.is_owner($g_site,$g_user) || (${reply.author.id}==$g_user_id)))
+        <a href="$link.setAction("html/reply")?sid=${g_site_id}&amp;log_id=${reply.eid}&amp;eventSubmit_DeleteDiaryReply=${reply.id}&amp;fromPage=${__from_page}" onclick="return confirm('您真的要删除该评论吗？');">$html.img("icon_delete.gif",null,"del","absmiddle",0)</a>
+        <a href="$dlog.root()/html/diary/showlog.vm?sid=$g_site_id&amp;log_id=${reply.eid}&reply_id=${reply.id}#reply">$html.img("icon_edit.gif",null,"edit","absmiddle",0)</a>         
+        #end
+		</div>
+	</div>
+	<div class="comment_content">
+		#if(${reply.ownerOnly}==0 || $dlog.is_owner($g_site,$g_user) || ($g_user && ${g_user.id}==${reply.author.id})) 
+            ${reply.content}
+        #else
+            <i>[此评论只能由评论者或者是写日记的人可以查阅。]</i>
+        #end
+	</div>
+	<div class="comment_footer"></div>
+</div>
+#end
+</div>

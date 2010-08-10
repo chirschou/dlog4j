@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.liusoft.dlog4j.beans">
+
+	<class name="AlbumBean" table="dlog_album" dynamic-update="true" batch-size="20">
+		
+		<cache usage="read-write"/>
+		
+    	<id name="id" column="album_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" type="string" column="album_name" unique="true"/>
+		<property name="desc" type="string" column="album_desc"/>
+		
+		<property name="photoCount"  type="int" column="photo_count"/>
+		<property name="type"  type="int" column="album_type"/>
+		<property name="verifyCode" type="string"/>
+		<property name="sortOrder"  type="int" column="sort_order"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		
+		<many-to-one name="cover" column="photo_id" cascade="none"/>
+		<many-to-one name="catalog" column="dlog_type_id" cascade="none"/>
+		<many-to-one name="parent" column="dlo_album_id" cascade="save-update"/>
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		
+		<bag name="childs" lazy="true" inverse="true" cascade="delete">
+			<key column="dlo_album_id"/>
+			<one-to-many class="AlbumBean"/>
+		</bag>
+		
+		<bag name="photos" lazy="true" inverse="true" cascade="delete">
+			<key column="album_id"/>
+			<one-to-many class="PhotoOutlineBean"/>
+		</bag>
+		
+	</class>
+	
+	<class name="PhotoBean" table="dlog_photo" dynamic-update="true" batch-size="20">
+		<!--
+		<cache usage="read-write"/>
+		-->
+    	<id name="id" column="photo_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" type="string" column="photo_name"/>
+		<property name="desc" type="string" column="photo_desc"/>
+		<property name="fileName" type="string" column="file_name"/>
+		
+		<property name="replyCount"  type="int" column="reply_count"/>
+		<property name="viewCount"  type="int" column="view_count"/>
+		<property name="status"  type="int" column="photo_status"/>
+		
+		<property name="imageURL" type="string" column="photo_url" update="false"/>
+		<property name="previewURL" type="string" column="preview_url" update="false"/>
+
+		<component name="photoInfo" class="com.liusoft.dlog4j.base.PhotoInfo">
+			<property name="width"  type="int" column="width" update="false"/>
+			<property name="height" type="int" column="height" update="false"/>
+			<property name="size"   type="int" column="photo_size" update="false"/>
+			<property name="colorBit"   type="int" column="color_bit" update="false"/>
+			<!-- EXIF column mapping -->
+			<property name="manufacturer"  type="string" column="exif_manufacturer" update="false"/>
+			<property name="model" type="string" column="exif_model" update="false"/>
+			<property name="ISO"   type="int" column="exif_iso" update="false"/>
+			<property name="aperture"   type="string" column="exif_aperture" update="false"/>
+			<property name="shutter"  type="string" column="exif_shutter" update="false"/>
+			<property name="exposureBias" type="string" column="exif_exposure_bias" update="false"/>
+			<property name="exposureTime" type="string" column="exif_exposure_time" update="false"/>
+			<property name="focalLength"  type="string" column="exif_focal_length" update="false"/>
+			<property name="colorSpace"   type="string" column="exif_color_space" update="false"/>
+		</component>
+		
+		<property name="keyword"  type="string" column="tags"/>		
+		<property name="year"  type="int" column="p_year"  update="false"/>
+		<property name="month" type="int" column="p_month" update="false"/>
+		<property name="date"  type="int" column="p_date"  update="false"/>		
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="lastReplyTime" type="timestamp" column="last_reply_time" insert="false"/>
+		<property name="modifyTime" type="timestamp" column="modify_time" insert="false"/>
+		
+		<many-to-one name="album" column="album_id" cascade="save-update"/>
+		<many-to-one name="user" column="userid" cascade="save-update"/>
+		<many-to-one name="site" column="site_id" cascade="save-update" update="false"/>
+		
+		<bag name="replies" lazy="true" inverse="true" cascade="delete" batch-size="10">
+			<key column="photo_id"/>
+			<one-to-many class="PhotoReplyBean"/>
+		</bag>
+		
+		<bag name="trackbacks" lazy="true" inverse="true" cascade="delete" batch-size="10" where="parent_type=2">
+			<key column="parent_id"/>
+			<one-to-many class="TrackBackBean"/>
+		</bag>
+		
+		<bag name="tags" lazy="true" inverse="true" cascade="all" batch-size="10" where="ref_type=2">
+			<key column="ref_id"/>
+			<one-to-many class="TagBean"/>
+		</bag>
+		
+		<property name="lock" type="int" column="locked"/>
+		<property name="type" type="int" column="photo_type"/>
+		
+	</class>
+	
+	<class name="PhotoOutlineBean" table="dlog_photo" dynamic-update="true" batch-size="20">
+		<!--
+		<cache usage="read-write"/>
+		-->
+    	<id name="id" column="photo_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" type="string" column="photo_name"/>
+		<!--
+		<property name="desc" type="string" column="photo_desc"/>
+		-->
+		<property name="fileName" type="string" column="file_name"/>
+		
+		<property name="replyCount"  type="int" column="reply_count"/>
+		<property name="viewCount"  type="int" column="view_count"/>
+		<property name="status"  type="int" column="photo_status"/>
+		
+		<property name="imageURL" type="string" column="photo_url" update="false"/>
+		<property name="previewURL" type="string" column="preview_url" update="false"/>
+
+		<component name="photoInfo" class="com.liusoft.dlog4j.base.PhotoInfo">
+			<property name="width"  type="int" column="width" update="false"/>
+			<property name="height" type="int" column="height" update="false"/>
+			<property name="size"   type="int" column="photo_size" update="false"/>
+			<property name="colorBit"   type="int" column="color_bit" update="false"/>
+			<!-- EXIF column mapping -->
+			<property name="manufacturer"  type="string" column="exif_manufacturer" update="false"/>
+			<property name="model" type="string" column="exif_model" update="false"/>
+			<property name="ISO"   type="int" column="exif_iso" update="false"/>
+			<property name="aperture"   type="string" column="exif_aperture" update="false"/>
+			<property name="shutter"  type="string" column="exif_shutter" update="false"/>
+			<property name="exposureBias" type="string" column="exif_exposure_bias" update="false"/>
+			<property name="exposureTime" type="string" column="exif_exposure_time" update="false"/>
+			<property name="focalLength"   type="string" column="exif_focal_length" update="false"/>
+			<property name="colorSpace"   type="string" column="exif_color_space" update="false"/>
+		</component>
+		
+		<property name="keyword"  type="string" column="tags"/>		
+		<property name="year"  type="int" column="p_year"  update="false"/>
+		<property name="month" type="int" column="p_month" update="false"/>
+		<property name="date"  type="int" column="p_date"  update="false"/>		
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="lastReplyTime" type="timestamp" column="last_reply_time" insert="false"/>
+		<property name="modifyTime" type="timestamp" column="modify_time" insert="false"/>
+		
+		<many-to-one name="album" column="album_id" cascade="save-update"/>
+		<many-to-one name="user" column="userid" cascade="save-update"/>
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		
+		<bag name="replies" lazy="true" inverse="true" cascade="delete" batch-size="10">
+			<key column="photo_id"/>
+			<one-to-many class="PhotoReplyBean"/>
+		</bag>
+		
+		<bag name="trackbacks" lazy="true" inverse="true" cascade="delete" batch-size="10" where="parent_type=2">
+			<key column="parent_id"/>
+			<one-to-many class="TrackBackBean"/>
+		</bag>
+		
+		<bag name="tags" lazy="true" inverse="true" cascade="all" batch-size="10" where="ref_type=2">
+			<key column="ref_id"/>
+			<one-to-many class="TagBean"/>
+		</bag>
+		
+		<property name="lock" type="int" column="locked"/>
+		<property name="type" type="int" column="photo_type"/>
+		
+	</class>
+	
+	<class name="PhotoReplyBean" table="dlog_p_reply" batch-size="20" dynamic-update="true">
+		
+    	<id name="id" column="p_reply_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="author"    type="string" column="author"    />
+		<property name="authorURL" type="string" column="author_url"/>
+		<property name="authorEmail" type="string" column="author_email"/>
+		
+		<property name="content" type="string" column="content"/>
+		
+		<property name="replyTime" type="timestamp" column="write_time" update="false"/>
+		<property name="status"    type="int"/>
+		<property name="ownerOnly" type="int" column="owner_only"/>
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" type="string" column="client_ip" update="false"/>
+			<property name="type" type="int" column="client_type" update="false"/>
+			<property name="userAgent" type="string" column="client_user_agent" update="false"/>
+		</component>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>		
+		<many-to-one name="photo" column="photo_id" cascade="save-update" update="false"/>		
+		<many-to-one name="user" column="userid" cascade="save-update" update="false"/>
+		
+	</class>
+	
+</hibernate-mapping>

@@ -1,0 +1,76 @@
+<div class="bvsection" id="mplayer_div" align="center">
+<embed id="mplayer" src="" align="baseline" border="0" width="460" height="50"
+    type="application/x-mplayer2"
+    pluginspage="http://www.microsoft.com/isapi/redir.dll?prd=windows&amp;sbp=mediaplayer&amp;ar=media&amp;sba=plugin&amp;"
+    name="MediaPlayer" showcontrols="1" showpositioncontrols="1"
+    showaudiocontrols="1" showtracker="0" showdisplay="0"
+    showstatusbar="1" autosize="0"
+    showgotobar="0" showcaptioning="0" autostart="1" autorewind="0"
+    animationatstart="0" transparentatstart="0" allowscan="1"
+    enablecontextmenu="0" clicktoplay="0" invokeurls="1"
+    defaultframe="datawindow">
+</embed><br />
+如果您无法播放歌曲,请先确定是否已经安装<a href="http://download.microsoft.com/download/9/4/0/94072943-9188-4a60-b31f-3031f18404e4/mpsetup.exe" target="_blank"><b>Windows media player</b></a>软件<br/>
+或者歌曲类型是否被<b>Microsoft Media Player</b>所支持。<br/>
+另外请使用IE浏览器。
+<div class="spacer_20"></div>
+</div>
+<script language="javascript" type="text/javascript">
+var play_list = false;
+function play(url){
+    var mplayer = document.mplayer;
+    state = mplayer.PlayState
+    if(state==2 && mplayer.fileName == url) ##已经在播放指定歌曲
+        return false;
+    play_list = false;
+    mplayer.stop();
+    mplayer.fileName = url;
+    mplayer.play();
+    return false;
+}
+function play_selected(mid){
+    var ids = "";
+    var selected = false;
+    var s = document.getElementsByTagName('input');
+    for (var i=0,c;c=s[i];i++){
+        if (c.name==mid && c.checked == true){
+            ids += c.value;
+            ids += ",";
+            selected = true;
+        }
+    }
+    if(selected){
+        var url = "$link.getContextURL()/mlist.vm?mid="+ids;
+        play_list = true;
+        var mplayer = document.mplayer;
+        mplayer.stop();
+        mplayer.fileName = url;
+        mplayer.play();        
+    }
+    return false;
+}
+function delete_all(theForm){
+    var selected = false;
+    var s = document.getElementsByTagName('input');
+    for (var i=0,c;c=s[i];i++){
+        if (c.name=="mid" && c.checked == true){
+            selected = true;
+            break;
+        }
+    }
+    if(selected){
+        if(!confirm('真的要删除下面选中的所有歌曲嘛？'))
+            return false;
+        theForm.submit();
+    }
+}
+</script>
+<script for="MediaPlayer" event="PlayStateChange(lOldState, lNewState)" language="javascript">
+//if(!play_list)
+    if(lNewState==0)
+        document.getElementById("mplayer_div").style.display = "none";
+    else
+        document.getElementById("mplayer_div").style.display = "block";
+//else    
+//    document.getElementById("mplayer_div").style.display = "block";
+</script>

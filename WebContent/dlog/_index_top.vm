@@ -1,0 +1,31 @@
+<div id="channel_bar">
+    <div id="serv"><a href="$dlog.root()/dlog/diarys.vm">$html.img("home_diary.gif")<br>网络日记</a></div>
+    <div id="serv"><a href="$dlog.root()/dlog/photos.vm">$html.img("home_photo.gif")<br>相册</a></div>
+    <div id="lg"><img src="$dlog.root()/images/logo/dlog.gif" onclick="location.href='$dlog.root()/'" style="cursor:hand"/></div>
+    <div id="serv"><a href="#">$html.img("home_music.gif")<br>音乐</a></div>
+    <div id="serv"><a href="#" onclick="alert('手机请访问wap.dlog.cn');return false;">$html.img("home_wap.gif")<br>WAP</a></div>
+</div>
+<div class="spacer_20"></div>
+##显示搜索框
+<div id="search_box">
+	<div id="search_form">
+    <form action="$dlog.root()/html/search.vm">
+		<input type="hidden" name="alexa" id="IsAlexaUser"/>
+        <b>关键字：</b>
+		<input name="q" id="q" size="45" maxlength="100" value="">
+		#parse("/html/_search/_scope.vm")
+		<input style="width:80px;height:21px" type="submit" value="搜索">        
+    </form>
+	</div>
+	<div class="spacer_10"></div>
+	#set($tags = $DLOG4J_tool.list_hot_tags(-1,10))
+	#if($tags && $tags.size()>0)
+	<div id="hot_tag">
+         热门关键字：
+		#foreach($tag in $tags)
+        <a href="$dlog.root()/html/showtag.vm?tag=$link.encodeURL($tag)">$text.html(${tag})</a>
+		#end
+    </div>
+	<div class="spacer_10"></div>
+	#end
+</div>

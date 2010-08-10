@@ -1,0 +1,147 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  link settings view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="友情链接管理")
+###############################################################################
+#set($link_id = $dlog.param("linkid", -1))
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>友情链接管理</b>&nbsp;&nbsp;共有${g_site.links.size()}个友情链接(<a href="link_add.vm?sid=$g_site_id">$html.img("add.gif",null,null,"absmiddle",0)&nbsp;增加</a>)
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="setting">
+    	<div class="setting_top">
+			<div class="line_dashed"></div>
+			<div class="spacer_5"></div>
+			<div class="form_row_content">
+				<li>你可以进行链接的排序管理！</li>
+				<li>你可以编辑链接名称、URL地址、类型等！</li>
+			</div>
+		</div>
+    	<div class="setting_body">	
+			<table cellspacing="1" cellpadding="3" border="0" class="table" width="100%">
+    			<tr class="table_head">
+        			<td nowrap></td>
+        			<td nowrap>链接名</td>
+        			<td nowrap>网址</td>
+        			<td nowrap>排序</td>
+        			<td nowrap>排序</td>
+        			<td nowrap>设置</td>
+            		<td nowrap>删除</td>
+    			</tr>
+    			#foreach($lnk in ${g_site.links})
+                #if($link_id == $lnk.id)
+                    #set($edit_link = $lnk)
+                #end
+    			<tr class="table_cell">
+                    <td nowrap>${velocityCount}</td>
+                    <td nowrap>$escape.html(${lnk.title})</td>
+                    <td style='word-break:break-all'>
+						#if(${lnk.type}!=5)
+						<a href="${lnk.url}" target="wnd_lnk">$dlog.host(${lnk.url})</a>
+						#else
+						<a href="$dlog.root()/?sid=${lnk.url}" target="wnd_lnk">$link.getContextURL()/?sid=$dlog.host(${lnk.url})</a>
+						#end
+						#if(${lnk.status}==1)[私]#end
+					</td>
+                    <td align="center">#if($velocityCount != 1)<a href="$link.setAction("html/sitemgr/link")?sid=${g_site_id}&amp;eventSubmit_MoveUp=$lnk.id">$html.img("arrow_up.gif",null,"up","absmiddle",0)</a>#else&nbsp;#end</td>
+                    <td align="center">#if($velocityCount < ${g_site.links.size()})<a href="$link.setAction("html/sitemgr/link")?sid=${g_site_id}&amp;eventSubmit_MoveDown=$lnk.id">$html.img("arrow_down.gif",null,"down","absmiddle",0)</a>#else&nbsp;#end</td>
+                    <td align="center"><a href="?sid=$g_site_id&amp;linkid=$lnk.id#edit">$html.img("settings.gif",null,"setting","absmiddle",0)</a></td>
+                    <td align="center"><a href="$link.setAction("html/sitemgr/link")?sid=${g_site_id}&amp;eventSubmit_Delete=$lnk.id" onclick="return confirm('真的要删除该链接嘛？');">$html.img("icon_delete.gif",null,"del","absmiddle",0)</a></td>
+            	</tr>
+    			#end
+    		</table>
+    	</div>
+    	<div class="setting_footer">
+			<div class="spacer_10"></div>
+			#if($edit_link)
+        	<a name="edit"></a>
+        	<div><b>更改友情连接</b></div>
+        	<form action="$link.setAction("html/sitemgr/link")" method="post">
+            <input type="hidden" name="id" value="$edit_link.id"/>
+            <input type="hidden" name="linkid" value="$edit_link.id"/>
+            <input type="hidden" name="sid" value="$g_site_id"/>
+            <input type="hidden" name="fromPage" value="$dlog.root()/html/sitemgr/links.vm?sid=$g_site_id"/>
+        	<div class="form">
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						网站名称
+            		</div>
+            		<div class="form_row_content">
+						<input type="text" size="20" maxlength="20" name="title" value="$!{edit_link.title}">
+						#struts_message("title")
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						URL
+            		</div>
+            		<div class="form_row_content">
+						#set($link_url = ${edit_link.url})
+						#if(${edit_link.type}==5)
+						#set($link_url = "$link.getContextURL()/?sid=${edit_link.url}")
+						#end
+						<input type="text" size="50" maxlength="100" name="url" value="${link_url}">
+						#struts_message("url")
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						链接类型
+            		</div>
+            		<div class="form_row_content">
+						<select name="type">
+                            <option value="1" #if(${edit_link.type}==1)selected#end>HTML</option>
+                            <option value="2" #if(${edit_link.type}==2)selected#end>XML(RDF,RSS,ATOM)</option>
+                            <option value="6" #if(${edit_link.type}==6)selected#end>WAP</option>
+        				</select>WAP链接只能在WAP页面浏览
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">&nbsp;</div>
+            		<div class="form_row_content">
+        			<input type="checkbox" name="status" value="1" #if(${edit_link.status}==1)checked#end/>只有我本人才能看到该链接
+        			</div>
+        		</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+        			<div class="form_row_submit">
+						<input type="submit" name="eventSubmit_UpdateLink" value="更新链接" />
+						<input type="reset" value="重新填写" />
+        			</div>
+            	</div>
+        	</div>
+        	</form>
+			#end
+		</div>
+    </div>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

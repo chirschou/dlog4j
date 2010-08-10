@@ -1,0 +1,123 @@
+#set($mbox = $MUSIC_tool.box($mboxid))
+<div class="music_nav">
+	<div class="fleft">$text.ui("label.music.box"): #if($mbox)${mbox.name}#elseif($mboxid==0) 网友推荐的歌曲#else 所有歌曲#end&nbsp;
+        (#if($mbox)$!{mbox.songs.size()}#elseif($mboxid==0)${g_site.musicsRecommend.size()}#else${g_site.songs.size()}#end)
+        #if($mbox && $is_owner)
+        <a href="$dlog.root()/html/music/mbox_edit.vm?sid=$g_site_id&amp;box=$mbox.id" title="点击此处修改‘${mbox.name}’">修改</a>&nbsp;|&nbsp;
+        <a href="$link.setAction("html/mbox")?sid=${g_site_id}&amp;eventSubmit_DeleteBox=$mboxid" onclick="return confirm('删除音乐盒会把该音乐盒下所有信息清空，是否继续');" title="点击此处删除‘${mbox.name}’">删除</a>
+		#end
+	</div>
+	<div class="fright">
+		<a href="#" onclick="return play_selected('mid')">播放选中</a>&nbsp;|&nbsp;
+        #if($is_owner)
+			<a href="music_add.vm?sid=$g_site_id&amp;box=$mboxid">添加</a>&nbsp;|&nbsp;
+		#end
+        <a href="#" onclick="return select_all('mid',true)">全选</a>&nbsp;|&nbsp;
+        <a href="#" onclick="return select_all('mid',false)">取消</a>&nbsp;|&nbsp;
+        #if($is_owner)
+			<a href="#" onclick="delete_all(dform);return false;">删除选中</a>
+        #end
+	</div>
+</div>
+#if($dlog.not_empty($mbox.desc))
+<div class="spacer_5"></div>
+<div class="music_desc"><strong>$!{mbox.desc}</strong></div>
+#end
+<div class="spacer_5"></div>
+<div class="music_songs">
+<table width="100%" border="0" cellpadding="3" cellspacing="1" class="music_table">
+    <form action="$link.setAction("html/music")" method="get" name="dform"">
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="box" value="$mboxid"/>
+    <input type="hidden" name="eventSubmit_DeleteSelected" value=""/>
+    #if($mboxid==0 && $is_owner)
+    	#set($songs = $g_site.musicsRecommend)
+    #elseif($mboxid==-1)
+    		#set($songs = $g_site.songs)
+    	#else
+    		#set($songs = $mbox.songs)
+    #end
+    <tr class="music_table_head">
+        <td width="1%" align="center" nowrap>
+			<a href="#" onclick="select_all('mid',true);return false;">
+				$html.img("music_check.gif",null,"check","absmiddle",0)
+			</a>
+		</td>
+        <td width="30%" nowrap>歌曲名称</td>
+        <td width="15%" nowrap>歌手</td>
+        <td width="15%" nowrap>专辑</td>
+        #if($mboxid==0 && $is_owner)
+        	<td width="1%" nowrap>推荐者</td>
+        	<td width="1%" nowrap>收藏</td>
+        #end
+        <td width="1%" nowrap>播放</td>
+        <td width="1%" nowrap>下载</td> 
+        <td width="1%" nowrap>歌词</td>	
+        #if($is_owner)
+        <td width="1%" nowrap>编辑</td>
+        <td width="1%" nowrap>删除</td>
+        #end
+    </tr>
+    #foreach($song in $songs)
+    <tr class="music_table_cell">
+        <td width="1%"><input name="mid" type="checkbox" value="${song.id}"></td>
+        <td width="20%" nowrap>
+			${song.title}
+            <div class="bvsection" id="song_${song.id}">
+    		发布时间:$date.format("yy/MM/dd", ${song.createTime})
+            <DIV Class="spacer_5"></DIV>
+            <DIV Class="line_dashed"></DIV>
+            <DIV Class="spacer_5"></DIV>
+    		歌词:(<a href="#" onclick="hide_div('song_$song.id');return false;">关闭</a>)<br />$!{song.word}      
+            </div>
+		</td>
+        <td width="8%" nowrap>$text.html($!{song.singer})</td>
+        <td width="8%" nowrap>$text.html($!{song.album})</td>
+        #if($mboxid==0 && $is_owner)
+        <td width="1%" nowrap><a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${song.introducer.id}">$text.html(${song.introducer.nickname})</a></td>
+        <td width="1%" nowrap>收藏</td>
+        #end
+        <td width="1%" align="center">
+        #if(${song.url})
+        	<a href="#" onclick="return play('$link.getContextURL()/mlist.vm?sid=${g_site_id}&mid=${song.id}');">$html.img("music/icon_play.gif","点击播放","play","absmiddle",0)</a>
+		#end
+		</td>
+        <td width="1%" align="center">
+        #if(${song.url})
+        	<a href="${song.url}">$html.img("music/icon_down.gif","点击下载","download","absmiddle",0)</a>
+        #end</td> 
+        <td width="1%" align="center">
+		#if($dlog.not_empty(${song.word}))
+			<a href="#" onclick="show_div('song_$song.id');return false;">$html.img("music/icon_word.gif","查看歌词",null,"absmiddle",0)</a>
+		#end
+		</td>        
+        #if($is_owner)
+        <td width="1%" align="center">
+        <a href="$dlog.root()/html/music/music_edit.vm?sid=$g_site_id&amp;mid=${song.id}" title="修改歌曲信息">$html.img("music/music_edit.gif","修改歌曲信息",null,"absmiddle",0)</a></td>
+        <td width="1%" align="center">
+        <a href="$link.setAction("html/music")?sid=$g_site_id&amp;box=$mboxid&amp;eventSubmit_DeleteMusic=$song.id" onclick="return confirm('确定要删除歌曲这首歌曲吗？');">$html.img("music/music_del.gif","点击删除歌曲","DEL","absmiddle",0)</a></td>
+        #end
+    </tr>
+	#end
+	</form>
+</table>
+</div>
+<div class="spacer_20"></div>
+<script language="javascript" type="text/javascript">
+function delete_all(theForm){
+    var selected = false;
+    var s = document.getElementsByTagName('input');
+    for (var i=0,c;c=s[i];i++){
+        if (c.name=="mid" && c.checked == true){
+            selected = true;
+            break;
+        }
+    }
+    if(selected){
+        if(!confirm('真的要删除下面选中的所有歌曲嘛？'))
+            return false;
+        theForm.submit();
+    }
+}
+</script>
+#invoke("_player.vm")

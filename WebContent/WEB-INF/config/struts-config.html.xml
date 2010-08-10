@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+
+<struts-config>		
+
+	<!-- ========================================= Global Exception Definitions -->
+    <global-exceptions>
+		
+		<exception
+            key="exception.db"
+            type="org.hibernate.HibernateException"
+            path="/html/dberror.vm"/>
+
+		<exception
+            key="exception.db"
+            type="java.sql.SQLException"
+            path="/html/dberror.vm"/>
+				
+		<exception
+            key="error.capacity_exceed_exception"
+            type="com.liusoft.dlog4j.CapacityExceedException"
+            path="/html/error.vm"/>
+				
+    </global-exceptions>
+	
+	<!-- ========== Global Forward Definitions ============================== -->
+	<global-forwards>
+		
+		<forward name="home" path="/" redirect="true"/>
+		<forward name="main" path="/" redirect="true"/>
+		<forward name="html.login"      path="/dlog/login.vm"/>
+		
+		<forward name="msgbox"         path="/html/_msgbox.vm"/>
+		
+		<forward name="html.home"      path="/"/>
+		<forward name="html.diary"     path="/html/diary/"/>
+		<forward name="html.photo"     path="/html/photo/"/>
+		<forward name="html.music"     path="/html/music/"/>
+		<forward name="html.discuss"   path="/html/bbs/"/>
+		<forward name="html.guestbook" path="/html/guestbook.vm"/>
+		
+	</global-forwards>
+	
+	<!-- ========== Action Mapping Definitions ============================== -->
+	<action-mappings>
+
+		<action path="/search" forward="/html/search.vm" />
+		
+        <action
+			name="diaryForm"
+			validate="false"
+            path="/html/diary"
+            scope="request"
+            type="com.liusoft.dlog4j.action.DiaryAction">
+			
+			<forward name="diary" path="/html/diary/" redirect="true"/>
+			<forward name="draft" path="/html/diary/drafts.vm" redirect="true"/>
+			<forward name="trash" path="/html/diary/trash.vm"/>
+			<forward name="addlog" path="/html/diary/addlog.vm"/>
+			<forward name="editlog" path="/html/diary/editlog.vm"/>
+			<forward name="showlog" path="/html/diary/showlog.vm" redirect="true"/>
+			
+        </action>
+		
+        <action
+			name="replyForm"
+			validate="false"
+            path="/html/reply"
+            scope="request"
+            type="com.liusoft.dlog4j.action.ReplyAction">
+			
+			<forward name="diary-enter-reply" path="/html/diary/showlog.vm"/>
+			<forward name="photo-enter-reply" path="/html/photo/show.vm"/>
+			<forward name="showlog" path="/html/diary/showlog.vm"/>
+			<forward name="showphoto" path="/html/photo/show.vm"/>
+			
+			<forward name="diary" path="/html/diary/" redirect="true"/>
+			<forward name="photo" path="/html/photo/" redirect="true"/>
+			
+        </action>
+		
+        <action
+			name="photoForm"
+			validate="false"
+            path="/html/photo"
+            scope="request"
+            type="com.liusoft.dlog4j.action.PhotoAction">
+			
+			<forward name="photo_share" path="/html/photo/share.vm"/>
+			<forward name="photo_album" path="/html/photo/" redirect="true"/>
+			<forward name="photo_upload" path="/html/photo/upload.vm"/>
+			<forward name="photo_edit" path="/html/photo/edit.vm"/>
+			<forward name="photo_show" path="/html/photo/show.vm"/>
+			
+        </action>
+		
+        <action
+			name="bookmarkForm"
+			validate="false"
+            path="/html/bookmark"
+            scope="request"
+            type="com.liusoft.dlog4j.action.BookmarkAction">	
+			
+			<forward name="bookmark" path="/dlog/bookmark.vm"/>
+					
+        </action>
+		
+        <action
+			name="messageForm"
+			validate="false"
+            path="/dlog/message"
+            scope="request"
+            type="com.liusoft.dlog4j.action.MessageAction">	
+			
+			<forward name="send" path="/dlog/sendmsg.vm"/>
+			<forward name="msgs" path="/dlog/listmsg.vm" redirect="true"/>
+					
+        </action>
+		
+        <action
+			name="gBookForm"
+			validate="false"
+            path="/html/guestbook"
+            scope="request"
+            type="com.liusoft.dlog4j.action.GuestBookAction">	
+			
+			<forward name="list" path="/html/guestbook.vm" redirect="true"/>
+			<forward name="pub"  path="/html/guestbook.vm"/>
+					
+        </action>
+		
+        <action
+			name="BBSForumForm"
+			validate="false"
+            path="/html/sitemgr/bbs"
+            scope="request"
+            type="com.liusoft.dlog4j.action.BBSAdminAction">	
+			
+			<forward name="forums" path="/html/sitemgr/forums.vm" redirect="true"/>
+			<forward name="topics" path="/html/sitemgr/topics.vm" redirect="true"/>
+			<forward name="forum_add" path="/html/sitemgr/forum_add.vm"/>
+			
+        </action>
+		
+        <action
+			name="BBSTopicForm"
+			validate="false"
+            path="/html/bbs/topic"
+            scope="request"
+            type="com.liusoft.dlog4j.action.BBSUserAction">	
+			
+			<forward name="bbs" path="/html/bbs/" redirect="true"/>
+			<forward name="forum" path="/html/bbs/forum.vm" redirect="true"/>
+			<forward name="topic" path="/html/bbs/topic.vm" redirect="true"/>
+			<forward name="new_topic" path="/html/bbs/new_topic.vm"/>
+			<forward name="edit_topic" path="/html/bbs/edit_topic.vm"/>
+			
+        </action>
+		
+        <action
+			name="BBSReplyForm"
+			validate="false"
+            path="/html/bbs/reply"
+            scope="request"
+            type="com.liusoft.dlog4j.action.BBSUserAction">	
+			
+			<forward name="forum" path="/html/bbs/forum.vm" redirect="true"/>
+			<forward name="topic" path="/html/bbs/topic.vm" redirect="true"/>
+			<forward name="new_reply" path="/html/bbs/reply.vm"/>
+			<forward name="edit_reply" path="/html/bbs/edit_reply.vm"/>
+			
+        </action>
+		
+        <action
+			input="/html/bbs/search.vm"
+			name="BBSSearchForm"
+			validate="false"
+            path="/html/bbs/search"
+            scope="request"
+            type="com.liusoft.dlog4j.action.BBSSearchAction">	
+			
+			<forward name="home" path="/html/bbs/index.vm"/>
+			<forward name="forum" path="/html/bbs/forum.vm"/>
+			
+        </action>
+		
+        <action
+			name="tbForm"
+			validate="false"
+            path="/html/trackback"
+            scope="request"
+            type="com.liusoft.dlog4j.action.TrackBackAction">			
+        </action>
+		
+        <action
+			name="mboxForm"
+			validate="false"
+            path="/html/mbox"
+            scope="request"
+            type="com.liusoft.dlog4j.action.MusicAction">
+			<forward name="mbox_add" path="/html/music/mbox_add.vm"/>
+			<forward name="mbox_edit" path="/html/music/mbox_edit.vm"/>
+			<forward name="music" path="/html/music/" redirect="true"/>		
+        </action>
+		
+        <action
+			name="musicForm"
+			validate="false"
+            path="/html/music"
+            scope="request"
+            type="com.liusoft.dlog4j.action.MusicAction">	
+			<forward name="music_add" path="/html/music/music_add.vm"/>
+			<forward name="music_edit" path="/html/music/music_edit.vm"/>
+			<forward name="music_intro" path="/html/music/music_intro.vm"/>
+			<forward name="music" path="/html/music/" redirect="true"/>			
+        </action>
+		
+        <action
+			input="/html/sitemgr/editsite.vm"
+			name="siteForm"
+			validate="false"
+            path="/html/sitemgr/site"
+            scope="request"
+            type="com.liusoft.dlog4j.action.EditSiteAction">
+			
+			<forward name="settings" path="/html/sitemgr/"/>
+			<forward name="style-setting" path="/html/sitemgr/styles.vm"/>
+			<forward name="funcs-setting" path="/html/sitemgr/funcs.vm"/>
+			
+		</action>        
+		
+        <action
+			input="/html/sitemgr/link_add.vm"
+			name="linkForm"
+			validate="false"
+            path="/html/sitemgr/link"
+            scope="request"
+            type="com.liusoft.dlog4j.action.LinkAction">
+			
+			<forward name="links" path="/html/sitemgr/links.vm"/>		
+						
+		</action>        
+		
+        <action
+			input="/html/sitemgr/catalog_add.vm"
+			name="catalogForm"
+			validate="false"
+            path="/html/sitemgr/catalog"
+            scope="request"
+            type="com.liusoft.dlog4j.action.CatalogAction">
+			
+			<forward name="catalogs" path="/html/sitemgr/catalogs.vm" redirect="true"/>
+			<forward name="adduser" path="/html/sitemgr/catalog_user_add.vm"/>
+			<forward name="catalog-users" path="/html/sitemgr/catalog_users.vm" redirect="true"/>
+			
+        </action>
+		
+        <action
+			input="/html/photo/album_add.vm"
+			name="albumForm"
+			validate="false"
+            path="/html/album"
+            scope="request"
+            type="com.liusoft.dlog4j.action.AlbumAction">
+			
+			<forward name="albums" path="/html/photo/" redirect="true"/>
+			<forward name="photos" path="/html/photo/" redirect="true"/>
+			<forward name="album_move" path="/html/photo/album_move.vm"/>
+			<forward name="album_add" path="/html/photo/album_add.vm"/>
+			<forward name="album_edit" path="/html/photo/album_edit.vm"/>
+			
+        </action>
+		
+        <action
+			name="userForm"
+			validate="false"
+            path="/dlog/user"
+            scope="request"
+            type="com.liusoft.dlog4j.action.DlogAction">
+			
+			<forward name="reg" path="/dlog/reguser.vm"/>
+			<forward name="login" path="/dlog/login.vm"/>
+			<forward name="fetchpwd" path="/dlog/fetchpwd.vm"/>
+			<forward name="newsite" path="/dlog/new_site.vm" redirect="true"/>
+			<forward name="edituser" path="/dlog/myprofile.vm"/>
+			<forward name="viewuser" path="/dlog/viewuser.vm" redirect="true"/>
+			<forward name="friends" path="/dlog/friends.vm" redirect="true"/>
+			<forward name="blacklist" path="/dlog/blacklist.vm" redirect="true"/>
+			
+        </action>
+		
+        <action
+			input="/dlog/new_site.vm"
+			name="siteForm"
+			validate="false"
+            path="/dlog/site"
+            scope="request"
+            type="com.liusoft.dlog4j.action.DlogAction">
+			
+			<forward name="newsite" path="/dlog/new_site.vm"/>
+			
+        </action>
+		
+	</action-mappings>
+
+</struts-config>

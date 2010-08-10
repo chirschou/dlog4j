@@ -1,0 +1,112 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  add catalog view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="增加论坛")
+###############################################################################
+<div class="page_top">
+	<div class="adcontent"></div>
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>增加论坛</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+#if($messages.exist("catalog"))
+	#show_msg_box($!messages.get("catalog"))
+#end
+<div class="page_content">
+	#set($cform = $form.getBean())
+    <form action="$link.setAction("html/sitemgr/bbs")" method="post">
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+	<div class="form">
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				论坛名
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="30" maxlength="20" name="name" value="$!{cform.name}">
+				#struts_message("name")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				位置
+    		</div>
+    		<div class="form_row_content">
+				<select name="id">
+                    #foreach($forum in $g_site.forums)
+                    <option value="$forum.id">${forum.name}</option>
+                    #end
+                </select>
+                <select name="direction">
+                    <option value="1">之前</option>
+                    <option value="2">之后</option>
+                </select>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				讨论类型
+    		</div>
+    		<div class="form_row_content">
+                <select name="">
+                    <option value="1">开放</option>
+                    <option value="2">隐藏</option>
+					<option value="3">锁定</option>
+                </select>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				论坛说明
+    		</div>
+    		<div class="form_row_content">
+				&nbsp;&nbsp;100字以内！
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_content">
+				<textarea name="desc" rows="5" cols="68">$!{edit_forum.desc}</textarea>
+				#struts_message("name")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+			<div class="form_row_submit">
+				<input type="submit" name="eventSubmit_CreateForum" value="创建论坛" />
+                <input type="reset" value="重新填写" />
+                <input type="button" value="返回" onclick="history.go(-1)" />
+			</div>
+    	</div>
+	</div>
+	</form>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

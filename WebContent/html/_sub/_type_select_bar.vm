@@ -1,0 +1,8 @@
+## TODO 该页面应该实现至少两级类别
+<select name="catalog">
+	<option value="-1">[请选择类别]</option>
+	#set($__root_types = $TYPE_tool.root_types())
+    #foreach($__type in $__root_types)
+    <option value="$__type.id" #if(${selected_type_id} && ${selected_type_id}==${__type.id})selected#end>&nbsp;&#8226;&nbsp;${__type.name}</option>
+    #end
+</select>

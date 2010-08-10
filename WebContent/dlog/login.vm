@@ -1,0 +1,92 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  user login
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($page_title="登录")
+#set($next_uri=$dlog.param("fromPage",""))
+#set($site_id=$dlog.param("sid",-1))
+<div class="page_top">
+	<h3>&nbsp;我要登录</h3>
+</div>
+<div class="page_content">
+	#show_error_msg()
+	<form action="$link.setAction("dlog/user")" method="post">
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <input type="hidden" name="fromPage" value="$next_uri"/>
+	#if($site_id > 0)
+	<input type="hidden" name="sid" value="$site_id"/>
+	#end
+	<div class="form">
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			用户名:
+		</div>
+		<div class="form_row_content">
+			<input type="text" name="name" value=""/>
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			口令:
+		</div>
+		<div class="form_row_content">
+			<input type="password" name="password" value=""/>
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	<div class="form_row">
+		<div class="form_row_title fleft">
+			登录信息:
+		</div>
+		<div class="form_row_content">
+            <select name="keepDays">
+                <option value="-1">不保存</option>
+                <option value="1">保存一天</option>
+                <option value="7">保存一周</option>
+                <option value="30">保存一月</option>
+                <option value="365" selected>保存一年</option>
+            </select>
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+	<div class="form_row">
+		<p>
+		<a href="#" onclick="fetchpwd();return false;">我忘了登录密码</a>
+		</p>
+	</div>
+	<div class="form_row">
+		<div class="form_row_submit">
+            <input type="submit" name="eventSubmit_Login" value="登录"/>
+            <input type="button" name="btn_reg" value="注册新用户" onclick="location.href='$dlog.root()/dlog/reguser.vm?sid=$g_site_id&fromPage=$link.encodeURL($next_uri)';"/>			
+			<input type="button" value="返回上页" onclick="history.go(-1)"/>
+    		<input type="button" value="返回首页" onclick="location.href='$dlog.root()/#if($g_site)?sid=${g_site_id}#end';"/>
+		</div>
+	</div>
+	</div>
+	</form>
+	<br/>
+</div>
+<div class="page_bottom"></div>
+<script language="javascript" type="text/javascript">
+function fetchpwd(){
+	var url = "$dlog.root()/dlog/fetchpwd.vm?sid=$g_site_id";
+	window.open(url,'share',"height=200,width=400,status=yes,toolbar=no,menubar=no,location=no");
+}
+</script>

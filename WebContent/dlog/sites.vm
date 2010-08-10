@@ -1,0 +1,76 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  list sites
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#set($layout = "home.vm")
+#set($page_title = "所有个人网记")
+
+#set($PAGE_SIZE = 100)
+#set($PER_ROW_COUNT = 5)
+#set($p_page = $dlog.param("p", 1))
+#set($ofield = $dlog.param("s", "id"))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+#set($site_count = $STAT_tool.site_count())
+#set($page_count = $dlog.page_count($site_count, $PAGE_SIZE))
+<div id="sites_pager">
+<form name="sForm" action="">
+	<div class="left_panels" align="left">	
+	<select name="s" onchange="sForm.submit()">
+		<option value="id">选择排序方式</option>
+		<option value="id" #if($ofield=="id")selected#end>&nbsp;&#8226;&nbsp;注册时间</option>
+		<option value="diary" #if($ofield=="diary")selected#end>&nbsp;&#8226;&nbsp;日记数</option>
+		<option value="photo" #if($ofield=="photo")selected#end>&nbsp;&#8226;&nbsp;照片数</option>
+		<option value="music" #if($ofield=="music")selected#end>&nbsp;&#8226;&nbsp;歌曲数</option>
+		<option value="topic" #if($ofield=="topic")selected#end>&nbsp;&#8226;&nbsp;讨论数</option>
+		<option value="user" #if($ofield=="user")selected#end>&nbsp;&#8226;&nbsp;注册用户</option>
+	</select>
+	个人网记共<b>${site_count}</b>个,每页<b>${PAGE_SIZE}</b>个,页次:<b>$p_page/${page_count}</b>.
+	</div>
+	<div class="right_panels" align="right">
+	#if($page_count > 1)
+    	#if($p_page>1)
+    		<a href="?p=1&amp;s=$ofield">首页</a>&nbsp;<a href="?p=$pre_page&amp;s=$ofield">上页</a>
+    	#end
+    	#if($p_page < $page_count)
+    		<a href="?p=$next_page&amp;s=$ofield">下页</a>&nbsp;<a href="?p=$page_count&amp;s=$ofield">尾页</a>
+    	#end
+	#end
+	</div>
+</form>
+</div>
+<div class="spacer_5"></div>
+<div>
+<table border="0" width="100%" cellpadding="3" cellspacing="8">
+#set($sites = $DLOG4J_tool.list_sites_order_by($p_page, $PAGE_SIZE, $ofield))
+#set($row_count = $dlog.page_count($sites.size(), $PER_ROW_COUNT) - 1)
+#foreach($row_idx in [0 .. ${row_count}])
+#set($base_idx = $row_idx * $PER_ROW_COUNT)
+<tr>
+	#set($col_end_idx = $PER_ROW_COUNT - 1)
+	#foreach($col_idx in [0 .. $col_end_idx])
+    	#set($col = $base_idx + $col_idx)
+    	#if($col < $sites.size())
+			#set($_site = $sites.get($col))
+			<td align="left"><a href="$dlog.root()/?sid=${_site.id}">$text.html(${_site.friendlyName})</a></td>
+		#end
+	#end
+</tr>
+#end
+</table>
+</div>

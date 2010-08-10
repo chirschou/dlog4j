@@ -1,0 +1,5 @@
+#invoke("_diary_result.vm")
+<div class="spacer_20"></div>
+#invoke("_photo_result.vm")
+<div class="spacer_20"></div>
+#invoke("_topic_result.vm")

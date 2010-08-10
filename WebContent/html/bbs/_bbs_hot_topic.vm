@@ -1,0 +1,12 @@
+#set($hot_topics = $BBS_tool.hot_topics($g_site, null,1,10,7))
+#if($hot_topics.size()>0)
+<div class="module_title"><b>一周热点讨论</b></div>
+<div class="module_content">
+	<ul>
+    #foreach($topic in $hot_topics)
+		<li><a href="$dlog.root()/html/bbs/topic.vm?sid=$g_site_id&amp;fid=$topic.forum.id&amp;tid=$topic.id">$text.html(${topic.title})(${topic.replyCount})</a></li>
+	#end
+	</ul>
+</div>
+<div class="module_foot"></div>
+#end

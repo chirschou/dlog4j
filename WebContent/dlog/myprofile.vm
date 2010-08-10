@@ -1,0 +1,248 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  edit user profile
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#if($dlog.is_owner($g_site,$g_user))
+#select_layout("p_setting.vm")
+#else
+#select_layout("p_main.vm")
+#end
+#set($page_title="修改个人资料")
+<link rel="stylesheet" type="text/css" media="all" href="$dlog.root()/css/calendar-blue.css" title="win2k-cold-1" />
+<script type="text/javascript" src="$dlog.root()/js/calendar.js"></script>
+<script type="text/javascript" src="$dlog.root()/js/calendar_lang/calendar-en.js"></script>
+<script type="text/javascript" src="$dlog.root()/js/calendar-setup.js"></script>
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>修改我的个人资料</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">		
+	<form method="POST" action="$link.setAction("dlog/user")" enctype="multipart/form-data">
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="id" value="$!{g_user.id}"/>
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+	<div class="form">
+		<div class="form_row">
+    		<div class="form_note">
+				<li>{必须填写} 此对话框不可以为空！</li>
+				<li>要更改资料，必须填写密码！</li>
+				<li>头像图片尺寸如果超过155*200时会自动缩小，请上传时先对相片进行处理！</li>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				编号
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="4" value="$!{g_user.id}" disabled />&nbsp;&nbsp;{用户ID号}
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				用户名
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="8" value="$!{g_user.name}" disabled />&nbsp;&nbsp;{不可以更改！}
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				昵称
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="20" maxlength="20" name="nickname" value="$!{g_user.nickname}" />
+				#struts_message("nickname")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				密码
+    		</div>
+    		<div class="form_row_content">
+				<input type="password" size="20" maxlength="20" name="password" />&nbsp;&nbsp;{更改资料，请先输入密码！}
+				#struts_message("password")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_field_tip">
+    			<B>如果需要修改密码,请填写:</B>
+    		</div>
+    	</div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				新密码
+    		</div>
+    		<div class="form_row_content">
+				<input type="password" size="20" maxlength="20" name="password2" />
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				密码确认
+    		</div>
+    		<div class="form_row_content">
+				<input type="password" size="20" maxlength="20" name="password3" />
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_field_tip">
+    			<B>联系信息(可选):</B>
+    		</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				电子邮件
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="30" maxlength="50" name="email" value="$!{g_user.contactInfo.email}" />
+				#struts_message("email")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				QQ
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="16" maxlength="16" name="qq" value="$!{g_user.contactInfo.qq}" />
+				#struts_message("qq")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				MSN
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="30" maxlength="50" name="msn" value="$!{g_user.contactInfo.msn}" />
+				#struts_message("msn")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				个人网址
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="50" maxlength="50" name="homePage" value="$!{g_user.contactInfo.homePage}">                    
+				#struts_message("homePage")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				地区(省/市)
+    		</div>
+    		<div class="form_row_content">#invoke("_sub/_area.vm")</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_field_tip">
+    			<B>详细资料(可选):</B>
+    		</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				您的性别？
+    		</div>
+    		<div class="form_row_content">
+				<input type="radio" name="sex" value="0" #if($!{g_user.sex}==0)checked#end>保密
+                <input type="radio" name="sex" value="1" #if($!{g_user.sex}==1)checked#end>男 
+                <input type="radio" name="sex" value="2" #if($!{g_user.sex}==2)checked#end>女
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				您的生日？
+    		</div>
+    		<div class="form_row_content">
+				&nbsp;&nbsp;<span id="show_birth">$!{g_user.birth}</span>&nbsp;&nbsp;
+                <input type="hidden" name="birth" id="f_date_birth" value="$!{g_user.birth}"/>
+                <img id="f_trigger_birth" src="$html.image_src("date_sel.gif")" align="absmiddle" border="0" />&nbsp;&lt;--点击这里进行设置                                            
+                <script type="text/javascript" type="text/javascript">
+                    Calendar.setup({
+                        inputField     :    "f_date_birth",     // id of the input field
+                        ifFormat       :    "%Y-%m-%d",         // format of the input field (even if hidden, this format will be honored)
+                        displayArea    :    "show_birth",       // ID of the span where the date is to be shown
+                        daFormat       :    "%Y-%m-%d",    // format of the displayed date
+                        button         :    "f_trigger_birth",  // trigger button (well, IMG in our case)
+                        align          :    "Tl",               // alignment (defaults to "Bl")
+                        singleClick    :    true
+                    });
+                </script>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			<b>个人宣言(可选):#struts_message("resume")</b>
+    		</div>
+			<div class="form_row_content">
+				<textarea name="resume" rows="5" cols="40">$!{g_user.resume}</textarea>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="fleft">
+    			#if($dlog.not_empty($g_user.portrait))
+                	<div id="portrait"><img src="$dlog.root()/uploads/portrait/${g_user.portrait}"></div>
+                #else
+            		<div id="portrait">$html.img("nophoto.gif")</div>
+            	#end
+    		</div>
+    		<div class="form_row_content">
+				<div class="form_field_tip">
+        			<B>我的头像(可选):</B>
+        		</div>
+				<div class="form_row_content">
+    				<input type="file" size="40" name="portrait"/>#struts_message("portrait")
+    				<br><input type="checkbox" name="removePortrait" value="1"/>清除头像设置.
+    			</div>
+			</div>
+    	</div>
+		<div class="spacer_5"></div>			
+		<div class="form_row">
+			<div class="form_row_submit">
+				<input type="submit" name="eventSubmit_Update" value="提交修改" />
+                <input type="reset" value="重新填写" />
+                <input type="button" value="返回上页" onclick="history.go(-1)" />
+				<input type="button" value="返回首页" onclick="location.href='$dlog.root()/#if($g_site)?sid=${g_site_id}#end';"/>
+			</div>
+    	</div>
+	</div>
+	</form>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

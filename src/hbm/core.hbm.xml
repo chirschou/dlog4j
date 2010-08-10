@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.liusoft.dlog4j.beans">
+
+	<class name="BookmarkBean" table="dlog_bookmark" batch-size="20">
+		
+    	<id name="id" column="mark_id">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>		
+		<many-to-one name="owner" column="userid" cascade="save-update" update="false"/>
+		
+		<property name="title" column="title"/>
+		<property name="url" column="url"/>
+		
+		<property name="parentId"  column="parent_id"/>
+		<property name="parentType" column="parent_type"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		
+	</class>
+	
+	<class name="ConfigBean" table="dlog_config" batch-size="20">
+		
+		<cache usage="read-write"/>
+		
+    	<id name="id" column="config_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="siteId" column="site_id" update="false"/>
+		
+		<property name="name" column="config_name" length="20"/>
+		
+		<property name="intValue"    column="int_value"/>
+		<property name="stringValue" column="string_value"/>
+		<property name="dateValue"      type="date"      column="date_value"/>
+		<property name="timeValue"      type="time"      column="time_value"/>
+		<property name="timestampValue" type="timestamp" column="timestamp_value"/>
+		
+		<property name="lastUpdate"     type="timestamp" column="last_update"/>
+	</class>
+	
+	<class name="ExternalReferBean" table="dlog_external_refer" batch-size="20">
+		
+    	<id name="id" column="refer_id">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		
+		<property name="refId"  column="ref_id"/>
+		<property name="refType" column="ref_type"/>
+		
+		<property name="host" column="refer_host"/>
+		<property name="url" column="refer_url" />
+		
+		<property name="clientAddr" column="client_ip"/>
+		
+		<property name="referTime" type="timestamp" column="refer_time"/>
+	</class>
+	
+	<class name="LinkBean" table="dlog_link" dynamic-update="true" batch-size="20">
+		
+		<cache usage="read-write"/>		
+		
+		<comment>Friend's links</comment>
+
+    	<id name="id" column="linkid">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="siteId" column="site_id" update="false"/>
+		
+		<property name="title" column="link_title"/>
+		<property name="url"  column="link_url"  />
+		
+		<property name="type" column="link_type"/>
+		<property name="sortOrder" column="sort_order"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		
+		<property name="status"/>
+		
+	</class>
+	
+	<class name="MessageBean" table="dlog_message" batch-size="20">
+		
+    	<id name="id" column="msgid">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="fromUser" column="from_user_id" cascade="none" update="false"/>		
+		<many-to-one name="toUser" column="userid" cascade="none" update="false"/>
+		
+		<property name="content" column="content" update="false"/>
+		
+		<property name="sendTime" type="timestamp" column="send_time" update="false"/>
+		<property name="expiredTime" type="timestamp" column="expire_time" update="false"/>
+		<property name="readTime" type="timestamp" column="read_time" insert="false"/>
+		
+		<property name="status"/>
+		
+	</class>
+	
+	<class name="TagBean" table="dlog_tag" batch-size="20">
+		
+    	<id name="id" column="tag_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" column="tag_name"/>
+		
+		<property name="refId" column="ref_id"/>		
+		<property name="refType" column="ref_type"/>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		
+	</class>
+	
+	<class name="TrackBackBean" table="dlog_trackback" batch-size="20">
+		
+    	<id name="id" column="track_id">
+			<generator class="identity"/>
+		</id>
+				
+		<property name="parentId"  column="parent_id"/>
+		<property name="parentType" column="parent_type"/>
+		
+		<property name="title"  column="title"  />
+		<property name="excerpt" column="excerpt"/>
+		<property name="url"    column="refurl" />
+		
+		<property name="blogName" column="blog_name"/>
+		
+		<property name="remoteAddr" column="remote_addr"/>
+		
+		<property name="trackTime" type="timestamp" column="track_time"/>
+	</class>
+	
+	<class name="GuestBookBean" table="dlog_guestbook" batch-size="20">
+		
+    	<id name="id" column="guest_book_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="siteId" column="site_id" update="false"/>
+		
+		<property name="content" update="false"/>
+		<property name="reply" column="reply_content" insert="false"/>
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" column="client_ip" update="false"/>
+			<property name="type" column="client_type" update="false"/>
+			<property name="userAgent" column="client_user_agent" update="false"/>
+		</component>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="replyTime" type="timestamp" column="reply_time" insert="false"/>
+		
+		<many-to-one name="user" column="userid" cascade="none" update="false"/>
+		
+	</class>
+	
+	<class name="FckUploadFileBean" table="dlog_fck_upload_file" batch-size="20">
+		
+    	<id name="id" column="fck_file_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="uploadTime" type="timestamp" column="upload_time" update="false"/>
+		<property name="sessionId" column="session_id" update="false"/>
+		<property name="savePath" column="save_path" update="false"/>
+		
+		<property name="refId" column="ref_id"/>		
+		<property name="refType" column="ref_type"/>
+		
+		<property name="fileType" column="file_type" update="false"/>
+		<property name="fileSize" column="file_size" update="false"/>
+		
+		<property name="uri" column="file_uri" update="false"/>
+		
+		<many-to-one name="site" column="site_id" cascade="save-update" update="false"/>
+		<many-to-one name="user" column="userid" cascade="none" update="false"/>
+		
+	</class>
+	
+	<class name="BlockedHostBean" table="dlog_blocked_ip" batch-size="50">
+		
+    	<id name="id" column="blocked_ip_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="ip" column="ip_addr"/>
+		<property name="sip" column="s_ip_addr"/>
+		<property name="mask" column="ip_mask"/>
+		<property name="smask" column="s_ip_mask"/>
+		<property name="type" column="blocked_type"/>
+		<property name="blockedTime" type="timestamp" column="blocked_time" update="false"/>
+		<property name="status"/>
+		
+		<property name="siteId" column="site_id" update="false"/>
+		
+	</class>
+	
+	<class name="BulletinBean" table="dlog_bulletin">
+		
+    	<id name="id" column="bulletin_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="type" column="bulletin_type"/>
+		<property name="status"/>
+		<property name="title"/>
+		<property name="content"/>
+		
+		<property name="pubTime" type="timestamp" column="pub_time" update="false"/>
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+	</class>
+	
+	<class name="BulletinOutlineBean" table="dlog_bulletin">
+		
+    	<id name="id" column="bulletin_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="type" column="bulletin_type"/>
+		<property name="status"/>
+		<property name="title"/>
+		<!--
+		<property name="content"/>
+		-->
+		<property name="pubTime" type="timestamp" column="pub_time" update="false"/>
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+	</class>
+	
+</hibernate-mapping>

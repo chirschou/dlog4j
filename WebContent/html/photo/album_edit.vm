@@ -1,0 +1,108 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  add album view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_photo.vm")
+#set($page_title="修改相簿信息")
+#set($close_left_menu=true)
+###############################################################################
+#if(!$dlog.is_owner($g_site, $g_user))
+#parse("/html/_illegal_access.vm")
+#else
+#set($album_id = $dlog.param("aid",-1))
+#set($album = $PHOTO_tool.album($album_id))
+	<div class="page_top">
+    	<div class="pagecontent">
+    		<div class="pagecontent_left fleft">
+    			<b>修改相簿信息: ${album.name}</b>
+    		</div>
+    		<div class="pagecontent_right fright">
+    		</div>        
+    	</div>
+		<div class="spacer_1"></div>
+    </div>
+	#show_error_msg()
+	#set($cform = $form.getBean())
+	<form name="albumForm" action="$link.setAction("html/album")" method="post">
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="id" value="$album_id"/>
+    <input type="hidden" name="aid" value="$album_id"/>
+    <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+	<input type="hidden" name="eventSubmit_Update" value="HTML"/>
+    <div class="page_content">
+		<div class="form">
+        	<div class="form_row">
+				<div class="form_row_title fleft">
+        			相簿名:
+        		</div>
+        		<div class="form_row_content">
+					<input type="text" size="20" maxlength="20" name="name" value="$!{album.name}">
+					#struts_message("name")
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			相簿属性:
+        		</div>
+        		<div class="form_row_content">
+					&nbsp;&nbsp;根据个人需要修改相簿属性!
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+			<div class="form_row">
+				<div class="form_row_content">
+					<div class="spacer_5"></div>
+    				<input type="radio" name="type" value="0" #if($album.type==0)checked#end> 完全公开 <br/>
+                    <input type="radio" name="type" value="2" #if($album.type==2)checked#end> 私人相簿 <br/>
+                    <input type="radio" name="type" value="1" #if($album.type==1)checked#end> 需要密码验证&nbsp;&nbsp;
+                    <input type="text" size="10" maxlength="20" name="verifyCode" value="$!{album.verifyCode}">#struts_message("password"){输入访问密码!}
+            		<div class="spacer_5"></div>
+    			</div>
+    		</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			相簿描述:
+        		</div>
+        		<div class="form_row_content">
+    				&nbsp;&nbsp;支持纯文字介绍 100字以内!
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+			<div class="form_row">
+				<div class="form_row_content">
+        			<div class="spacer_5"></div>
+    				<textarea name="desc" style="width:80%;height:100px">$!{album.desc}</textarea>
+    				<div class="spacer_5"></div>
+				</div>
+    		</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+    			<div class="form_row_submit">
+					<input type="submit" name="eventSubmit_Update" value="更新相簿"/>
+                    <input type="reset" value="重新填写" />
+                    <input type="button" value="返回" onclick="history.go(-1)" />
+    			</div>
+        	</div>
+        </div>
+        <div class="spacer_10"></div>	
+    </div>
+	</form>
+    <div class="page_bottom"></div>
+#end

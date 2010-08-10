@@ -1,0 +1,19 @@
+#set($users = $USER_tool.list_users($g_site, 1, 6))
+#if($users && $users.size()>0)
+<div class="module_title">
+	<b>$text.ui("label.new_users")</b>
+</div>
+<div class="module_content">
+	<ul>
+    #foreach($user in $users)
+    #if($velocityCount<=5)
+    	<li><a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${user.id}">$text.html(${user.nickname})</a>&nbsp;|&nbsp;<span class="en8pt">$date.format("yyyy-MM-dd",$user.regTime)</span></li>
+    #end
+    #end
+    ##if($users.size()>5)
+    	<li class="module_more"><a href="$dlog.root()/html/users.vm?sid=$g_site_id">more...</a></li>
+    ##end
+	</ul>
+</div>
+<div class="module_foot"></div>
+#end

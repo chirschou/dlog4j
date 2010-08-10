@@ -1,0 +1,135 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  catalog settings view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="日记分类管理")
+###############################################################################
+#set($catalog_id = $dlog.param("cat_id", -1))
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>日记分类管理</b>&nbsp;&nbsp;共有${g_site.catalogs.size()}个日记分类&nbsp;&nbsp;(<a href="catalog_add.vm?sid=$g_site_id">$html.img("add.gif",null,null,"absmiddle",0)&nbsp;增加</a>)
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="setting">
+    	<div class="setting_top">
+			<div class="line_dashed"></div>
+			<div class="spacer_5"></div>
+			<div class="form_row_content">
+				<li>你可以进行日记分类的排序管理！</li>
+				<li>你可以编辑日记分类！</li>
+				<li>你可以对私有日记分类添加访问用户！</li>
+			</div>
+		</div>
+    	<div class="setting_body">	
+			<table cellspacing="1" cellpadding="3" border="0" width="100%" class="table">
+    			<tr class="table_head">
+        			<td></td>
+        			<td>分类名</td>
+        			<td>类型</td>
+            		<td>日记数</td>
+        			<td>特权</td>
+        			<td>&nbsp;</td>
+        			<td>排序</td>
+        			<td>排序</td>
+        			<td>设置</td>
+            		<td>删除</td>
+    			</tr>
+    			#foreach($cat in $g_site.catalogs)
+                #if($catalog_id == $cat.id)
+                    #set($edit_catalog = $cat)
+                #end
+    			<tr class="table_cell">
+        			<td>${velocityCount}</td>
+        			<td>${cat.name}</td>
+        			<td>$text.get(${cat.typeDescKey})</td>
+            		<td>${cat.articleCount}#if(${cat.articleCount}>0)(<a href="move_logs.vm?sid=$g_site_id&amp;cat_id=$cat.id">迁移</a>)#end</td>
+        			<td><a href="catalog_users.vm?sid=$g_site_id&amp;cat_id=${cat.id}" title="查看并设置可访问该分类的用户">$html.img("users.gif",null,null,"absmiddle",0)</a></td>
+        			<td><a href="$dlog.root()/html/diary/addlog.vm?sid=$g_site_id&amp;cat_id=${cat.id}">写日记</a></td>
+        			<td align="center">#if($velocityCount != 1)<a href="$link.setAction("html/sitemgr/catalog")?sid=$g_site_id&amp;eventSubmit_MoveUp=$cat.id">$html.img("arrow_up.gif",null,"up","absmiddle",0)</a>#else&nbsp;#end</td>
+        			<td align="center">#if($velocityCount < $g_site.catalogs.size())<a href="$link.setAction("html/sitemgr/catalog")?sid=$g_site_id&amp;eventSubmit_MoveDown=$cat.id">$html.img("arrow_down.gif",null,"down","absmiddle",0)</a>#else&nbsp;#end</td>
+        			<td align="center"><a href="?sid=$g_site_id&amp;cat_id=$cat.id#edit">$html.img("settings.gif",null,"setting","absmiddle",0)</a></td>
+            		<td align="center">#if(${cat.articleCount}<=0)<a href="$link.setAction("html/sitemgr/catalog")?sid=$g_site_id&amp;eventSubmit_Delete=$cat.id">$html.img("icon_delete.gif",null,"del","absmiddle",0)</a>#else&nbsp;#end</td>
+    			</tr>
+    			#end
+    		</table>
+    	</div>
+    	<div class="setting_footer">
+			<div class="spacer_10"></div>
+        	#if($edit_catalog)
+        	<div>
+        		<b>更改日记分类</b>
+        	</div>
+        	<a name="edit"></a>
+        	<form action="$link.setAction("html/sitemgr/catalog")" method="post">
+            <input type="hidden" name="id" value="$edit_catalog.id"/>
+            <input type="hidden" name="cat_id" value="$edit_catalog.id"/>
+            <input type="hidden" name="sid" value="$g_site_id"/>
+            <input type="hidden" name="fromPage" value="$dlog.root()/html/sitemgr/catalogs.vm?sid=$g_site_id"/>
+        	<div class="form">
+				<div class="form_row">
+            		<div class="form_row_title fleft">
+						分类名
+            		</div>
+            		<div class="form_row_content">
+						<input type="text" size="20" maxlength="20" name="name" value="$!{edit_catalog.name}">
+                        #struts_message("name")
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						分类权限
+            		</div>
+            		<div class="form_row_content">
+						<input type="radio" name="type" value="1" #if(${edit_catalog.type}==1)checked="true"#end/>公开
+						<input type="radio" name="type" value="0" #if(${edit_catalog.type}==0)checked="true"#end/>私人
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+            		<div class="form_row_title fleft">
+						内容类别
+            		</div>
+            		<div class="form_row_content">
+						#set($selected_type_id=${edit_catalog.catalog.id})
+						#parse("/html/_sub/_type_select_bar.vm")
+        			</div>
+            	</div>
+				<div class="spacer_1"></div>
+        		<div class="form_row">
+        			<div class="form_row_submit">
+						<input type="submit" name="eventSubmit_UpdateCatalog" value="更新分类" />
+                        <input type="reset" value="重新填写" />
+        			</div>
+            	</div>
+        	</div>
+        	</form>
+			#end
+		</div>
+    </div>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

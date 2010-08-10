@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	
+	<session-factory>
+		
+        <property name="connection.provider_class">com.liusoft.dlog4j.db.DataSourceConnectionProvider</property>
+		
+        <!-- ********** database relative settings ********** -->
+		
+		<!-- MySQL 3/4/5 -->
+    	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="dscp.driverClassName">com.mysql.jdbc.Driver</property>
+        <property name="dscp.url">jdbc:mysql://localhost:3306/dlog</property>				
+        <property name="dscp.username">root</property>
+        <property name="dscp.password"></property>
+		
+		<!-- Microsoft SQLServer (via jTDS) -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.SQLServerDialect</property>
+		<property name="dscp.driverClassName">net.sourceforge.jtds.jdbc.Driver</property>
+        <property name="dscp.url">jdbc:jtds:sqlserver://localhost:1433/dlog;useCursors=true</property>				
+        <property name="dscp.username">sa</property>
+        <property name="dscp.password"></property>		
+		-->
+		
+		<!-- IBM DB2 -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.DB2Dialect</property>
+		<property name="dscp.driverClassName">com.ibm.db2.jcc.DB2Driver</property>
+        <property name="dscp.url">jdbc:db2://localhost:50000/dlog</property>				
+        <property name="dscp.username">db2inst1</property>
+        <property name="dscp.password"></property>		
+		-->
+		
+		<!-- Oracle -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.OracleDialect</property>
+		<property name="dscp.driverClassName">oracle.jdbc.driver.OracleDriver</property>
+        <property name="dscp.url">jdbc:oracle:thin:@localhost:1521:dlog</property>				
+        <property name="dscp.username">ora</property>
+        <property name="dscp.password"></property>		
+		-->
+		
+		<!-- Informix -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.InformixDialect</property>
+		<property name="dscp.driverClassName">com.informix.jdbc.IfxDriver</property>
+        <property name="dscp.url">jdbc:informix-sqli://localhost:1526/dlog:informixserver=server1</property>				
+        <property name="dscp.username">root</property>
+        <property name="dscp.password"></property>		
+		<property name="dscp.encoding">true</property>
+		-->
+		
+		<!-- Sybase (via jTDS) -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.SybaseDialect</property>
+		<property name="dscp.driverClassName">net.sourceforge.jtds.jdbc.Driver</property>
+        <property name="dscp.url">jdbc:jtds:sybase://localhost:7100/dlog;useCursors=true</property>				
+        <property name="dscp.username">root</property>
+        <property name="dscp.password"></property>
+		-->
+		
+		<!-- PostgreSQL -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+		<property name="dscp.driverClassName">org.postgresql.Driver</property>
+        <property name="dscp.url">jdbc:postgresql://localhost:5432/dlog</property>				
+        <property name="dscp.username">root</property>
+        <property name="dscp.password"></property>
+		-->
+		
+		<!-- MaxDB(SAPDB) -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.SAPDBDialect</property>
+		<property name="dscp.driverClassName">com.sap.dbtech.jdbc.DriverSapDB</property>
+        <property name="dscp.url">jdbc:sapdb://localhost/dlog</property>				
+        <property name="dscp.username">root</property>
+        <property name="dscp.password"></property>
+		-->
+		
+		<!-- HSQLDB -->
+		<!--
+    	<property name="dialect">org.hibernate.dialect.HSQLDialect</property>
+		<property name="dscp.driverClassName">org.hsqldb.jdbcDriver</property>
+        <property name="dscp.url">jdbc:hsqldb:hsql://localhost/dlog</property>				
+        <property name="dscp.username">admin</property>
+        <property name="dscp.password"></property>
+		-->
+		
+		<!-- Microsoft Access (must comment the 'dscp.defaultTransactionIsolation' below) -->
+		<!--
+    	<property name="dialect">com.liusoft.dlog4j.db.ODBCDialect</property>
+		<property name="dscp.driverClassName">sun.jdbc.odbc.JdbcOdbcDriver</property>
+        <property name="dscp.url">jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};DBQ={DLOG4J}\WEB-INF\db\dlog4j.mdb</property>		
+        <property name="dscp.username">admin</property>
+        <property name="dscp.password"></property>
+		<property name="dscp.encoding">false</property>
+		-->
+		
+		<!-- ********** database independence settings ********** -->
+		<!-- Connection Pool using DBCP -->		
+        <property name="dscp.datasource">org.apache.commons.dbcp.BasicDataSource</property>
+        <property name="dscp.initialSize">1</property>
+        <property name="dscp.maxActive">200</property>
+        <property name="dscp.maxIdle">10</property>
+        <property name="dscp.maxWait">2000</property>
+        <property name="dscp.defaultAutoCommit">false</property>
+        <property name="dscp.poolPreparedStatements">true</property>
+        <property name="dscp.maxOpenPreparedStatements">1000</property>
+		<!-- TRANSACTION_READ_UNCOMMITTED -->
+        <property name="dscp.defaultTransactionIsolation">1</property>		
+        
+		<!--
+        <property name="dscp.logAbandoned">true</property>
+        <property name="dscp.removeAbandoned">true</property>
+        <property name="dscp.removeAbandonedTimeout">120</property>
+		-->
+		
+		<!-- ********** global settings ********** -->
+        <property name="show_sql">false</property>
+        <property name="jdbc.batch_size">100</property>
+        <property name="use_outer_join">false</property>
+        <property name="cache.use_query_cache">true</property>
+        <property name="default_batch_fetch_size">20</property>
+        <property name="jdbc.use_scrollable_resultset">true</property>
+        <property name="jdbc.use_reflection_optimizer">true</property>
+		
+		<!-- ********** beans mapping ********** -->
+        <mapping resource="com/liusoft/dlog4j/upgrade/new_dlog.hbm.xml"/>
+        <mapping resource="com/liusoft/dlog4j/hbm/core.hbm.xml"/>
+        <mapping resource="com/liusoft/dlog4j/upgrade/new_diary.hbm.xml"/>	
+        <mapping resource="com/liusoft/dlog4j/hbm/photo.hbm.xml"/>
+        <mapping resource="com/liusoft/dlog4j/hbm/music.hbm.xml"/>		
+        <mapping resource="com/liusoft/dlog4j/hbm/bbs.hbm.xml"/>
+        <mapping resource="com/liusoft/dlog4j/hbm/other.hbm.xml"/>
+				
+	</session-factory>
+	
+</hibernate-configuration>

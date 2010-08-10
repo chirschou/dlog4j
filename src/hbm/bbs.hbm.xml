@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.liusoft.dlog4j.beans">
+
+	<class name="ForumBean" table="dlog_forum" dynamic-update="true"  batch-size="20">
+		
+		<cache usage="read-write"/>
+		
+    	<id name="id" column="forum_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" type="string" column="forum_name"/>
+		<property name="desc" type="string" column="forum_desc"/>
+		
+		<property name="type" type="int" column="forum_type" update="false"/>
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="lastPostTime" type="timestamp" column="last_time" insert="false"/>
+		<property name="modifyTime" type="timestamp" column="modify_time" insert="false"/>
+				
+		<property name="lastUsername" type="string" column="last_user_name" insert="false"/>
+		
+		<property name="sortOrder" type="int" column="sort_order"/>
+		<property name="topicCount" type="int" column="topic_count"/>
+				
+		<property name="option" type="int" column="forum_option"/>
+		<property name="status" type="int"/>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>		
+		<many-to-one name="catalog" column="dlog_type_id" cascade="none"/>		
+		<many-to-one name="lastUser" column="last_user_id" cascade="none" insert="false"/>		
+		<many-to-one name="lastTopic" column="last_topic_id" cascade="none" insert="false"/>
+		
+	</class>
+	
+	<class name="TopicBean" table="dlog_topic" dynamic-update="true" batch-size="20">
+		
+    	<id name="id" column="topic_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="user" column="userid" cascade="save-update" update="false"/>
+		<many-to-one name="forum" column="forum_id" cascade="save-update"/>
+		<many-to-one name="lastReply" column="last_reply_id" cascade="none" insert="false"/>
+		<many-to-one name="lastUser" column="last_user_id" cascade="none" insert="false"/>
+		
+		<property name="username" type="string" column="username" update="false"/>
+		
+		<property name="title" type="string"/>
+		<property name="content" type="string"/>
+		
+		<property name="keyword" type="string" column="tags"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="lastReplyTime" type="timestamp" column="last_reply_time" insert="false"/>
+		<property name="modifyTime" type="timestamp" column="modify_time" insert="false"/>
+				
+		<property name="lastUsername" type="string" column="last_user_name" insert="false"/>
+		
+		<property name="viewCount" type="int" column="view_count"/>
+		<property name="replyCount" type="int" column="reply_count"/>
+				
+		<property name="type" type="int" column="topic_type"/>
+		<property name="lock" type="int" column="locked"/>
+		
+		<property name="status" type="int"/>
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" type="string" column="client_ip" update="false"/>
+			<property name="type" type="int" column="client_type" update="false"/>
+			<property name="userAgent" type="string" column="client_user_agent" update="false"/>
+		</component>
+		
+		<bag name="replies" lazy="true" inverse="true" cascade="delete" batch-size="10">
+			<key column="topic_id"/>
+			<one-to-many class="TopicReplyBean"/>
+		</bag>
+		
+		<bag name="trackbacks" lazy="true" inverse="true" cascade="delete" batch-size="10" where="parent_type=4">
+			<key column="parent_id"/>
+			<one-to-many class="TrackBackBean"/>
+		</bag>
+		
+		<bag name="tags" lazy="true" inverse="true" cascade="all" batch-size="10" where="ref_type=4">
+			<key column="ref_id"/>
+			<one-to-many class="TagBean"/>
+		</bag>
+		
+	</class>
+	
+	<class name="TopicOutlineBean" table="dlog_topic" dynamic-update="true" batch-size="20">
+		
+    	<id name="id" column="topic_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="user" column="userid" cascade="save-update" update="false"/>
+		<many-to-one name="forum" column="forum_id" cascade="save-update"/>
+		<many-to-one name="lastReply" column="last_reply_id" cascade="none" insert="false"/>
+		<many-to-one name="lastUser" column="last_user_id" cascade="none" insert="false"/>
+		
+		<property name="username" type="string" column="username" update="false"/>
+		
+		<property name="title" type="string"/>
+		<!--
+		<property name="content" type="string"/>
+		-->
+		<property name="keyword" type="string" column="tags"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="lastReplyTime" type="timestamp" column="last_reply_time" insert="false"/>
+		<property name="modifyTime" type="timestamp" column="modify_time" insert="false"/>
+				
+		<property name="lastUsername" type="string" column="last_user_name" insert="false"/>
+		
+		<property name="viewCount" type="int" column="view_count"/>
+		<property name="replyCount" type="int" column="reply_count"/>
+				
+		<property name="type" type="int" column="topic_type"/>
+		<property name="lock" type="int" column="locked"/>
+		
+		<property name="status" type="int"/>
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" type="string" column="client_ip" update="false"/>
+			<property name="type" type="int" column="client_type" update="false"/>
+			<property name="userAgent" type="string" column="client_user_agent" update="false"/>
+		</component>
+		
+		<bag name="replies" lazy="true" inverse="true" cascade="delete" batch-size="10">
+			<key column="topic_id"/>
+			<one-to-many class="TopicReplyBean"/>
+		</bag>
+		
+		<bag name="trackbacks" lazy="true" inverse="true" cascade="delete" batch-size="10" where="parent_type=4">
+			<key column="parent_id"/>
+			<one-to-many class="TrackBackBean"/>
+		</bag>
+		
+		<bag name="tags" lazy="true" inverse="true" cascade="all" batch-size="10" where="ref_type=4">
+			<key column="ref_id"/>
+			<one-to-many class="TagBean"/>
+		</bag>
+	
+	</class>
+	
+	<class name="TopicReplyBean" table="dlog_t_reply" batch-size="20" dynamic-update="true">
+		
+    	<id name="id" column="t_reply_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="title" type="string" column="title"/>
+		<property name="content" type="string" column="content"/>
+		
+		<property name="replyTime" type="timestamp" column="write_time" update="false"/>
+		<property name="status"    type="int"/>
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" type="string" column="client_ip" update="false"/>
+			<property name="type" type="int" column="client_type" update="false"/>
+			<property name="userAgent" type="string" column="client_user_agent" update="false"/>
+		</component>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="user" column="userid" cascade="save-update" update="false"/>
+		<many-to-one name="topic" column="topic_id" cascade="save-update" update="false"/>
+		
+	</class>
+	
+	<query name="TOPIC_COUNT_OF_SITE">
+		SELECT COUNT(*) FROM TopicBean AS t WHERE t.status=? AND t.site.id=?
+	</query>
+	
+	<query name="INC_TOPIC_VIEW_COUNT">
+		UPDATE TopicBean SET viewCount=viewCount+? WHERE id=?
+	</query>
+	
+	<query name="LIST_TOPICS_AFTER_SQL">
+		FROM TopicBean AS t WHERE t.createTime>? AND t.status=? ORDER BY t.id
+	</query>
+	
+	<query name="DELETE_FORUM">
+		DELETE FROM ForumBean AS fb WHERE fb.site.id=? AND fb.id=? AND fb.topicCount=0
+	</query>
+	
+	<query name="LIST_TOPIC_REPLIES">
+		FROM TopicReplyBean AS r WHERE r.topic.id=? AND r.status=? ORDER BY r.id
+	</query>
+	
+	<query name="LIST_TOPIC_REPLIES_AFTER">
+		<![CDATA[FROM TopicReplyBean AS t WHERE t.replyTime>? AND t.status=? ORDER BY t.id]]>
+	</query>
+	
+	<query name="NEXT_TOPIC">
+		<![CDATA[FROM TopicOutlineBean AS t WHERE t.forum.id=? AND t.id > ? AND t.status=? ORDER BY t.id ASC]]>
+	</query>
+	
+	<query name="LAST_TOPIC">
+		<![CDATA[FROM TopicOutlineBean AS t WHERE t.forum.id=? AND t.id < ? AND t.status=? ORDER BY t.id DESC]]>
+	</query>
+	
+	<query name="HOT_TOPICS">
+		<![CDATA[FROM TopicOutlineBean AS t WHERE t.status=? AND t.createTime >= ? AND t.replyCount > 0 AND t.site.status=0 ORDER BY (t.replyCount*20+t.viewCount) DESC, t.id DESC]]>
+	</query>
+	
+	<query name="LIST_TOPICS">
+		<![CDATA[FROM TopicOutlineBean AS t WHERE t.forum.id=? AND t.status=? ORDER BY ROUND(t.type / 16, 0) DESC, t.id DESC, t.lastReplyTime DESC ]]>
+	</query>
+	
+	<query name="LIST_ALL_TOPICS">
+		FROM TopicOutlineBean AS t WHERE t.site.id=? AND t.status=? ORDER BY ROUND(t.type / 16, 0) DESC,t.id DESC
+	</query>
+	
+	<query name="LIST_ALL_TOPICS2">
+		FROM TopicOutlineBean AS t WHERE t.status=? ORDER BY ROUND(t.type / 16, 0) DESC,t.id DESC
+	</query>
+	
+</hibernate-mapping>

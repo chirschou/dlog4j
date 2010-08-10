@@ -1,0 +1,66 @@
+#invoke("_sub/_global.vm")
+#set($layout = "home.vm")
+#set($page_title = "网记日记频道")
+#set($scope=1)
+
+#set($tags = $DLOG4J_tool.list_hot_tags(-1,100))
+#if($tags && $tags.size()>0)
+<div class="panel">
+	<div class="panel_head">热门关键字</div>
+	<div class="panel_body">
+		#foreach($tag in $tags)
+			<a href="$dlog.root()/html/showtag.vm?tag=$link.encodeURL($tag)">$text.html(${tag})</a>&nbsp;
+		#end
+	</div>
+</div>
+<div class="spacer_5"></div>
+#end
+<div class="left_panels">
+	<div class="panel">
+		#set($logs = $DLOG4J_tool.list_hot_articles(30, 21))
+		<div class="panel_head">最新热门日记</div>
+		#if($logs.size()>0)
+			#set($top_log = ${logs.get(0)})
+			$DIARY_tool.fill_diary_content($top_log)
+    		<div class="panel_top">
+				<a href="$dlog.root()/html/diary/showlog.vm?sid=${top_log.site.id}&amp;log_id=${top_log.id}">
+				$text.html(${top_log.title})
+				</a>
+				#set($__nothing = ${top_log.site.friendlyName})
+			</div>
+			<div class="panel_top_body">
+				$dlog.abbreviate($dlog.plain_text(${top_log.content}), 100)
+			</div>
+			<div class="spacer_5"></div>
+			<div class="line_dashed"></div>
+		#end
+		<div class="panel_body">
+			#foreach($log in $logs)
+			#if($velocityCount>1)
+			<img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>
+				<a href="$dlog.root()/html/diary/showlog.vm?sid=${log.site.id}&amp;log_id=${log.id}">$text.html(${log.title})</a>&nbsp;&nbsp;
+				[<a href="$dlog.root()/?sid=${log.site.id}">$text.html(${log.site.friendlyName})</a>]<br/>			
+			#end
+			#end
+		</div>
+	</div>
+	<div class="spacer_5"></div>
+</div>
+<div class="right_panels">
+	<div class="panel">
+		<div class="panel_head">
+			<div>
+        		<div class="fleft">最新发布日记</div>
+				<div class="fright">
+					<a href="$dlog.root()/rss.vm?tid=1">$html.img("rss.png","RSS")</a>
+				</div>
+			</div>
+			<div class="spacer_1"></div>
+		</div>
+		<div class="panel_body">
+			#invoke("_sub/_new_diarys.vm")
+		</div>
+	</div>
+	<div class="spacer_5"></div>
+</div>
+<div class="spacer_5"></div>

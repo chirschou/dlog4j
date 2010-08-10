@@ -1,0 +1,7 @@
+<div class="embed_module_top"></div>
+<div class="embed_module">#parse("/html/photo/_album_tree.vm")</div>
+<div class="embed_module">#parse("/html/photo/_photo_calendar.vm")</div>
+<div class="embed_module">#parse("/html/photo/_album_top_info.vm")</div>
+<div class="embed_module">#parse("/html/_sub/_site_stat.vm")</div>
+<div class="embed_module">#parse("/html/_sub/_site_support.vm")</div>
+<div class="embed_module_bottom"></div>

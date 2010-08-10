@@ -1,0 +1,142 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  user view
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($uid = $dlog.param("uid",-1))
+#set($user = $USER_tool.user($uid))
+<div class="page_top">
+	<h3>&nbsp;$text.html(${user.nickname})的基本资料</h3>
+</div>
+<div class="page_content">
+	<form action="$link.setAction("dlog/user")" method="post">
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <input type="hidden" name="fromPage" value="/dlog/viewuser.vm?sid=$g_site_id&amp;uid=$uid"/>
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="uid" value="$uid"/>
+    <input type="hidden" name="id" value="$uid"/>
+	<div class="form">
+    	#if($dlog.not_empty(${user.portrait}))
+    	<div class="form_row">
+			<div id="portrait"><img src="$dlog.root()/uploads/portrait/${user.portrait}"></div>
+    	</div>
+		#end
+    	<div class="form_row">
+    		<div class="form_row_title fleft">用户名:</div>
+    		<div class="form_row_content">&nbsp;$text.html(${user.name})</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">在线状态:</div>
+    		<div class="form_row_content">&nbsp;#if($user.onlineStatus==1)[在线]#else[离线]#end</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">昵称:</div>
+    		<div class="form_row_content">&nbsp;$text.html(${user.nickname})</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">性别:</div>
+    		<div class="form_row_content">&nbsp;$text.get("sex.desc.${user.sex}","ui")</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">生日:</div>
+    		<div class="form_row_content">&nbsp;$!date.format("yyyy/MM/dd",$!{user.birth})&nbsp;</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">个人宣言:</div>
+    		<div class="form_row_content">&nbsp;$!{user.resume}</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">注册时间:</div>
+    		<div class="form_row_content">&nbsp;$date.format("yyyy/MM/dd HH:mm",$user.regTime)</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">最近访问时间:</div>
+    		<div class="form_row_content">&nbsp;$!date.format("yyyy/MM/dd HH:mm",$user.lastTime)</div>
+    	</div>
+		<p><strong>联系信息:</strong></p>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">电子邮件:</div>
+    		<div class="form_row_content">&nbsp;#if(!$dlog.is_empty($user.contactInfo.email))<a href="mailto:${user.contactInfo.email}">$!{user.contactInfo.email}</a>#end</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">QQ:</div>
+    		<div class="form_row_content">&nbsp;$!{user.contactInfo.qq}</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">MSN:</div>
+    		<div class="form_row_content">&nbsp;$!{user.contactInfo.msn}</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">个人网站:</div>
+    		<div class="form_row_content">&nbsp;#if(!$dlog.is_empty($user.contactInfo.homePage))<a href="${user.contactInfo.homePage}" target="_blank">$!{user.contactInfo.homePage}</a>#end</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">地区(省/市):</div>
+    		<div class="form_row_content">&nbsp;$!{user.province} $!{user.city}</div>
+    	</div>
+		<p><strong>参与情况:</strong></p>
+    	#if($user.ownSiteId>0)
+    		#set($user_site = $dlog.site($user.ownSiteId))
+    	<div class="form_row">
+    		<div class="form_row_title fleft">注册网站:</div>
+    		<div class="form_row_content">&nbsp;<a href="$dlog.root()/?sid=$user.ownSiteId" title="$text.html(${user_site.title})">$text.html(${user_site.friendlyName})</a></div>
+    	</div>
+		#end
+    	<div class="form_row">
+    		<div class="form_row_title fleft">参与日记:</div>
+    		<div class="form_row_content">&nbsp;日记(${user.count.article})  评论(${user.count.articleReply})</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">参与相册:</div>
+    		<div class="form_row_content">&nbsp;照片(${user.count.photo})  评论(${user.count.photoReply})</div>
+    	</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">参与讨论:</div>
+    		<div class="form_row_content">&nbsp;贴子(${user.count.topic})  评论(${user.count.topicReply})</div>
+    	</div>
+		<div class="form_row_submit">
+			#if($g_user && ($uid != ${g_user.id}))
+        	<input type="button" value="短消息" onclick="location.href='$dlog.root()/dlog/sendmsg.vm?sid=$g_site_id&amp;uid=$user.id'">
+        	<input type="button" name="eventSubmit_AddFriend" value="加为好友" onclick="add_user_to_friend();">
+			#end
+			#if($g_user && $uid == ${g_user.id})
+        	<input type="button" value="修改" onclick="location.href='$dlog.root()/dlog/myprofile.vm?sid=$g_site_id&amp;uid=$user.id'">
+			#end
+    		#if($g_user && ($uid != ${g_user.id}))
+    		<input type="submit" name="eventSubmit_BlockUser" value="阻止">
+    		#end
+        	<input type="button" name="btn_return" value="返回上页" onclick="history.go(-1)">
+        	<input type="button" name="btn_return" value="返回网记" onclick="location.href='$dlog.root()/?sid=$g_site_id'">
+		</div>
+	</div>
+	</form>
+</div>
+<div class="page_footer"></div>
+<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function add_user_to_friend(){
+		var random = Math.random()+'';
+		var url = '$link.setAction("dlog/user")?sid=${g_site_id}&uid=${user.id}&eventSubmit_AddFriend='+random+'&__ClientId=$dlog.gen_client_id()';
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'get', onComplete: add_user_to_friend_response}
+    	);
+	}
+	function add_user_to_friend_response(originalRequest) {
+		alert(originalRequest.responseText);
+    }
+</script>

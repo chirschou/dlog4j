@@ -1,0 +1,55 @@
+#set($menus_name = [$text.ui("label.home"),$text.diary($g_site),$text.photo($g_site),$text.music($g_site),$text.bbs($g_site),$text.guestbook($g_site)])
+#set($menus_link = ["$dlog.root()/","$dlog.root()/html/diary/","$dlog.root()/html/photo/","$dlog.root()/html/music/","$dlog.root()/html/bbs/","$dlog.root()/html/guestbook.vm"])
+#if(${g_site.functionStatus.guestbook}==2)
+	#set($__nothing = $menus_name.set(5, ""))
+	#set($__nothing = $menus_link.set(5, ""))
+#end
+#if(${g_site.functionStatus.forum}==2)
+	#set($__nothing = $menus_name.set(4, ""))
+	#set($__nothing = $menus_link.set(4, ""))
+#end
+#if(${g_site.functionStatus.music}==2)
+	#set($__nothing = $menus_name.set(3, ""))
+	#set($__nothing = $menus_link.set(3, ""))
+#end
+#if(${g_site.functionStatus.photo}==2)
+	#set($__nothing = $menus_name.set(2, ""))
+	#set($__nothing = $menus_link.set(2, ""))
+#end
+#if(${g_site.functionStatus.diary}==2)
+	#set($__nothing = $menus_name.set(1, ""))
+	#set($__nothing = $menus_link.set(1, ""))
+#end
+<div class="channel_bar_left fleft"></div><div class="channel_bar_right fright"></div>
+<div class="channel_bar_bg">
+	<div class="fleft sitenav">
+		#foreach($menu in $menus_name)
+			#if($dlog.not_empty($menu))
+    			#set($idx = $velocityCount - 1)
+    			#set($m_link = $menus_link.get($idx))
+    			#if($velocityCount == $current_menu_item)
+    				<a class="nav_on"></a><a href="${m_link}?sid=$g_site_id" class="selected">${menu}</a>
+    			#else
+    			##选中项目的前后项目都不显示竖线
+    			#set($show_line = $velocityCount < $menus_name.size())
+    				#set($last_item = $current_menu_item - 1)
+    				#set($show_line = $show_line && $last_item != $velocityCount)
+    				<a href="${m_link}?sid=$g_site_id">${menu}</a>
+    				#if($show_line)
+    					<a class="split"></a>
+    				#end
+    			#end
+			#end
+		#end
+	</div>
+	#if($dlog.is_owner($g_site, $g_user))
+	<div class="fright sitesetting">
+		#if($current_menu_item==7)
+			<a class="nav_on"></a><a href="$dlog.root()/html/sitemgr/?sid=$g_site_id" class="selected">$text.ui("channel.settings")</a>
+		#else
+			<a href="$dlog.root()/html/sitemgr/?sid=$g_site_id">$text.ui("channel.settings")</a>
+		#end
+	</div>
+	#end
+	<div></div>
+</div>

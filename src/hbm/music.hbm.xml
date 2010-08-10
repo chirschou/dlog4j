@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.liusoft.dlog4j.beans">
+
+	<class name="MusicBoxBean" table="dlog_musicbox" batch-size="20" dynamic-update="true">
+		
+		<cache usage="read-write"/>
+		
+    	<id name="id" column="music_box_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" type="string" column="box_name"/>
+		<property name="desc" type="string" column="box_desc"/>
+		
+		<property name="musicCount" type="int" column="music_count"/>
+		
+		<property name="sortOrder" type="int" column="sort_order"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		
+		<bag name="songs" lazy="true" inverse="true" cascade="delete" where="status=0" order-by="music_id DESC">
+			<key column="music_box_id"/>
+			<one-to-many class="MusicBean"/>
+		</bag>
+			
+	</class>
+	
+	<class name="MusicBean" table="dlog_music" batch-size="20" dynamic-update="true">
+		
+    	<id name="id" column="music_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="title" type="string" column="music_title"/>
+		<property name="word" type="string" column="music_word"/>
+		<property name="album" type="string"/>
+		<property name="singer" type="string"/>
+		<property name="url" type="string"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="status" type="int"/>
+		<property name="type" type="int" column="music_type"/>
+		<property name="viewCount" type="int" column="view_count"/>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="musicBox" column="music_box_id" cascade="none"/>		
+		<many-to-one name="introducer" column="userid" cascade="none" update="false"/>		
+		
+	</class>
+	
+	<class name="MusicOutlineBean" table="dlog_music" batch-size="20" dynamic-update="true">
+		
+    	<id name="id" column="music_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="title" type="string" column="music_title"/>
+		<!--
+		<property name="word" type="string" column="music_word"/>
+		-->
+		<property name="album" type="string"/>
+		<property name="singer" type="string"/>
+		<property name="url" type="string"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		<property name="status" type="int"/>
+		<property name="type" type="int" column="music_type"/>
+		<property name="viewCount" type="int" column="view_count"/>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="musicBox" column="music_box_id" cascade="none"/>		
+		<many-to-one name="introducer" column="userid" cascade="none" update="false"/>		
+		
+	</class>
+	
+</hibernate-mapping>

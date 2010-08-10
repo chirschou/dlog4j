@@ -1,0 +1,134 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of settings
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="网站基本信息设置")
+###############################################################################
+#alert_msg("site")
+#set($sform = $form.getBean())
+#if(!$sform) #set($sform = $g_site) #end
+<form action="$link.setAction("html/sitemgr/site")" method="post">
+<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+<input type="hidden" name="id" value="$g_site_id"/>
+<input type="hidden" name="sid" value="$g_site_id"/>
+<input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>网站基本信息</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="form">
+		<div class="form_note">
+			<li><b>粗体字</b> 部分必须填写</li>
+			<li>如果网站标题没有填写则标题会别自动设置为网站的中文名</li>
+		</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				<b>网站编号</b>
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="4" value="${g_site.id}" disabled>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				<b>网站英文名</b>
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="8" value="${g_site.uniqueName}" disabled>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				<b>网站中文名</b>
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="20" maxlength="20" name="friendlyName" value="$!{sform.friendlyName}">
+				#struts_message("friendlyName")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				网站标题
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="40" maxlength="100" name="title" value="$!{sform.title}">
+				#struts_message("title")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				自定义域名
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="20" maxlength="100" name="url" value="$!{sform.url}">
+				#struts_message("url")不包括{http://}
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				ICP证号
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="20" maxlength="20" name="icpNumber" value="$!{sform.icpNumber}">(Just for Chinese)
+				#struts_message("icpNumber")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				网站宣言
+    		</div>
+    		<div class="form_row_content">
+				&nbsp;&nbsp;100字以内！
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_content">
+				<div class="spacer_5"></div>
+				<textarea name="detail" rows="5" cols="68">$!{sform.detail}</textarea>
+				#struts_message("detail")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+			<div class="form_row_submit">
+				<input type="submit" name="eventSubmit_UpdateSite" value="提交更改" />
+				<input type="reset" value="重新填写" />
+			</div>
+    	</div>
+	</div>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>
+</form>

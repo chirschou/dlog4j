@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.liusoft.dlog4j.beans">
+
+	<class name="CatalogBean" table="dlog_catalog" dynamic-update="true" batch-size="20">
+		
+		<cache usage="read-write"/>
+		
+    	<id name="id" column="catalog_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="catalog" column="dlog_type_id" cascade="none"/>		
+		
+		<property name="articleCount" type="int" column="article_count"/>
+		<property name="sortOrder" type="int" column="sort_order"/>
+		<property name="type" type="int" column="catalog_type"/>
+		<property name="verifyCode" type="string"/>
+		
+		<property name="name"   type="string" column="catalog_name"/>		
+		<property name="detail" type="string" column="catalog_desc"/>
+		
+		<property name="createTime" type="timestamp" column="create_time" update="false"/>
+		
+		<bag name="diaries" lazy="true" inverse="true" cascade="delete" batch-size="10">			
+			<key column="catalog_id"/>
+			<one-to-many class="DiaryOutlineBean"/>
+		</bag>
+			
+	</class>
+	
+    <class name="CatalogPermBean" table="dlog_catalog_perm" batch-size="20">
+		
+		<composite-id name="key" class="CatalogUserKey" unsaved-value="any">
+			<key-property name="catalog" type="int" column="catalog_id"/>
+			<key-property name="user" type="int" column="userid"/>
+        </composite-id>
+        
+		<property name="role" type="int" column="user_role"/>
+		
+    </class>
+
+	<class name="DiaryBean" table="dlog_diary" dynamic-update="true" batch-size="20">
+		<!--
+		<cache usage="read-write"/>
+		-->
+    	<id name="id" column="diary_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="author"    type="string" column="author"/>
+		<property name="authorUrl" type="string" column="author_url"/>
+		
+		<property name="title"   type="string"/>
+		<property name="content" type="text"/>
+		<property name="size" type="int" column="diary_size"/>
+		<property name="refUrl"  type="string" column="refer"/>
+		<property name="weather" type="string"/>
+		
+		<property name="moodLevel" type="int" column="mood_level"/>
+		
+		<property name="keyword" type="string" column="tags"/>		
+		
+		<property name="replyCount" type="int" column="reply_count"/>
+		<property name="viewCount"  type="int" column="view_count"/>	
+		<property name="trackBackCount"  type="int" column="tb_count"/>		
+		
+		<property name="writeTime" type="timestamp" column="write_time" update="false"/>
+		<property name="lastReplyTime"  type="timestamp" column="last_reply_time" insert="false"/>
+		<property name="lastReadTime"  type="timestamp" column="last_read_time" insert="false"/>
+		<property name="modifyTime"  type="timestamp" column="modify_time" insert="false"/>
+		
+		<property name="replyNotify" type="int" column="reply_notify"/>		
+		<property name="status" type="int"/>
+		<property name="lock" type="int" column="locked"/>	
+		<property name="type" type="int" column="diary_type"/>	
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" type="string" column="client_ip" update="false"/>
+			<property name="type" type="int" column="client_type" update="false"/>
+			<property name="userAgent" type="string" column="client_user_agent" update="false"/>
+		</component>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="owner" column="userid" cascade="save-update" update="false"/>
+		<many-to-one name="catalog" column="catalog_id" cascade="save-update"/>
+		<many-to-one name="bgSound" column="bgsound" cascade="none"/>
+		
+		<bag name="replies" lazy="true" inverse="true" cascade="delete" batch-size="10">			
+			<key column="diary_id"/>
+			<one-to-many class="DiaryReplyBean"/>
+		</bag>
+			
+		<bag name="trackbacks" lazy="true" inverse="true" cascade="delete" batch-size="10" where="parent_type=1">
+			<key column="parent_id"/>
+			<one-to-many class="TrackBackBean"/>
+		</bag>
+		
+		<bag name="tags" lazy="true" inverse="true" cascade="all" batch-size="10" where="ref_type=1">
+			<key column="ref_id"/>
+			<one-to-many class="TagBean"/>
+		</bag>
+			
+	</class>
+	
+	<class name="DiaryOutlineBean" table="dlog_diary" dynamic-update="true" batch-size="20">
+		<!--
+		<cache usage="read-write"/>
+		-->
+    	<id name="id" column="diary_id" type="int">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="author"    type="string" column="author"    />
+		<property name="authorUrl" type="string" column="author_url"/>
+		
+		<property name="title"   type="string"/>
+		<property name="size" type="int" column="diary_size"/>
+		<property name="refUrl"  type="string" column="refer"/>
+		<property name="weather" type="string" column="weather"/>
+		
+		<property name="moodLevel" type="int" column="mood_level"/>
+		
+		<property name="keyword" type="string" column="tags"/>		
+		
+		<property name="replyCount" type="int" column="reply_count"/>
+		<property name="viewCount"  type="int" column="view_count"/>	
+		<property name="trackBackCount"  type="int" column="tb_count"/>		
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" type="string" column="client_ip" update="false"/>
+			<property name="type" type="int" column="client_type" update="false"/>
+			<property name="userAgent" type="string" column="client_user_agent" update="false"/>
+		</component>
+		
+		<property name="writeTime" type="timestamp" column="write_time" update="false"/>
+		<property name="lastReplyTime"  type="timestamp" column="last_reply_time" insert="false"/>
+		<property name="lastReadTime"  type="timestamp" column="last_read_time" insert="false"/>
+		<property name="modifyTime"  type="timestamp" column="modify_time" insert="false"/>
+		
+		<property name="replyNotify" type="int" column="reply_notify"/>		
+		<property name="status" type="int"/>
+		<property name="lock" type="int" column="locked"/>	
+		<property name="type" type="int" column="diary_type"/>		
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>
+		<many-to-one name="owner" column="userid" cascade="save-update" update="false"/>
+		<many-to-one name="catalog" column="catalog_id" cascade="save-update"/>
+		<many-to-one name="bgSound" column="bgsound" cascade="none"/>
+		
+		<bag name="replies" lazy="true" inverse="true" cascade="delete" batch-size="10">			
+			<key column="diary_id"/>
+			<one-to-many class="DiaryReplyBean"/>
+		</bag>
+			
+		<bag name="trackbacks" lazy="true" inverse="true" cascade="delete" batch-size="10" where="parent_type=1">
+			<key column="parent_id"/>
+			<one-to-many class="TrackBackBean"/>
+		</bag>
+		
+		<bag name="tags" lazy="true" inverse="true" cascade="all" batch-size="10" where="ref_type=1">
+			<key column="ref_id"/>
+			<one-to-many class="TagBean"/>
+		</bag>
+			
+	</class>
+	
+	<class name="DiaryReplyBean" table="dlog_j_reply" batch-size="20" dynamic-update="true">
+		
+    	<id name="id" column="j_reply_id" type="int">
+			<generator class="identity"/>
+		</id>
+				
+		<property name="author"      type="string" column="author"/>
+		<property name="authorEmail" type="string" column="author_email" />
+		<property name="authorURL"   type="string" column="author_url"   />
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" type="string" column="client_ip" update="false"/>
+			<property name="type" type="int" column="client_type" update="false"/>
+			<property name="userAgent" type="string" column="client_user_agent" update="false"/>
+		</component>
+		
+		<property name="content" type="string" column="content"/>
+		
+		<property name="replyTime" type="timestamp" column="write_time" update="false"/>
+		<property name="status"    type="int"/>
+		<property name="ownerOnly" type="int" column="owner_only"/>
+		
+		<many-to-one name="site"  column="site_id"  cascade="none"  update="false"/>
+		<many-to-one name="user"  column="userid"   cascade="save-update" update="false"/>
+		<many-to-one name="diary" column="diary_id" cascade="save-update" update="false"/>
+		
+	</class>
+	
+	<query name="MODIFY_TYPE_OF_DIARY">
+		UPDATE DiaryBean d SET d.type=? WHERE d.id=?
+	</query>
+	
+</hibernate-mapping>

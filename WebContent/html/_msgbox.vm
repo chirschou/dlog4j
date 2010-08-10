@@ -1,0 +1,13 @@
+#set($msg = $request.getAttribute("msg"))
+#set($p_page= $request.getAttribute("page"))
+#set($sid = $dlog.param("sid",-1))
+<script language="javascript" type="text/javascript">
+    #if($msg)alert("$msg");#end
+    #if($p_page)
+        location.href="$dlog.root()$p_page";
+    #elseif($sid>0)
+        location.href='$dlog.root()/?sid=$sid';
+    #else
+        location.href='$dlog.root()/';
+    #end
+</script>

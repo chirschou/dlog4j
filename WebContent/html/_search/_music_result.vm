@@ -1,0 +1,43 @@
+#set($objs = $SEARCH_tool.search_music($g_site, $g_user, $key))
+<b>音乐:</b>共有<b>$!{objs.size()}</b>项符合<b>${key}</b>的查询结果，(搜索用时<b>${SEARCH_tool.get_search_time()}</b>毫秒)<br/><br/>
+#if($objs && $objs.size() > 0)
+<div>
+<table cellspacing=1 cellpadding=3 width="100%" border="0" class="table">
+<tr class="table_head">
+    <td nowrap><b>序号</b></td>
+    <td align="center" nowrap><b>歌曲名</b></td>
+    <td align="center" nowrap><b>添加时间</b></td>
+    <td align="center" nowrap><b>歌手</b></td>
+    <td align="center" nowrap><b>专辑</b></td>
+    <td align="center" nowrap><b>网站</b></td>
+    <td width="1%" nowrap>播放</td>
+    <td width="1%" nowrap>下载</td> 
+</tr>
+#foreach($obj in $objs)
+<tr class="table_cell">
+    <td align="right" nowrap><b>${velocityCount}</b></td>
+    <td width="100%">&nbsp;&nbsp;
+        <a href="$dlog.root()/html/music/?sid=${obj.site.id}">$text.html(${obj.title})</a>
+    </td>
+    <td nowrap>$date.format("yyyy/MM/dd",${obj.createTime})</td>
+    <td nowrap>$text.html(${obj.singer})</td>
+    <td nowrap>$!text.html(${obj.album})</td>
+    <td align="center" nowrap>
+        [<a href="$dlog.root()/html/music/?sid=${obj.site.id}">$text.html(${obj.site.friendlyName})</a>]
+    </td>
+    <td width="1%" align="center">
+    #if(${obj.url})
+    	<a href="#" onclick="return play('${obj.url}');">$html.img("music/icon_play.gif","点击播放","play","absmiddle",0)</a>
+	#end
+	</td>
+    <td width="1%" align="center">
+    #if(${obj.url})
+    	<a href="${obj.url}">$html.img("music/icon_down.gif","点击下载","download","absmiddle",0)</a>
+	#end
+	</td> 
+</tr>
+#end
+</table>
+</div>
+#parse("/html/music/_player.vm")
+#end

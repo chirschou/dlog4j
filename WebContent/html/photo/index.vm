@@ -1,0 +1,142 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of DLOG4J's photo album
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_photo.vm")
+#set($page_title="我的相册")
+###############################################################################
+#set($PHOTOS_PER_PAGE = 30)
+#set($month_selected = $dlog.param("m",-1))
+#set($p_page = $dlog.param("page",1))
+#set($p_year = $dlog.param("year", -1))
+#set($p_month = $dlog.param("month", -1))
+#set($p_date = $dlog.param("date", -1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+#set($album_id = $dlog.param("aid", -1))
+#set($album_selected = $PHOTO_tool.album($album_id))
+#set($date_param = $dlog.make_date_params("aid",$album_id,$p_year,$p_month,$p_date))
+#set($vc_key = "ALBUM_$album_id")
+#set($verify_code = $request.getSession(false).getAttribute($vc_key))
+#if(${album_selected} && ${album_selected.type}==2 && !$dlog.is_owner($g_site,$g_user))
+	##私有分类，但却不是站长
+	#show_msg_box("此相册只有站长本人可以查看！！")
+#elseif(${album_selected} && ${album_selected.type}==1 && !$PHOTO_tool.can_access_album($g_site,$g_user,$album_selected,$request))
+	##密码验证，但是用户还没输入密码
+	#invoke("_album_verify.vm")
+#else
+#if($album_selected)
+	#set($photo_count = ${album_selected.photoCount})
+#else
+	#set($photo_count = $PHOTO_tool.photo_count($g_site, $g_user, -1 , $month_selected))
+#end
+#set($page_count = $dlog.page_count($photo_count, $PHOTOS_PER_PAGE))
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			#if($album_selected)
+				#if(${album_selected.parent})
+				<a href="$dlog.root()/html/photo/?sid=$g_site_id&amp;aid=${album_selected.parent.id}">${album_selected.parent.name}</a>&nbsp;&raquo;&nbsp;
+				#end
+                $!{album_selected.name}
+    			<a href="$dlog.root()/rss.vm?sid=$g_site_id&amp;tid=2&amp;cid=${album_selected.id}">
+					$html.img("rss.png",null,"rss","absmiddle",0)
+				</a>
+			#end
+		</div>
+		<div class="pagecontent_right fright">
+			<form name="dform" action="">
+                <input type="hidden" name="sid" value="$g_site_id"/>
+                #if($p_year>0)<input type="hidden" name="year" value="$p_year"/>#end
+                #if($p_month>0)<input type="hidden" name="month" value="$p_month"/>#end
+                #if($p_date>0)<input type="hidden" name="date" value="$p_date"/>#end
+                #if($album_id > 0)
+					<input type="hidden" name="aid" value="$album_id"/>
+				#else
+					#if($p_year>0)${p_year}年#end
+					#if($p_month>0)${p_month}月#end
+					#if($p_date>0)${p_date}日#end
+                #end
+                    共有照片<b>$photo_count</b> 张
+                    每页<b>$PHOTOS_PER_PAGE</b> 张
+                    第<b>$p_page</b>页
+                    共<b>$page_count</b>页
+                #if($page_count > 1)
+                    到<select name="page" onchange="dform.submit();">
+                #foreach($p in [1..$page_count])
+                <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                #end
+                </select>页
+                #end</form>
+		</div>
+		<div class="line_dashed"></div>
+		<div class="pagecontent_left fleft">			
+			#if($album_selected && $dlog.not_empty($album_selected.desc))
+				${album_selected.desc}
+			#end
+		</div>
+		<div class="pagecontent_right fright">
+			#if($dlog.is_owner($g_site,$g_user))
+                #if($album_selected)
+                <a href="upload.vm?sid=$g_site_id&amp;aid=${album_selected.id}">上传照片</a> | 
+                <a href="album_edit.vm?sid=$g_site_id&amp;aid=${album_selected.id}">修改相簿属性</a> | 
+                <a href="album_move.vm?sid=$g_site_id&amp;aid=${album_selected.id}">移动相簿</a> | 
+                <a href="$link.setAction("html/album")?sid=${g_site_id}&amp;eventSubmit_Delete=${album_selected.id}" onclick="return confirm('相簿必须为空才允许删除，是否继续？');">删除相簿</a>                                
+				#end
+			#end
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="photo">
+		##列出照片
+		#set($photos = $PHOTO_tool.list_photos($g_site, $g_user, $album_id, $month_selected, $p_page, $PHOTOS_PER_PAGE))
+		#if($photos)
+        <table border="0" cellspacing="5" cellpadding="5" width="100%">
+        #set($COL_COUNT = 5)  ##每行最多显示五张照片
+		#set($ROW_COUNT = $dlog.page_count($photos.size(), $COL_COUNT) - 1)
+        #foreach($row in [0..$ROW_COUNT]) ##最多显示四行
+        <tr>
+			#set($col_photo_count = 0)
+            #set($begin_idx = $row * $COL_COUNT)
+            #set($end_idx = $begin_idx + $COL_COUNT - 1)				
+            #foreach($idx in [$begin_idx..$end_idx])
+            #if($idx < $photos.size())
+                #set($_photo = $photos.get($idx))
+        		<td width="20%" class="photo_box" valign="bottom">
+					#if($dlog.is_owner($g_site,$g_user) || ${_photo.status}==0)
+        			<div class="photo_cen"><a href="show.vm?sid=$g_site_id&amp;aid=$album_id&amp;pid=${_photo.id}"><img src="$dlog.root()${_photo.previewURL}" title="(${_photo.replyCount}评/${_photo.viewCount}阅)" border="0"/></a></div>            			
+					#set($photo_name = $dlog.abbreviate($dlog.plain_text(${_photo.name}), 6))
+        			<div class="photo_name">#if(${_photo.status}!=0)<img src="$dlog.root()/images/lock.gif" align="absmiddle"/>#end&nbsp;${photo_name}</div>
+					#end
+                </td>
+				#set($col_photo_count = $col_photo_count + 1)
+			#end
+			#end
+			#if($col_photo_count < $COL_COUNT)
+			<td>&nbsp;</td>
+			#end
+        </tr>
+		#end
+		</table>
+		#end
+	</div>
+</div>
+<div class="page_bottom"></div>
+#end

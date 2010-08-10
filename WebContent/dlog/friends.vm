@@ -1,0 +1,85 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  bookmark view
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($page_title="我的好友")
+
+#if($g_user)
+    #set($friend_count = $USER_tool.friend_count($g_user.id))
+    #if($friend_count>0)
+        <div class="page_top" align="right">您共有${friend_count}个好友！</div>
+        <hr size="1" noshade color="#CCCCCC"/>
+        <form action="$link.setAction("dlog/user")" method="post" onsubmit="return confirm('是否真的把选中的用户从好友列表中删除吗？');">
+        <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+        <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+        <input type="hidden" name="sid" value="$g_site_id"/>		
+		<div class="page_body">
+        <table cellspacing="1" cellpadding="3" border="0" class="table" width="100%">
+		<tr class="table_head">
+			<td nowrap></td>
+			<td nowrap>名称</td>
+			<td nowrap>电邮</td>
+			<td align="center" nowrap>在线状态</td>
+			<td nowrap>最近登录时间</td>
+    		<td align="center" nowrap>短消息</td>
+		</tr>
+        #set($friends = $USER_tool.friends(${g_user.id}, 1, -1))
+        #foreach($user in $friends)
+            #set($show_user_url = "$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${user.friend.id}")
+            <tr class="table_cell">
+               <td><input type="checkbox" name="uid" value="${user.friend.id}"/></td>
+               <td>
+				#if(${user.friend.ownSiteId}<1)
+					#set($user_link = "$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${user.friend.id}")
+			    #else
+					#set($user_link = "$dlog.root()/?sid=${user.friend.ownSiteId}")
+				#end
+                <a href="${user_link}">
+                  $text.html(${user.friend.nickname})
+                </a>
+               </td>
+                <td><a href="mailto:$!{user.friend.contactInfo.email}">$!{user.friend.contactInfo.email}</a></td>
+                <td align="center">
+					#if(${user.friend.onlineStatus}==1)
+            		$html.img("online.gif","当前在线",null,"absmiddle",0)
+            		#else
+            		$html.img("offline.gif","当前离线",null,"absmiddle",0)
+            		#end
+				</td>
+                <td>$!date.format("yyyy-MM-dd HH:mm",${user.friend.lastTime})</td>
+                <td align="center">
+                    <a href="$dlog.root()/dlog/sendmsg.vm?sid=$g_site_id&amp;uid=${user.friend.id}" title="给该用户发送短消息">
+                        $html.img("msg.gif")
+                    </a>
+                </td>
+            </tr>
+        #end
+        </table>
+		</div>
+		<div class="page_footer">
+            <input type="checkbox" name="bt_all" value="" onclick="select_all('uid',this.checked)"/>全选		
+            <input type="submit" name="eventSubmit_DelFriend" value="删除选中"/>
+		</div>
+        </form>
+    #else
+    	#show_msg_box("您还有添加任何好友，你可以在查看某个用户资料时点击按钮‘加为好友’即可。")             
+    #end         
+#else
+	#show_msg_box($text.ui("login.tip","$dlog.root()/dlog/login.vm?sid=$g_site_id&fromPage=$link.encodeURL($dlog.get_request_url())"))
+#end

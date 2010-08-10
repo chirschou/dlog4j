@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.liusoft.dlog4j.upgrade">
+
+    <class name="CatalogForm" table="dlog_category" dynamic-update="false">
+		
+    	<id name="id" column="catid" type="int">
+			<generator class="increment"/>
+		</id>		
+		
+		<property name="name"    type="string" length="40" column="catName"/>
+		<property name="iconUrl" type="string" length="20" column="iconUrl"/>
+		
+		<property name="type"       type="int" column="cattype"/>
+		<property name="showInHome" type="int" column="showInHome"/>
+		<property name="order"      type="int" column="sortOrder"/>
+		
+		<bag name="logs" table="dlog_journay" lazy="true" inverse="true" cascade="none">
+			<key column="catid"/>
+			<one-to-many class="LogForm"/>
+		</bag>
+		
+    </class>
+
+    <class name="LogForm" table="dlog_journal" dynamic-update="false">
+		
+    	<id name="id" column="logid" type="int">
+			<generator class="increment"/>
+		</id>
+		
+		<many-to-one name="owner"    column="userid" cascade="none" not-null="true" outer-join="false"/>
+		
+		<property name="category"    type="int" column="catid"/>
+		<property name="author"      type="string" length="50"  column="author"/>
+		<property name="authorUrl"   type="string" length="100" column="author_url"/>
+		<property name="title"       type="string" length="100" column="title"/>
+		<property name="searchKey"   type="string" length="40"  column="logKeys"/>
+		<property name="refUrl"      type="string" length="100" column="refUrl"/>
+		<property name="weather"     type="string" length="20"  column="weather"/>
+		<property name="clientType"  type="string" length="5"   column="clientType"/>
+		
+		<property name="content"     type="string"   column="content"/>
+		
+		<property name="moodLevel"   type="int"    column="moodLevel"/>
+		<property name="replyNotify" type="int"    column="replyNotify"/>
+		<property name="viewCount"   type="int"    column="viewCount"/>
+		<property name="replyCount"  type="int"    column="replyCount"/>
+		<property name="status"      type="int"    column="status"/>
+		
+		<property name="logTime"     type="timestamp"   column="logTime"/>
+		<property name="deleteTime"  type="timestamp"   column="delete_time"/>
+		
+		<bag name="replies" lazy="true" inverse="true" cascade="none" batch-size="10">			
+			<key column="logid"/>
+			<one-to-many class="ReplyForm"/>
+		</bag>
+			
+    </class>
+
+    <class name="MessageForm" table="dlog_message" dynamic-update="false">
+		
+    	<id name="id" column="msgid" type="int">
+			<generator class="increment"/>
+		</id>
+		
+		<property name="content" type="string" column="content"/>
+		
+		<property name="status" type="int" column="status"/>
+		
+		<property name="sendTime" type="timestamp" column="sendTime"/>
+		<property name="readTime" type="timestamp" column="readTime"/>
+		
+		<property name="fromUserId" type="int" column="fromUserId"/>		
+		<property name="toUserId" type="int" column="toUserId"/>
+		
+    </class>
+
+    <class name="ReplyForm" table="dlog_reply" dynamic-update="false">
+		
+    	<id name="id" column="cmtid" type="int">
+			<generator class="increment"/>
+		</id>
+		
+		<many-to-one name="author"  column="userid" not-null="true" outer-join="false"/>
+		<many-to-one name="log"     column="logid"  not-null="true" outer-join="false"/>
+		
+		<property name="content"    type="string"   column="content"/>
+		
+		<property name="writeTime"  type="timestamp"   column="writeTime"/>
+		
+		<property name="clientType" type="string" column="clientType" length="5"/>
+		
+    </class>
+
+    <class name="UserForm" table="dlog_user" dynamic-update="false">
+		
+    	<id name="id" column="userid" type="int">
+			<generator class="increment"/>
+		</id>
+		
+		<property name="displayName"   type="string" length="50"  column="displayName"/>
+		<property name="email"         type="string" length="50"  column="email"/>
+		<property name="homePage"      type="string" length="100" column="homePage"/>
+		<property name="resume"        type="string" length="250" column="resume"/>
+		<property name="loginName"     type="string" length="20"  column="username" update="false"/>
+		<property name="password" type="string" length="50"  column="password"/>
+		<property name="lastAddr"      type="string" length="16"  column="lastAddr" insert="false"/>
+		<property name="cats"          type="string" length="20"  column="ownerCats"/>
+		
+		<property name="loginCount" type="int" column="loginCount"/>
+		<property name="userRole"   type="int" column="userRole"/>
+		
+		<property name="regTime"  type="timestamp" column="regTime"/>
+		<property name="lastTime" type="timestamp" column="lastTime" insert="false"/>
+		
+    </class>
+
+    <class name="LinkForm" table="dlog_favorite" dynamic-update="false">
+		
+    	<id name="id" column="favid" type="int">
+			<generator class="increment"/>
+		</id>
+		
+		<property name="title"  type="string" column="title"   length="100"/>
+		<property name="detail" type="string" column="detail"  length="50"/>
+		<property name="url"    type="string" column="url"     length="250"/>
+		<property name="mode"   type="string" column="mode" length="5"/>
+		
+		<property name="openInNewWindow" type="int" column="in_new_wnd"/>
+		<property name="order"           type="int" column="sortOrder"/>
+		
+		<property name="createTime" type="timestamp" column="createTime"/>
+		
+    </class>
+
+    <class name="BookMarkBean" table="dlog_bookmark" dynamic-update="false">
+		
+    	<id name="id" column="markid" type="int">
+			<generator class="increment"/>
+		</id>
+		
+		<property name="type"       type="int"  column="marktype"/>
+		<property name="order"      type="int"  column="markorder"/>
+		
+		<property name="createTime" type="timestamp" column="createTime"/>
+		
+		<property name="userId"       type="int"  column="userid"/>
+		<many-to-one name="log" column="logid" cascade="none"/>
+		
+    </class>
+
+</hibernate-mapping>

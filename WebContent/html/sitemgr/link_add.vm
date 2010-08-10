@@ -1,0 +1,111 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  link add view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_setting.vm")
+#set($page_title="添加友情链接")
+###############################################################################
+#alert_msg("link")
+#set($lform = $form.getBean())
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>增加友情链接</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	#set($cform = $form.getBean())
+    <form action="$link.setAction("html/sitemgr/link")" method="post">
+	<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <input type="hidden" name="sid" value="$g_site_id"/>
+    <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+	<div class="form">
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				网站名称
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="20" maxlength="20" name="title" value="$!{lform.title}">
+				#struts_message("title")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				网址
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" size="40" maxlength="100" name="url" value="$!{lform.url}">
+				#struts_message("url")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				链接类型
+    		</div>
+    		<div class="form_row_content">
+                <select name="type">
+                    <option value="1">HTML</option>
+                    <option value="2">XML(RDF,RSS,ATOM)</option>
+                    <option value="6">WAP</option>
+                </select>WAP链接只能在WAP页面浏览
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				链接位置
+    		</div>
+    		<div class="form_row_content">
+				<select name="id">
+                #foreach($lnk in ${g_site.links})
+                    <option value="$lnk.id">$text.html($lnk.title)</option>
+                #end
+                </select>
+                <select name="direction">
+                    <option value="1">之前</option>
+                    <option value="2">之后</option>
+                </select>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">&nbsp;</div>
+    		<div class="form_row_content">
+			<input type="checkbox" name="status" value="1"/>只有我本人才能看到该链接
+			</div>
+		</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+			<div class="form_row_submit">
+				<input type="submit" name="eventSubmit_CreateLink" value="增加链接" />
+				<input type="reset" value="重新填写" />
+				<input type="reset" value="返回上页" onclick="history.go(-1)" />
+			</div>
+    	</div>
+	</div>
+	</form>
+	<div class="spacer_10"></div>
+</div>
+<div class="page_bottom"></div>

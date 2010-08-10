@@ -1,0 +1,108 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  to enter the content of topic's reply
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_bbs.vm")
+#set($page_title="回贴")
+###############################################################################
+#set($forum_id = $dlog.param("fid",-1))
+#set($topic_id = $dlog.param("tid",-1))
+#set($topic = $BBS_tool.topic($g_site, $g_user, $topic_id))
+
+#if(!$g_user)
+	#set($prev_page = "$dlog.root()/html/bbs/reply.vm?sid=$g_site_id&fid=$forum_id&tid=$topic_id")
+	#set($prev_page = $link.encodeURL($prev_page))
+    #show_msg_box("用户尚未登录,点击<a href='$dlog.root()/dlog/login.vm?sid=$g_site_id&amp;fromPage=$prev_page'>这里</a>登录")
+#else
+    #set($replyForm = $form.getBean())
+    <form action="$link.setAction("html/bbs/reply")" onsubmit="return validateReplyForm(this)" method="post" name="replyForm">
+    <input type="hidden" name="sid" value="$g_site_id" />
+	<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()" />
+    <input type="hidden" name="fid" value="$forum_id" />
+    <input type="hidden" name="tid" value="$topic_id" />
+    <input type="hidden" name="clientType" value="0" />
+	<div class="page_top">
+    	<div class="adcontent"></div>
+		<div class="pagecontent">
+    		<div class="pagecontent_left fleft">
+				<b>回贴</b>
+    		</div>
+    		<div class="pagecontent_right fright">
+				今天是: $date.get("MMMMM d, yyyy  EEEEE")
+    		</div>
+    	</div>
+    	<div class="spacer_1"></div>
+    </div>
+    #if($messages.exist())
+    	$messages.getAll()
+	#end
+	<div class="page_content">
+		<div class="form">
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+					标题
+        		</div>
+        		<div class="form_row_content">
+					<input type="text" name="title" maxlength="100" size="59" value="Re: $text.html(${topic.title})" />&nbsp;&nbsp;{必须填写}
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+    			<div class="form_row_content">
+    				<div class="spacer_5"></div>
+            		<textarea name="content" style="WIDTH: 100%; HEIGHT: 200px"></textarea>
+        			<div class="spacer_5"></div>
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+    			<div class="form_row_submit">
+					<input type="submit" name="eventSubmit_PublishReply" value="发表" />
+					<input type="reset" value="重置" onclick="replyForm.title.focus();" />
+					<input type="button" value="返回" onclick="history.go(-1)" />
+    			</div>
+        	</div>
+        </div>
+    	<div class="spacer_1"></div>
+    </div>
+	<div class="page_bottom"></div>
+    </form>
+    <script type="text/javascript">
+        window.onload = function()
+        {
+            var sBasePath = document.location.pathname.substring(0,document.location.pathname.lastIndexOf('html')) ;    
+            var oFCKeditor = new FCKeditor( 'content' ) ;
+            oFCKeditor.BasePath    = sBasePath ;
+            oFCKeditor.Height = 200;
+            oFCKeditor.ToolbarSet = "Basic";
+            oFCKeditor.ReplaceTextarea() ;
+        }
+        
+        function validateReplyForm(theForm)
+        {
+            with(theForm){
+                if(is_empty(title.value)){
+                    alert("title is required.");
+                    title.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+#end

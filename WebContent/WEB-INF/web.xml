@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+						 "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	
+	<context-param>
+		<param-name>user-ext-manager</param-name>
+		<param-value></param-value>
+	</context-param>
+	
+	<!-- filters -->
+	<filter>
+		<filter-name>DLOG_GZIPFilter</filter-name>
+		<filter-class>com.liusoft.dlog4j.servlet.GZIPFilter</filter-class>
+		<init-param>
+			<param-name>ignore_1</param-name>
+			<param-value>/mlist.vm</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ignore_2</param-name>
+			<param-value>/atom.vm</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ignore_3</param-name>
+			<param-value>/rss.vm</param-value>
+		</init-param>
+	</filter>
+	
+	<filter>
+		<filter-name>DLOG_HibernateFilter</filter-name>
+		<filter-class>com.liusoft.dlog4j.servlet.DLOG_HibernateFilter</filter-class>
+		<init-param>
+			<param-name>commit_on_close</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+	
+    <filter>
+        <filter-name>DLOG_HomeFilter</filter-name>
+        <filter-class>com.liusoft.dlog4j.servlet.DLOG_HomeFilter</filter-class>
+        <init-param>
+        	<param-name>msg_page</param-name>
+        	<param-value>/html/_sub/_err_msg.vm</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>content_type</param-name>
+        	<param-value>text/html;charset=utf-8</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>home_page_pattern</param-name>
+        	<param-value>/?sid={SID}</param-value>
+        </init-param>
+    </filter>
+	
+	<filter-mapping>
+        <filter-name>DLOG_HomeFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+	
+	<filter-mapping>
+        <filter-name>DLOG_GZIPFilter</filter-name>
+        <url-pattern>*.vm</url-pattern>
+    </filter-mapping>
+	
+	<filter-mapping>
+        <filter-name>DLOG_HibernateFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+	
+	<!-- servlets -->
+    <servlet>
+        <servlet-name>DLOG_ActionServlet</servlet-name>
+        <servlet-class>com.liusoft.dlog4j.servlet.DLOG_ActionServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml,/WEB-INF/struts-config.html.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>filesDenied</param-name>
+            <param-value>jsp,vm,cgi,dll,asp,php,aspx,pl,exe</param-value>
+        </init-param>
+		<init-param>
+			<param-name>photo_saver_class</param-name>
+			<param-value>com.liusoft.dlog4j.photo.FileSystemSaver</param-value>
+		</init-param>
+        <init-param>
+        	<param-name>photo_base_path</param-name>
+        	<param-value>/uploads/photo</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>photo_base_uri</param-name>
+        	<param-value>/uploads/photo</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>portrait_base_path</param-name>
+        	<param-value>/uploads/portrait</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>styles_base_path</param-name>
+        	<param-value>/styles</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+	
+    <servlet>
+        <servlet-name>DLOG_RandomImageServlet</servlet-name>
+        <servlet-class>com.liusoft.dlog4j.servlet.DLOG_RandomImageServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+	
+	<servlet>
+		<servlet-name>DLOG_VelocityServlet</servlet-name>
+		<servlet-class>com.liusoft.dlog4j.servlet.DLOG_VelocityServlet</servlet-class>
+		<init-param>
+			<param-name>org.apache.velocity.toolbox</param-name>
+			<param-value>/WEB-INF/conf/velocity-toolbox.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>org.apache.velocity.properties</param-name>
+			<param-value>/WEB-INF/conf/velocity.properties</param-value>
+		</init-param>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+	
+    <servlet>
+        <servlet-name>FCKEditor_UploadServlet</servlet-name>
+        <servlet-class>com.liusoft.dlog4j.upload.SecurityFCKUploadServlet</servlet-class>
+		<!-- max upload file size in kilobytes -->
+		<init-param>
+			<param-name>max_upload_size</param-name>
+			<param-value>2048</param-value>
+		</init-param>
+		<!-- use disk file upload handler -->
+		<init-param>
+			<param-name>file_saved_class</param-name>
+			<param-value>com.liusoft.dlog4j.upload.DiskUploadFileHandler</param-value>
+		</init-param>
+		<init-param>
+			<param-name>file_saved_path</param-name>
+			<param-value>/uploads/diary</param-value>
+		</init-param>
+		<init-param>
+			<param-name>file_base_uri</param-name>
+			<param-value>/uploads/diary</param-value>
+		</init-param>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+	
+    <servlet>
+        <servlet-name>DLOG_MailSenderServlet</servlet-name>
+        <servlet-class>com.liusoft.dlog4j.servlet.DLOG_MailSenderServlet</servlet-class>
+		
+		<!-- required -->
+		<init-param>
+			<param-name>mail-queue-path</param-name>
+			<param-value>/WEB-INF/spool</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sender</param-name>
+			<param-value>messenger@dlog.com</param-value>
+		</init-param>
+		
+		<!-- optional -->
+		
+		
+        <load-on-startup>6</load-on-startup>
+		
+    </servlet>
+	
+    <servlet>
+        <servlet-name>DLOG_DataExportServlet</servlet-name>
+        <servlet-class>com.liusoft.dlog4j.servlet.DLOG_DataExportServlet</servlet-class>
+        <load-on-startup>7</load-on-startup>
+    </servlet>
+	
+    <servlet>
+        <servlet-name>DLOG_ICPRecordServlet</servlet-name>
+        <servlet-class>com.liusoft.dlog4j.servlet.DLOG_ICPRecordServlet</servlet-class>
+        <load-on-startup>8</load-on-startup>
+    </servlet>
+	
+    <servlet>
+        <servlet-name>DLOG_XMLRPC_Servlet</servlet-name>
+        <servlet-class>com.liusoft.dlog4j.servlet.DLOG_XMLRPC_Servlet</servlet-class>
+		<init-param>
+			<param-name>param</param-name>
+			<param-value>value</param-value>
+		</init-param>
+        <load-on-startup>9</load-on-startup>
+    </servlet>
+	
+	<servlet-mapping>
+		<servlet-name>DLOG_XMLRPC_Servlet</servlet-name>
+		<url-pattern>/servlet/xmlrpc</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>DLOG_ICPRecordServlet</servlet-name>
+		<url-pattern>/cert/bazs.cert</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>DLOG_DataExportServlet</servlet-name>
+		<url-pattern>/servlet/export</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>FCKEditor_UploadServlet</servlet-name>
+		<url-pattern>/servlet/fckeditor_upload</url-pattern>
+	</servlet-mapping>
+	
+    <servlet-mapping>
+        <servlet-name>DLOG_ActionServlet</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+	
+    <servlet-mapping>
+        <servlet-name>DLOG_RandomImageServlet</servlet-name>
+        <url-pattern>/servlet/verify.img</url-pattern>
+    </servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>DLOG_VelocityServlet</servlet-name>
+		<url-pattern>*.vm</url-pattern>
+	</servlet-mapping>
+	
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+	
+	<welcome-file-list>
+		<welcome-file>index.vm</welcome-file>
+	</welcome-file-list>
+	
+	<error-page>  
+		<error-code>500</error-code>  
+		<location>/500.vm</location> 
+	</error-page>
+	
+	<error-page>  
+		<error-code>403</error-code>  
+		<location>/403.vm</location> 
+	</error-page>
+	
+	<error-page>  
+		<error-code>404</error-code>  
+		<location>/index.vm</location> 
+	</error-page>
+	
+</web-app>
+

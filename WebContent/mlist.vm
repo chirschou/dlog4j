@@ -1,0 +1,21 @@
+#set($tmp_nothing = $response.setContentType("text/xml;charset=gbk"))
+#set($mids = $dlog.param("mid",""))
+#set($songs = $MUSIC_tool.list_songs($mids))
+<asx version = "3.0">
+<title>DLOG.CN(http://www.dlog.cn)</title>
+<author>DLOG.CN(http://www.dlog.cn)</author>
+<abstract>DLOG.CN(http://www.dlog.cn)</abstract>
+<copyright>DLOG.CN(http://www.dlog.cn)</copyright>
+#foreach($song in $songs)
+<entry skipifref="yes">
+    <title>${song.title}</title>
+    <author>DLOG.CN(http://www.dlog.cn)</author>
+    <copyright>DLOG.CN(http://www.dlog.cn)</copyright>
+    <ref href="${song.url}"/>
+    <param name="Artist" value="$!{song.singer}"/>
+    <param name="Album" value="$!{song.album}"/>
+    <param name="Title" value="${song.title}"/>
+</entry>
+#end
+</asx>
+$MUSIC_tool.visit_music($songs)

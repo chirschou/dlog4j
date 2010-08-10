@@ -1,0 +1,32 @@
+<div id="screen">
+    <div id="head_bar">#parse("/html/_sub/_operation_bar.vm")</div>
+    <div id="window">
+    	<div id="page">
+			<div>
+            	<div id="banner">
+            		#parse("/html/_sub/_banner.vm")
+            	</div>
+            	<div id="navigator">
+            		#parse("/html/_sub/_function.vm")
+            	</div>		
+        		<div id="body">
+    				<div class="body_content">
+                    	<div id="side">
+							#parse($left_template)
+                    	</div>            	
+                    	<div id="main">
+                    		<div id="top"></div>
+                    		<div id="content">
+            					${screen_content}
+                    		</div>
+                    		<div id="bottom"></div>
+                    	</div>    
+    				</div>
+        		</div>
+    			<div class="spacer_20"></div>
+			</div>
+    		<div id="footer">#parse("/html/_sub/_bottom.vm")</div>
+        </div>
+    </div>
+    <div id="status_bar"></div>
+</div>

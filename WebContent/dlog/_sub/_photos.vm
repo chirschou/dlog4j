@@ -1,0 +1,70 @@
+#set($photo_count = $PHOTO_tool.photo_count())
+#set($PAGE_SIZE = 50)
+#set($page_count = $dlog.page_count($photo_count, $PAGE_SIZE))
+#set($p_page = $dlog.param("p",1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+<div id="new_photos_area">
+<div class="panel">
+	<div class="panel_head">
+		<div>
+    		<div class="fleft">
+				最新上传照片（第<b>$p_page</b>页,共<b>$page_count</b>页
+				#if($page_count > 1)
+            	#if($p_page>1)
+            		<a href="#" onclick="return go_page(1);">首页</a>
+    				<a href="#" onclick="return go_page($pre_page);">上页</a>
+            	#end
+            	#if($p_page < $page_count)
+            		<a href="#" onclick="return go_page($next_page);">下页</a>
+    				<a href="#" onclick="return go_page($page_count);">尾页</a>
+				#end
+				#end
+				）
+			</div>
+			<div class="fright">
+				<a href="$dlog.root()/rss.vm?tid=2">$html.img("rss.png","RSS")</a>
+			</div>
+		</div>
+		<div class="spacer_1"></div>
+	</div>
+	<div class="panel_body">
+        <table border="0" cellspacing="2" cellpadding="0" width="100%">
+        #set($photos = $DLOG4J_tool.list_new_photos($p_page,$PAGE_SIZE))
+        #set($COL_COUNT = 5)
+        #set($ROW_COUNT = $dlog.page_count($photos.size(),$COL_COUNT) - 1)  ##两行
+        #foreach($row in [0..$ROW_COUNT])
+            <tr>
+                #set($begin_idx = $row * $COL_COUNT)
+                #set($end_idx = $begin_idx + $COL_COUNT - 1)				
+                #foreach($idx in [$begin_idx..$end_idx])
+                #if($idx < $photos.size())
+                    #set($_photo = $photos.get($idx))
+            		<td class="photo_box">
+            			<div class="photo_cen"><a href="$dlog.root()/html/photo/show.vm?sid=${_photo.site.id}&amp;pid=${_photo.id}" target="show_photo"><img src="$dlog.root()${_photo.previewURL}" border="0"/></a></div>
+        				#set($photo_name = $dlog.abbreviate($dlog.plain_text(${_photo.name}), 6))
+        				<div class="photo_name">${photo_name}</div>
+                    </td>
+        		#end
+        		#end
+            </tr>
+        #end
+        </table>
+	</div>
+</div>
+</div>
+<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function go_page(pageidx){
+		var random = Math.random()+'';
+		var url = '$dlog.root()/dlog/_sub/_photos.vm?p='+pageidx+'&n='+random;
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'get', onComplete: ajax_new_photo_response}
+    	);
+		return false;
+	}
+	function ajax_new_photo_response(originalRequest) {
+		var d = $('new_photos_area');
+		d.innerHTML = originalRequest.responseText;
+    }
+</script>

@@ -1,0 +1,32 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of DLOG4J
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_diary.vm")
+###############################################################################
+#set($log_id = $dlog.param("log_id",-1))
+#set($log = $DIARY_tool.diary($g_site, $g_user, $log_id))
+#set($page_title=${log.title})
+#if($log && ($log.status==0 || (($log.status==5) && (${log.owner.id}==$g_user_id))))
+    #if(${log.status}==0)
+        $DIARY_tool.visit_diary($g_site, $g_user, $log)
+    #end
+    #invoke("_show_log_and_replies.vm")
+#else
+    #show_msg_box("日记不存在或是您没有阅读该日记的权限！")
+#end

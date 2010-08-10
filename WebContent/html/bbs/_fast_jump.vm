@@ -1,0 +1,13 @@
+#set($forums = $BBS_tool.forums($request, $g_site, $g_user))
+#if($forums && $forums.size()>1)
+<form name="fForm" action="">
+	¿ìËÙÌø×ª£º<input type="hidden" name="sid" value="$g_site_id"/>
+	<select name="fid" onchange="fForm.submit()">
+		#foreach($f in $forums)
+			<option value="${f.id}" #if($forum && ${forum.id}==${f.id})selected#end>
+					&nbsp;&#8226;&nbsp;$text.html(${f.name})
+			</option>
+		#end
+	</select>
+</form>
+#end

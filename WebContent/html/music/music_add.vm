@@ -1,0 +1,126 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  add song
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_music.vm")
+#set($page_title="添加歌曲")
+###############################################################################
+#if(!$dlog.is_owner($g_site, $g_user))
+#invoke("_illegal_access.vm")
+#else
+#set($mboxid = $dlog.param("box",-1))
+
+#if($messages.exist())<font color="red"><b>$!messages.getAll()</b></font>#end
+#set($mform = $form.getBean())
+<form action="$link.setAction("html/music")" method="post" onsubmit="return validateBoxForm(this);">
+<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+<input type="hidden" name="sid" value="$g_site_id"/>
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>添加音乐</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>        
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="form">
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				音乐盒
+    		</div>
+    		<div class="form_row_content">
+				<select name="box">
+                    <option value="-1">请选择音乐盒</option>
+                #foreach($box in $g_site.musicBoxes)
+                    <option value="$box.id"#if($mboxid==$box.id) selected#end>&nbsp;&#8226;&nbsp;$text.html(${box.name})</option>
+                #end
+                </select>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				歌曲名
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="title" value="$!{mform.title}"/>&nbsp;&nbsp;(必须填写)
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				专辑
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="album" value="$!{mform.album}"/>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				歌手
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="singer" value="$!{mform.singer}"/>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				链接地址
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="url" value="$!{mform.url}" size="50"/>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+				歌词
+    		</div>
+    		<div class="form_row_content">
+				&nbsp;&nbsp;发布歌词外,也谈谈感想吧!
+			</div>
+    	</div>
+		<div class="spacer_1"></div>		
+		<div class="form_row">
+			<div class="form_row_content">
+				<div class="spacer_5"></div>
+        		<textarea name="word" style="width:80%;height:100px">$!{mform.word}</textarea>
+    			<div class="spacer_5"></div>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+			<div class="form_row_submit">
+				<input type="submit" name="eventSubmit_Add" value="添加"/>
+                <input type="reset" value="清除"/>
+                <input type="button" value="返回上页" onclick="history.go(-1)"/>
+			</div>
+    	</div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_bottom"></div>
+</form>
+#invoke("_music_javascript.vm")
+#end

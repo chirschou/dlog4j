@@ -1,0 +1,7 @@
+<div class="embed_module_top"></div>
+<div class="embed_module">#invoke("_catalog_tree.vm")</div>
+<div class="embed_module">#invoke("_bbs_search.vm")</div>
+<div class="embed_module">#invoke("_bbs_topic.vm")</div>
+<div class="embed_module">#invoke("_bbs_hot_topic.vm")</div>
+<div class="embed_module">#parse("/html/_sub/_site_support.vm")</div>
+<div class="embed_module_bottom"></div>

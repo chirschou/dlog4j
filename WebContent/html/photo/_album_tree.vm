@@ -1,0 +1,17 @@
+#set($album_id = $dlog.param("aid", -1))
+<div class="module_title"><b>我的相簿</b></div>
+<div class="module_content">
+	#if($dlog.is_owner($g_site,$g_user))
+        <span class="photo_new"><a href="$dlog.root()/html/photo/upload.vm?sid=$g_site_id&amp;aid=$!{request.getParameter("aid")}"><b>发布照片</b></a></span>
+        <span class="album_new"><a href="$dlog.root()/html/photo/album_add.vm?sid=$g_site_id&amp;aid=$!{request.getParameter("aid")}"><b>创建相簿</b></a></span>
+	#end
+	#foreach($album in $g_site.albums)
+        #set($url = "$dlog.root()/html/photo/?sid=$g_site_id&amp;aid=${album.id}")
+		<span class="photo_link"><a href="$url">${album.name}(${album.photoCount})</a></span>
+        #foreach($s_album in $album.childs)
+            #set($url = "$dlog.root()/html/photo/?sid=$g_site_id&amp;aid=${s_album.id}")
+			<span class="photo_sublink"><a href="$url">${s_album.name}(${s_album.photoCount})</a></span>
+        #end
+    #end
+</div>
+<div class="module_foot"></div>

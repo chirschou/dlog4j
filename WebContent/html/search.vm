@@ -1,0 +1,47 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  search result view
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($key = $request.getParameter("q"))
+#set($scope = $dlog.param("scope",1))
+#set($page_title="ËÑË÷#if($key):${key}#end")
+<form name="sform" action="search.vm" method="get">
+	<input type="hidden" name="sid" value="$g_site_id"/>
+    ËÑË÷¹Ø¼ü×Ö: 
+	<input type="text" name="q" value="$!key"/>
+    ËÑË÷·¶Î§:
+	#parse("/html/_search/_scope.vm")
+	<input type="submit" value="ËÑË÷"/>
+	<hr size="1" noshade color="#CCCCCC">
+    #if($key)
+        #if($scope == 0)
+            #invoke("_search/_search_all.vm")
+        #elseif($scope == 100)
+            #invoke("_search/_user_result.vm")
+        #elseif($scope == 1)
+            #invoke("_search/_diary_result.vm")
+        #elseif($scope == 3)    
+            #invoke("_search/_photo_result.vm")                            
+        #elseif($scope == 4)
+            #invoke("_search/_topic_result.vm")                         
+        #elseif($scope == 5)
+            #invoke("_search/_music_result.vm")
+        #end
+    #end
+</form>

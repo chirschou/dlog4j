@@ -1,0 +1,37 @@
+<div id="float_bar">
+    <div>
+        <div class="logo fleft">
+			<a href="http://www.dlog.cn"><img src="$dlog.style($g_site, "images/float_bar_logo.gif")" align="absmiddle" alt="DLOG.CN" border="0" /></a>&nbsp;|&nbsp;&nbsp;<a href="http://www.dlog.cn/html/bbs/forum.vm?sid=1&fid=12">投诉建议</a>		
+        </div>
+        <div class="link fright">        	
+            #if($g_user)
+                $text.ui("label.welcome.msg",[${g_user.nickname}])&nbsp;|&nbsp;
+        		#if($g_user && ${g_user.ownSiteId}>0 && $g_site_id != ${g_user.ownSiteId})
+        		<a href="$dlog.root()/?sid=${g_user.ownSiteId}">我的网记</a>&nbsp;|&nbsp;
+				#end
+				#if(!$g_user || ${g_user.ownSiteId}<=0)
+				<a href="$dlog.root()/dlog/new_site.vm?sid=${g_site_id}"><b>开通个人网记</b></a>&nbsp;|&nbsp;
+        		#end
+                <a href="$dlog.root()/dlog/listmsg.vm?sid=$g_site_id">$text.ui("label.message")</a>
+				#if(!$skip_new_msg && $dlog.has_new_msg($g_site, $g_user))
+				<span id="newMessage">
+                <a href="$dlog.root()/dlog/listmsg.vm?sid=${g_site_id}&amp;msg=0" onclick="javascript:newMessage.style.visibility='hidden';">                
+				$html.img("newmsg.gif",null,null,"absmiddle",0)</a>
+				</span>
+            	<bgsound src='$dlog.root()/msg.mid' border='0'>
+                #end
+				|&nbsp;<a href="$dlog.root()/dlog/bookmark.vm?sid=$g_site_id">$text.ui("label.bookmark")</a>
+				|&nbsp;<a href="$dlog.root()/dlog/friends.vm?sid=$g_site_id">好友</a>
+				|&nbsp;<a href="$dlog.root()/dlog/blacklist.vm?sid=$g_site_id">黑名单</a>
+				|&nbsp;<a href="$dlog.root()/dlog/myprofile.vm?sid=$g_site_id">$text.ui("label.profile")</a>
+				|&nbsp;<a href="$dlog.root()/dlog/user.do?sid=$g_site_id&amp;eventSubmit_Logout=$link.encodeURL($dlog.get_request_url())">$text.ui("label.logout")</a>
+            #else
+				<a href="$dlog.root()/dlog/new_site.vm?sid=${g_site_id}"><b>开通个人网记</b></a>&nbsp;|&nbsp;
+                <a href="$dlog.root()/dlog/login.vm?sid=$g_site_id&amp;fromPage=$link.encodeURL($dlog.get_request_url())">$text.ui("label.login")</a>&nbsp;|&nbsp;
+                <a href="$dlog.root()/dlog/reguser.vm?sid=$g_site_id">$text.ui("label.register")</a>
+            #end
+            |&nbsp;<a href="$dlog.root()/html/search.vm?sid=$g_site_id">$text.ui("label.search")</a>
+        </div>
+    </div>
+	<div class="spacer_1"></div>
+</div>

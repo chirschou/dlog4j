@@ -1,0 +1,64 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  share diary/photo/music etc. with friend via email
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#set($photo_id = $dlog.param("pid",-1))
+#set($img_url = $dlog.param("img",""))
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="UTF-8">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>推荐相片</title>
+    <script type="text/javascript" src="$dlog.root()/js/common.js"></script>
+    #select_css()
+    <script language="javascript" type="text/javascript">
+    function checkForm(theForm){
+    	if(is_empty(theForm.mails.value)){
+    		alert("请输入好友的邮件地址。");
+    		theForm.mails.focus();
+    		return false;
+    	}
+    	return true;
+    }
+    </script>
+</head>
+<body onload="frm_share.mails.focus()">
+<div id="screen">
+	<div id="window">
+		<div class="popup_window"><img src="$img_url" border="0" align="absmiddle"/></div>
+		<div class="popup_window">
+			<form name="frm_share" action="$link.setAction("html/photo")" method="POST" onsubmit="return checkForm(this)">
+    		<input type="hidden" name="sid" value="$g_site_id"/>
+    		<input type="hidden" name="id" value="$photo_id"/>
+    		<input type="hidden" name="pid" value="$photo_id"/>
+    		<input type="hidden" name="img" value="$img_url"/>
+    		<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+            	<h2><strong>请输入好友的邮件地址</strong></h2>(多个邮件地址请用 ; 隔开，最多输入十个邮箱地址)
+            	#if($messages.exist())<br/><font color="red"><b>$!messages.getAll()</b></font>#end
+            	<p><textarea name="mails" rows="4" cols="40">$!{request.getParameter("mails")}</textarea></p>
+            	<p>
+            		<input type="submit" value="提交邮件地址" name="eventSubmit_Recommend"> 
+            		<input type="button" value="关闭窗口" onclick="window.close()">
+            　	</p>
+            </form>
+		</div>
+		<div class="popup_window"></div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+#if(!$TOP_PHOTO_COUNT)
+	#set($TOP_PHOTO_COUNT = 10)
+#end
+#set($P_ROW_COUNT = 5)
+<div class="panel">
+	<div class="panel_head">
+		<div class="fleft"><B>最新照片</B></div>
+		<div class="fright"><a href="$dlog.root()/html/photo/?sid=$g_site_id">更多...</a></div>
+		<div class="spacer_1"></div>
+	</div>
+	<div class="panel_body">
+        #set($photos = $PHOTO_tool.list_photos($g_site, $g_user, -1, 0, 1, $TOP_PHOTO_COUNT))
+        #if($photos.size()>0)
+			#set($endIdx = $photos.size() - 1)
+            <table border="0" cellspacing="5" cellpadding="0" width="100%">
+            <tr>
+                #foreach($idx in [0..$endIdx])
+					#if($velocityCount <= $P_ROW_COUNT)
+					#set($p = $photos.get($idx))
+            		<td width="20%" class="photo_box" valign="bottom">
+            			<div class="photo_cen"><a href="$dlog.root()/html/photo/show.vm?sid=$g_site_id&amp;pid=${p.id}"><img src="$dlog.root()${p.previewURL}" align="absmiddle" border="0"/></a></div>        			
+            			#set($photo_name = $dlog.abbreviate($dlog.plain_text(${p.name}), 6))
+						<div class="photo_name">$photo_name</div>
+                    </td>
+					#end
+    			#end
+    			<td>&nbsp;</td>
+            </tr>
+			#if($photos.size() > $P_ROW_COUNT)
+            <tr>
+				#foreach($idx in [$P_ROW_COUNT..$endIdx])
+					#if($velocityCount <= $P_ROW_COUNT)
+					#set($p = $photos.get($idx))
+            		<td width="20%" class="photo_box" valign="bottom">
+            			<div class="photo_cen"><a href="$dlog.root()/html/photo/show.vm?sid=$g_site_id&amp;pid=${p.id}"><img src="$dlog.root()${p.previewURL}" align="absmiddle" border="0"/></a></div>        			
+            			#set($photo_name = $dlog.abbreviate($dlog.plain_text(${p.name}), 6))
+						<div class="photo_name">$photo_name</div>
+                    </td>
+					#end
+    			#end
+    			<td>&nbsp;</td>
+			</tr>
+			#end
+            </table>
+    	#else
+    		<p>没有照片!</p>
+    	#end
+	</div>
+</div>

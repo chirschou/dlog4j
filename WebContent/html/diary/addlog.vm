@@ -1,0 +1,268 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  add journal
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_diary.vm")
+#set($page_title="写日记")
+###############################################################################
+#if($messages.exist())
+<div class="error_msg">$messages.getAll()</div>
+#end
+#set($catalogs = $DIARY_tool.catalogs($g_site, $g_user, true))
+#if(!$g_user)
+    #show_msg_box("用户尚未登录,点击<a href='$dlog.root()/dlog/login.vm?sid=$g_site_id'>这里</a>登录")
+#elseif($catalogs.size()==0)
+	#if($dlog.is_owner($g_site, $g_user))
+	#set($cn = $link.encodeURL("我的日记"))	
+    #show_msg_box("您还没有添加日记分类，现在就[<a href='$dlog.root()/html/sitemgr/catalog_add.vm?sid=$g_site_id'>手工添加日记分类</a>]或者是[<a href='$dlog.root()/html/diary.do?sid=$g_site_id&amp;eventSubmit_AutoCreateCatalogAndWrite&amp;catalog=$cn'>自动创建分类并开始写日记</a>]！")
+	#else
+    #show_msg_box("您没有在<b>[${g_site.friendlyName}]</b>写日记的权限！")
+	#end
+#else
+#set($logform = $form.getBean())
+#set($catalog_id = $dlog.param("cat_id",-1))
+<form action="$link.setAction("html/diary")" onsubmit="return validateLogForm(this)" method="post" name="logForm">
+<input type="hidden" name="sid" value="$g_site_id" />
+<input type="hidden" name="clientType" value="0" />
+<input type="hidden" name="__method" value="" />
+<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()" />
+<div class="page_top">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>$text.ui("label.diary.new")</b>
+		</div>
+		<div class="pagecontent_right fright">
+			今天是: $date.get("MMMMM d, yyyy  EEEEE")
+		</div>        
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	<div class="form">
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			分类:
+    		</div>
+    		<div class="form_row_content">
+        		<select name="catalogId">
+        		#if($catalogs.size()==0)
+        			<option value="-1">我的日记</option>
+        		#end
+                #foreach($cat in $catalogs)
+                    <option value="${cat.id}" #if(${cat.id}==$catalog_id)selected#end>$text.html(${cat.name})</option>
+    			#end
+    			</select>
+				<a href="$dlog.root()/html/sitemgr/catalog_add.vm?sid=$g_site_id">&lt;添加分类&gt;</a>
+    		</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			天气:
+    		</div>
+    		<div class="form_row_content">
+				#set($weathers = ["sunny","ptcloudy","cloudy","showers","rain","storms","snow","flurries","ice","dark"])
+                <select id="select" name="weather"  onchange="changeWeather(options[selectedIndex].value)">
+                #foreach($w in $weathers)
+                    <option value="$w">$w</option>
+                #end
+                </select>
+				<img id="img_weather" height="20" alt="weather" src="" align="absmiddle" />
+				<script language="javascript" type="text/javascript">
+				function changeWeather(weather){
+					var img = '$html.image_src("weather/")'+weather+'.gif';
+					document.images['img_weather'].src=img;
+				}
+				changeWeather("sunny");
+				</script>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			背景音乐:
+    		</div>
+    		<div class="form_row_content">
+				<select name="bgSound">
+                <option value="-1" selected>[无背景音乐]</option>
+                #foreach($song in $g_site.songs)
+                    <option value="${song.id}">&nbsp;&#8226;&nbsp;${song.title}</option>
+                #end
+                </select>
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			标题:
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="title" maxlength="100" size="48" value="$!{logform.title}" />{必须填写}
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			作者:
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="author" size="12" value="$!g_user.nickname" />
+				<input type="text" name="authorUrl" size="35" value="/dlog/viewuser.vm?uid=$g_user_id" />
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			设定日期时间:
+    		</div>
+    		<div class="form_row_content">&nbsp;
+                <link rel="stylesheet" type="text/css" media="all" href="$dlog.root()/css/calendar-blue.css" title="win2k-cold-1" />
+                <script type="text/javascript" src="$dlog.root()/js/calendar.js"></script>
+                <script type="text/javascript" src="$dlog.root()/js/calendar_lang/calendar-en.js"></script>
+                <script type="text/javascript" src="$dlog.root()/js/calendar-setup.js"></script>
+				<span id="show_date">$!{logform.writeDate}</span>
+				<input type="hidden" name="writeDate" id="f_expired_time" value="$!{logform.writeDate}"/>
+                <img id="f_trigger_time" src="$html.image_src("date_sel.gif")" border="0" align="absMiddle" title="选定日期"/>
+                #calendar_setup("f_expired_time" "show_date" "f_trigger_time")
+				<select name="writeHour">
+					<option value="-1">小时</option>
+					#foreach($h in [0..23])<option value="$h">$h</option>#end
+				</select>时<select name="writeMinute">
+					<option value="-1">分钟</option>
+					#foreach($m in [0..59])<option value="$m">$m</option>#end
+				</select>分(默认为当前时间)
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			关键字:
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="tags" maxlength="48" size="35" value="$!{logform.tags}" />{多个关键字请用空格隔开}
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+			<div class="form_row_content">
+				<div class="spacer_5"></div>
+        		<textarea name="content" style="WIDTH: 100%; HEIGHT: 400px">$!{logform.content}</textarea>
+    			<div class="spacer_5"></div>
+			</div>
+		</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			引用地址:
+    		</div>
+    		<div class="form_row_content">
+				<input type="text" name="refUrl" size="48" value="$!{logform.refUrl}" />
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+    		<div class="form_row_title fleft">
+    			心情系数:
+    		</div>
+    		<div class="form_row_content">
+				<input type="radio" value="1" name="moodLevel" /> $html.img("mood/1.gif","1")
+                <input type="radio" value="2" name="moodLevel" /> $html.img("mood/2.gif","2")
+                <input type="radio" value="3" name="moodLevel" CHECKED /> $html.img("mood/3.gif","3")
+                <input type="radio" value="4" name="moodLevel" /> $html.img("mood/4.gif","4")
+                <input type="radio" value="5" name="moodLevel" /> $html.img("mood/5.gif","5")
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+			<div class="form_row_content">
+				<input type="checkbox" name="bookmark" value="1" />&nbsp;&nbsp;添加到书签
+        		<input type="checkbox" name="notify" value="1" #if(!$dlog.is_email(${g_user.contactInfo.email}))disabled#end/>
+    			有回帖时邮件提醒#if($dlog.is_email(${g_user.contactInfo.email}))(${g_user.contactInfo.email})#end
+			</div>
+    	</div>
+		<div class="spacer_1"></div>
+		<div class="form_row">
+			<div class="form_row_submit">
+				<input type="submit" name="eventSubmit_SaveAsDraft" value="存为草稿" onclick="return before_submit_draft();"/>
+                <input type="submit" name="eventSubmit_PublishLog" value="发表" onclick="return before_submit_diary();"/>
+                <input type="reset" value="清除" onclick="logForm.title.focus();" />
+                <input type="button" value="返回" onclick="history.go(-1)" />
+			</div>
+    	</div>
+	</div>
+</div>
+<div class="page_footer"></div>
+</form>
+<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+<script type="text/javascript">
+    window.onload = function()
+    {
+        var sBasePath = document.location.pathname.substring(0,document.location.pathname.lastIndexOf('html'));
+        var oFCKeditor = new FCKeditor( 'content' ) ;
+        oFCKeditor.BasePath    = sBasePath ;
+        oFCKeditor.Height = 400;
+        oFCKeditor.ReplaceTextarea() ;
+    }
+    
+    function validateLogForm(theForm)
+    {
+        with(theForm){
+            if(is_empty(title.value)){
+                alert("title is required.");
+                title.focus();
+                return false;
+            }
+            if(is_empty(author.value)){
+                alert("author is required.");
+                author.focus();
+                return false;
+            }
+        }
+        return true;
+    }
+	function before_submit_draft(){
+		document.logForm.__method.value = "SaveAsDraft";
+		return check_network();
+	}
+	function before_submit_diary(){
+		document.logForm.__method.value = "PublishLog";
+		return check_network();
+	}
+	function check_network(){
+		var url = '$link.setAction("validate")?sid=${g_site_id}&uid=${g_user_id}&eventSubmit_ValidateLogin='+Math.random();		
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'get', onComplete: check_network_response}
+    	);
+		return false;
+	}
+	function check_network_response(originalRequest) {		
+		if(originalRequest.status==200){
+			if(equals(originalRequest.responseText,"1")){
+				//继续提交操作
+				document.logForm.submit();
+			}
+			else{
+				alert("用户登录信息已超时，请妥善保存日记内容登录后再试！");
+			}
+		}
+		else{
+			alert("检查网络连接失败，请妥善保存日记内容稍后再试！");
+		}
+    }
+</script>
+#end

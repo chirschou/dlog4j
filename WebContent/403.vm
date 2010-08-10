@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ERROR</title>
+    <style type="text/css">
+    <!--
+        body {font-family: arial,sans-serif}
+		#error{padding:20px}
+		#title_bar{background-color:#dd0000;text-align:center;padding:8px;padding-left:20px;font-size:16pt;font-weight:bold;color:#ffff00}
+		#info{padding-top:20px;padding-bottom:20px;color:#0000aa}
+        #error_detail{padding:2px;background-color:#eeeeee;}
+    //-->
+    </style>
+</head>
+
+<body>
+<div id="error">
+  <div id="title_bar">$text.ui("tip.illegal_access")</div>
+</div>
+</body>
+</html>

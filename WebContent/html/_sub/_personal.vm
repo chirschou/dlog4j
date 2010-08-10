@@ -1,0 +1,62 @@
+<div class="module_content">
+	<div id="portrait">
+	#set($owner = $USER_tool.user(${g_site.owner.id}))
+    #if($dlog.not_empty(${owner.portrait}))
+    	<img src="$dlog.root()/uploads/portrait/${owner.portrait}" alt="$!{owner.nickname}" />
+    #else
+		$html.img("nophoto.gif")
+	#end
+	</div>
+	<div id="site_owner_info">
+		<b>$!{g_site.friendlyName}</b>
+		<br /><b>站长：</b> <a href="$dlog.root()/dlog/viewuser.vm?sid=${g_site.id}&amp;uid=${owner.id}">$!{owner.nickname}</a>
+		#if(${owner.onlineStatus}==1)
+		$html.img("online.gif","当前在线",null,"absmiddle",0)
+		#else
+		$html.img("offline.gif","当前离线",null,"absmiddle",0)
+		#end
+		<br/><b>性别：</b> 
+		#if($owner.sex==1) 
+		$html.img("male.gif",$text.ui("sex.desc.1"),$text.ui("sex.desc.1"),"absmiddle",0)		
+		#elseif($owner.sex==2)
+		$html.img("female.gif",$text.ui("sex.desc.2"),$text.ui("sex.desc.2"),"absmiddle",0)
+		#else
+		保密
+		#end&nbsp;<b>年龄：</b> #if(${owner.age}>0)${owner.age}&nbsp;岁#else 未知#end<br/>
+		#if($dlog.not_empty(${owner.province}) || $dlog.not_empty(${owner.city}))
+		<b>地区：</b>${owner.province} ${owner.city}<br/>
+		#end
+		<b>宣言：</b>#if($dlog.not_empty(${owner.resume}))${owner.resume}#else 无#end
+	</div>
+	<div id="site_opt_panel">
+		<a href="$dlog.root()/html/guestbook.vm?sid=${g_site_id}#rplform">$html.img("addguestbook.gif","发表留言",null,"absmiddle",0)</a>
+    	<a href="$dlog.root()/dlog/sendmsg.vm?sid=$g_site_id&amp;uid=${owner.id}">$html.img("sendmsg.gif","发送短消息",null,"absmiddle",0)</a>
+    	<a href="#" onclick="add_friend();return false;">$html.img("addfriend.gif","加站长为好友",null,"absmiddle",0)</a>
+    	<a href="#" onclick="add_link();return false;">$html.img("addlink.gif","添加该站到我的友情链接",null,"absmiddle",0)</a>
+	</div>
+</div>
+<div class="module_foot"></div>
+<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function add_friend(){
+		var random = Math.random()+'';
+		var url = '$link.setAction("dlog/user")?sid=${g_site_id}&uid=${owner.id}&eventSubmit_AddFriend='+random+'&__ClientId=$dlog.gen_client_id()';
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'get', onComplete: ajax_personal_response}
+    	);
+	}
+	function add_link(){
+		#if($owner.id==$g_user_id)
+			alert("不能加自己站到友情链接");
+		#else
+		var random = Math.random()+'';
+		var url = '$link.setAction("html/sitemgr/link")?sid=${g_site_id}&eventSubmit_AddSiteToLink=${g_site_id}&__ClientId=$dlog.gen_client_id()';
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'get', onComplete: ajax_personal_response}
+    	);
+		#end
+	}
+	function ajax_personal_response(originalRequest) {
+		alert(originalRequest.responseText);
+    }
+</script>

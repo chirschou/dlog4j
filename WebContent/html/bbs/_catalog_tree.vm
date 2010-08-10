@@ -1,0 +1,7 @@
+<div class="module_title"><b>讨论分类</b>#if($dlog.is_owner($g_site, $g_user))(<a href="$dlog.root()/html/sitemgr/forums.vm?sid=$g_site_id">设置</a>)#end</div>
+<div class="module_content">
+	#foreach($forum in $BBS_tool.forums($request, $g_site, $g_user))
+		<a href="forum.vm?sid=$g_site_id&amp;fid=${forum.id}"><img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>&nbsp;${forum.name}</a><br/>
+    #end
+</div>
+<div class="module_foot"></div>

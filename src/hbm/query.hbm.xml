@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>	
+	
+	<query name="INC_DIARY_VIEW_COUNT">
+		UPDATE DiaryBean d SET d.viewCount=d.viewCount+?,d.lastReadTime=? WHERE d.id=?
+	</query>
+	
+	<query name="LIST_DRAFT">
+		FROM DiaryBean AS d WHERE d.site.id=? AND d.owner.id=? AND d.status=? ORDER BY d.id DESC
+	</query>
+	
+	<query name="PUBLIC_DIARY_COUNT">
+		<![CDATA[SELECT COUNT(*) FROM DiaryBean AS a WHERE a.status=? AND a.catalog.type<>?]]>
+	</query>
+	
+	<query name="DRAFT_COUNT">
+		SELECT COUNT(*) FROM DiaryBean AS d WHERE d.site.id=? AND d.owner.id=? AND d.status=?
+	</query>
+	
+	<query name="LIST_DIARY_BY_STATUS">
+		FROM DiaryBean AS d WHERE d.site.id=? AND d.status=? ORDER BY d.id DESC
+	</query>
+	
+	<query name="DIARY_COUNT_BY_STATUS">
+		SELECT COUNT(*) FROM DiaryBean AS d WHERE d.site.id=? AND d.status=?
+	</query>
+	
+	<query name="LIST_HOT_DIARY">
+		<![CDATA[FROM DiaryOutlineBean AS d WHERE d.site.id=? AND d.status=? AND d.writeTime > ? AND d.catalog.type<>? ORDER BY (d.replyCount*20+d.viewCount) DESC, d.id DESC]]>
+	</query>
+	
+	<query name="LIST_HOT_DIARY2">
+		<![CDATA[FROM DiaryOutlineBean AS d WHERE d.status=? AND d.writeTime > ? AND d.catalog.type<>? AND d.site.status=0 ORDER BY (d.replyCount*20+d.viewCount) DESC, d.id DESC]]>
+	</query>
+	
+	<query name="LIST_HOT_DIARY3">
+		<![CDATA[FROM DiaryOutlineBean AS d WHERE d.site.id=? AND d.status=? AND d.writeTime < ? AND d.catalog.type<>? ORDER BY (d.replyCount*20+d.viewCount) DESC, d.id DESC]]>
+	</query>
+	
+	<query name="LIST_NEW_DIARY">
+		<![CDATA[FROM DiaryOutlineBean AS d WHERE d.status=? AND d.catalog.type<>? AND d.site.status=0 AND d.size>=30 ORDER BY d.id DESC]]>
+	</query>
+	
+	<query name="LIST_DIARY_AFTER">
+		<![CDATA[FROM DiaryBean AS a WHERE a.writeTime>? AND a.status=? AND a.catalog.type<>? ORDER BY a.id ASC]]>
+	</query>
+	
+	<query name="LIST_DIARY_REPLIES">
+		<![CDATA[FROM DiaryReplyBean AS r WHERE r.replyTime>? AND r.status=? AND r.diary.catalog.type<>? ORDER BY r.id]]>
+	</query>
+	
+	<query name="LIST_REPLIES_OF_DIARY">
+		FROM DiaryReplyBean r WHERE r.diary.id=? ORDER BY r.id DESC
+	</query>
+	
+	<query name="LIST_REPLIES_OF_DIARY2">
+		FROM DiaryReplyBean r WHERE r.diary.id=? ORDER BY r.id ASC
+	</query>
+	
+	<query name="INC_DIARY_TB_COUNT">
+		UPDATE DiaryBean SET trackBackCount=trackBackCount+? WHERE id=?
+	</query>
+	
+	<query name="LOCK_DIARY">UPDATE DiaryBean SET lock=? WHERE id=?</query>
+	
+	<query name="CATALOG_OF_DIARY">
+		SELECT l.catalog FROM DiaryBean l WHERE l.id=?
+	</query>
+	
+	<query name="DELETE_REPLIES_OF_DIARY">
+		DELETE FROM DiaryReplyBean AS r WHERE r.diary.id=?
+	</query>
+	
+	<query name="QUERY_TRASH_BEFORE_CLEANUP">
+		FROM DiaryOutlineBean AS d WHERE d.site.id=? AND d.status=? ORDER BY d.id DESC
+	</query>
+	
+	<query name="INC_PHOTO_VIEW_COUNT">
+		UPDATE PhotoBean SET viewCount=viewCount+? WHERE id=?
+	</query>
+	
+	<query name="LIST_PHOTO_AFTER">
+		<![CDATA[FROM PhotoBean AS t WHERE t.createTime>? AND t.status=? AND t.album.type<>? ORDER BY t.id]]>
+	</query>
+	
+	<query name="LIST_PHOTO_REPLIES_AFTER">
+		<![CDATA[FROM PhotoReplyBean AS r WHERE r.replyTime>? AND r.status=? AND r.photo.status=? AND r.photo.album.type<>? ORDER BY r.id]]>
+	</query>
+	
+	<query name="REPLIES_OF_PHOTO">
+		FROM PhotoReplyBean r WHERE r.photo.id=? ORDER BY r.id DESC
+	</query>
+	
+	<query name="PHOTOS_OF_ALBUM">
+		<![CDATA[FROM PhotoOutlineBean AS p WHERE (p.album.id=:album OR p.album.parent.id=:album) ORDER BY p.id DESC]]>
+	</query>
+	
+	<query name="PHOTO_COUNT_OF_ALBUM">
+		SELECT COUNT(*) FROM PhotoBean AS d WHERE (d.album.id=? OR d.album.parent.id=?)
+	</query>
+	
+	<query name="SUB_ALBUM_COUNT">
+		SELECT COUNT(*) FROM AlbumBean AS a WHERE a.parent.id=?
+	</query>
+	
+	<query name="PHOTO_MONTHS">
+		SELECT DISTINCT (p.year * 100 + p.month) FROM PhotoBean AS p WHERE p.site.id=?
+	</query>
+	
+	<query name="LIST_HOT_PHOTOS">
+		<![CDATA[FROM PhotoOutlineBean AS d WHERE d.status=? AND d.createTime > ? AND d.album.type=? AND d.site.status=0 ORDER BY (d.replyCount*20+d.viewCount) DESC, d.id DESC]]>
+	</query>
+	
+	<query name="UPDATE_ALBUM_PHOTO_COUNT">
+		UPDATE AlbumBean SET photoCount=? WHERE id=? AND site_id=?
+	</query>
+	
+	<query name="INC_ALBUM_PHOTO_COUNT">
+		UPDATE AlbumBean SET photoCount=photoCount+? WHERE id=? AND site_id=?
+	</query>
+	
+	<query name="MOVE_PHOTO">
+		UPDATE PhotoBean SET album=? WHERE album_id=? AND site_id=?
+	</query>
+	
+	<query name="UPDATE_ALBUM_ORDER">
+		UPDATE AlbumBean SET sortOrder=? WHERE id=?
+	</query>
+	
+	<query name="LIST_ALBUM">
+		FROM AlbumBean AS l WHERE l.site.id=? AND l.parent IS NULL ORDER BY l.sortOrder, l.id
+	</query>
+	
+	<query name="LIST_FORUMS">
+		FROM ForumBean AS l WHERE l.site.id=? ORDER BY l.sortOrder, l.id
+	</query>
+	
+	<query name="CHANGE_FORUM_STATUS">
+		UPDATE ForumBean AS fb SET fb.status=? WHERE fb.id=? AND fb.site.id=?
+	</query>
+	
+	<query name="UPDATE_FORUM_ORDER">
+		UPDATE ForumBean SET sortOrder=? WHERE id=?
+	</query>
+	
+	<query name="DELETE_BOOKMARK">
+		DELETE FROM BookmarkBean bb WHERE bb.id=? AND bb.owner.id=?
+	</query>
+	
+	<query name="LIST_BOOKMARK">
+		FROM BookmarkBean AS bm WHERE bm.owner.id=? ORDER BY bm.id
+	</query>
+	
+	<query name="CHECK_BOOKMARK">
+		SELECT COUNT(*) FROM BookmarkBean bb WHERE bb.owner.id=? AND bb.parentId=? AND bb.parentType=?
+	</query>
+	
+	<query name="DELETE_CATALOG_PERM">
+		DELETE FROM CatalogPermBean cpb WHERE cpb.key.catalog=? AND cpb.key.user=?
+	</query>
+	
+	<query name="UPDATE_CATALOG_PERM">
+		UPDATE CatalogPermBean cpb SET cpb.role=? WHERE cpb.key.catalog=? AND cpb.key.user=?
+	</query>
+	
+	<query name="GET_ROLE_IN_CATALOG">
+		SELECT c.role FROM CatalogPermBean AS c WHERE c.key.catalog=? AND c.key.user=?
+	</query>
+	
+	<query name="LIST_USER_IN_CATALOG">
+		FROM UserBean AS u WHERE u.id IN (SELECT c.key.user FROM CatalogPermBean AS c WHERE c.key.catalog=?)
+	</query>
+	
+	<query name="INC_CATALOG_DIARY_COUNT">
+		UPDATE CatalogBean cb SET cb.articleCount=cb.articleCount+? WHERE cb.id=? AND cb.site.id=?
+	</query>
+	
+	<query name="UPDATE_CATALOG_DIARY_COUNT">
+		UPDATE CatalogBean cb SET cb.articleCount=? WHERE cb.id=? AND cb.site.id=?
+	</query>
+	
+	<query name="MOVE_DIARY">
+		UPDATE DiaryBean db SET db.catalog.id=? WHERE db.catalog.id=? AND db.site.id=?
+	</query>
+	
+	<query name="CHECK_USER_PERM_IN_CATALOG">
+		SELECT COUNT(*) FROM CatalogPermBean AS p WHERE p.key.catalog=? AND p.key.user=?
+	</query>
+	
+	<query name="CHECK_USER_CAN_DIARY">
+		SELECT COUNT(p.key.catalog) FROM CatalogPermBean AS p WHERE p.key.user=? AND p.role=? AND p.key.catalog IN (SELECT c.id FROM CatalogBean AS c WHERE c.site.id=?)
+	</query>
+	
+	<query name="USER_PERMS">
+		FROM CatalogPermBean AS p WHERE p.key.user=?
+	</query>
+	
+	<query name="UPDATE_CATALOG_ORDER">
+		UPDATE CatalogBean SET sortOrder=? WHERE id=?
+	</query>
+	
+	<query name="DELETE_CATALOG">
+		DELETE FROM CatalogBean cb WHERE cb.site.id=? AND cb.id=?
+	</query>
+	
+	<query name="LIST_CATALOGS">
+		FROM CatalogBean AS l WHERE l.site.id=? ORDER BY l.sortOrder, l.id
+	</query>
+	
+	<query name="UPDATE_DIARY_STATUS_IN_CATALOG">
+		UPDATE DiaryBean db SET db.status=? WHERE db.catalog.id=? AND db.site.id=?
+	</query>
+	
+	<query name="GET_CONFIG">
+		FROM ConfigBean AS c WHERE c.name=? AND (c.siteId=? OR c.siteId IS NULL) ORDER BY c.siteId DESC
+	</query>
+	
+	<query name="LIST_ROOT_TYPES">
+		FROM TypeBean AS t WHERE t.parent IS NULL ORDER BY t.sortOrder
+	</query>
+	
+	<query name="LIST_SUB_TYPES">
+		FROM TypeBean AS t WHERE t.parent.id=? ORDER BY t.sortOrder
+	</query>
+	
+	<query name="LIST_EXTERNAL_REFER">
+		FROM ExternalReferBean r WHERE r.site.id=? AND r.refId=? AND r.refType=?
+	</query>
+	
+	<query name="LIST_ORPHAN_FILES_IN_SESSION">
+		<![CDATA[FROM FckUploadFileBean AS b WHERE b.user.id=? AND b.sessionId=? AND b.refId<=0 AND b.site IS NULL]]>
+	</query>
+	
+	<query name="PICKUP_UPLOAD_FILES">
+		<![CDATA[UPDATE FckUploadFileBean b SET b.site.id=?,b.refId=?,b.refType=? WHERE b.user.id=? AND b.sessionId=? AND b.refId<=0]]>
+	</query>
+	
+	<query name="SUM_UPLOAD_FILE_SIZE">
+		<![CDATA[SELECT SUM(b.fileSize) FROM FckUploadFileBean b WHERE b.user.id=? AND b.sessionId=? AND b.refId<=0]]>
+	</query>
+	
+	<query name="INC_SITE_UPLOAD_SPACE">
+		UPDATE SiteBean s SET s.capacity.diaryUsed=s.capacity.diaryUsed+? WHERE s.id=?
+	</query>
+	
+	<query name="GET_UPLOAD_FILE">
+		FROM FckUploadFileBean f WHERE f.id=?
+	</query>
+	
+	<query name="GET_UPLOAD_FILE_BY_REF">
+		FROM FckUploadFileBean AS b WHERE b.site.id=? AND b.refId=? AND b.refType=?
+	</query>
+	
+	<query name="CLEAN_ORPHAN_UPLOAD_FILE">
+		<![CDATA[DELETE FROM FckUploadFileBean b WHERE b.user.id=? AND b.sessionId=? AND b.refId<=0 AND b.site IS NULL]]>
+	</query>
+	
+	<query name="GUESTBOOK_COUNT">
+		SELECT COUNT(*) FROM GuestBookBean AS g WHERE g.siteId=?
+	</query>
+	
+	<query name="GUESTBOOK_COUNT_AFTER">
+		SELECT COUNT(*) FROM GuestBookBean AS g WHERE g.siteId=? AND g.id > ?
+	</query>
+	
+	<query name="LIST_GUESTBOOK">
+		FROM GuestBookBean AS g WHERE g.siteId=? ORDER BY g.id DESC
+	</query>
+	
+	<query name="DELETE_GUESTBOOK">
+		DELETE FROM GuestBookBean WHERE id=? AND siteId=?
+	</query>
+	
+	<query name="CHECK_LINK_URL">
+		SELECT COUNT(*) FROM LinkBean lb WHERE lb.siteId=? AND lb.type=? AND lb.url=?
+	</query>
+	
+	<query name="LIST_LINKS">
+		FROM LinkBean AS l WHERE l.siteId=? ORDER BY l.sortOrder, l.id
+	</query>
+	
+	<query name="GET_LINK_COUNT">
+		SELECT COUNT(*) FROM LinkBean AS l WHERE l.siteId=?
+	</query>
+	
+	<query name="UPDATE_LINK_ORDER">
+		UPDATE LinkBean SET sortOrder=? WHERE id=?
+	</query>
+	
+	<query name="DELETE_LINK">
+		DELETE FROM LinkBean lb WHERE lb.siteId=? AND lb.id=?
+	</query>
+	
+	<query name="READ_MESSAGE">
+		UPDATE MessageBean mb SET mb.status=?,mb.readTime=? WHERE mb.toUser.id=? AND mb.status=?
+	</query>
+	
+	<query name="NEW_MESSAGE_COUNT_OF_STATUS">
+		SELECT COUNT(*) FROM MessageBean AS m WHERE m.toUser.id=? AND m.status=? AND (m.expiredTime>? OR m.expiredTime IS NULL)
+	</query>
+	
+	<query name="MESSAGE_COUNT">
+		<![CDATA[SELECT COUNT(*) FROM MessageBean AS m WHERE m.toUser.id=? AND m.status<>?]]>
+	</query>
+	
+	<query name="DELETE_MESSAGE_BY_STATUS">
+		DELETE MessageBean mb WHERE mb.toUser.id=? AND mb.status=?
+	</query>
+	
+	<query name="DELETE_MESSAGE">
+		DELETE MessageBean mb WHERE mb.id=? AND mb.toUser.id=?
+	</query>
+	
+	<query name="LIST_MESSAGE">
+		FROM MessageBean AS m WHERE m.toUser.id=? ORDER BY m.id DESC
+	</query>
+	
+	<query name="LIST_MUSICBOXES">
+		FROM MusicBoxBean AS l WHERE l.site.id=? ORDER BY l.sortOrder, l.id
+	</query>
+	
+	<query name="UPDATE_MUSICBOX_ORDER">
+		UPDATE MusicBoxBean SET sortOrder=? WHERE id=?
+	</query>
+	
+	<query name="SEARCH_MUSIC">
+		SELECT DISTINCT m.title,m.url FROM MusicOutlineBean m WHERE (m.title LIKE :key OR m.album LIKE :key OR m.singer LIKE :key) AND m.url IS NOT NULL
+	</query>
+	
+	<query name="LIST_NEW_MUSIC">
+		FROM MusicBean m WHERE m.site.id=? ORDER BY m.id DESC
+	</query>
+	
+	<query name="LIST_MUSIC_WITHOUT_BOX">
+		FROM MusicBean m WHERE m.site.id=? AND m.musicBox IS NULL
+	</query>
+	
+	<query name="MUSIC_COUNT">
+		SELECT COUNT(*) FROM MusicBean AS m WHERE m.site.id=?
+	</query>
+	
+	<query name="LIST_MUSIC_AFTER">
+		FROM MusicBean AS a WHERE a.createTime>? AND a.status=? ORDER BY a.id ASC
+	</query>
+	
+	<query name="SEARCH_SITE">
+		FROM SiteBean AS d WHERE d.status=? AND (d.uniqueName LIKE ? OR d.friendlyName LIKE ?)
+	</query>
+	
+	<query name="LIST_NEW_SITES">
+		FROM SiteBean AS d WHERE d.status=? ORDER BY d.id DESC
+	</query>
+	
+	<query name="SITE_COUNT">
+		SELECT COUNT(*) FROM SiteBean AS d WHERE d.status=?
+	</query>
+	
+	<query name="GET_SITE_BY_NAME">
+		FROM SiteBean AS s WHERE s.uniqueName=?
+	</query>
+	
+	<query name="GET_SITE_BY_FRIENDLYNAME">
+		FROM SiteBean AS s WHERE s.friendlyName=?
+	</query>
+	
+	<query name="GET_SITE_BY_VHOST">
+		FROM SiteBean AS s WHERE s.url=?
+	</query>
+	
+	<query name="DELETE_TAG">
+		DELETE FROM TagBean WHERE refId=? AND refType=?
+	</query>
+	
+	<query name="TAG_COUNT">
+		SELECT COUNT(t.refId) FROM TagBean AS t WHERE t.refType=? AND t.name=?
+	</query>
+	
+	<query name="TAG_COUNT_OF_SITE">
+		SELECT COUNT(t.refId) FROM TagBean AS t WHERE t.site.id=? AND t.refType=? AND t.name=?
+	</query>
+	
+	<query name="FRIEND">
+		FROM FriendBean fb WHERE fb.owner=? AND fb.friend.id=?
+	</query>
+	
+	<query name="LIST_FRIEND">
+		FROM FriendBean fb WHERE fb.owner=?
+	</query>
+	
+	<query name="FRIEND_COUNT">
+		SELECT COUNT(*) FROM FriendBean fb WHERE fb.owner=?
+	</query>
+	
+	<query name="BLACKLIST">
+		FROM MyBlackListBean fb WHERE fb.myId=? AND fb.other.id=?
+	</query>
+	
+	<query name="LIST_BLACKLIST">
+		FROM MyBlackListBean fb WHERE fb.myId=?
+	</query>
+	
+	<query name="BLACKLIST_COUNT">
+		SELECT COUNT(*) FROM MyBlackListBean fb WHERE fb.myId=?
+	</query>
+	
+	<query name="DELETE_BLACKLIST">
+		DELETE FROM MyBlackListBean f WHERE f.myId=? AND f.other.id=?
+	</query>
+	
+	<query name="ONLINE_USER_COUNT">
+		SELECT COUNT(*) FROM UserBean u WHERE u.site.id=? AND u.onlineStatus=?
+	</query>
+	
+	<query name="ONLINE_USERS">
+		FROM UserBean u WHERE u.site.id=? AND u.onlineStatus=?
+	</query>
+	
+	<query name="SEARCH_USER">
+		FROM UserBean u WHERE u.name LIKE ? OR u.nickname LIKE ? ORDER BY u.name
+	</query>
+	
+	<query name="USER_LOGOUT_1">
+		UPDATE UserBean SET keepDays=:keep_day,onlineStatus=:online_status WHERE id=:user_id AND lastTime=:last_time
+	</query>
+	
+	<query name="USER_LOGOUT_2">
+		UPDATE UserBean SET onlineStatus=:online_status WHERE id=:user_id AND lastTime=:last_time
+	</query>
+	
+	<query name="GET_USER_BY_NAME">
+		FROM UserBean u WHERE u.name=?
+	</query>
+	
+	<query name="GET_USER_BY_NICKNAME">
+		FROM UserBean u WHERE u.nickname=?
+	</query>
+	
+	<query name="LIST_REGUSERS_OF_SITE">
+		FROM UserBean u WHERE u.site.id=? ORDER BY u.id DESC
+	</query>
+	
+	<query name="REGUSER_COUNT_OF_SITE">
+		SELECT COUNT(*) FROM UserBean u WHERE u.site.id=?
+	</query>
+	
+	<query name="VISIT_STAT">
+		SELECT SUM(s.uvCount) FROM SiteStatBean s WHERE s.siteId=? AND s.statDate>=?
+	</query>
+	
+	<query name="VISIT_STAT_2">
+		SELECT SUM(s.uvCount) FROM SiteStatBean s WHERE s.siteId=?
+	</query>
+	
+	<query name="UPDATE_SITE_STAT_1">
+		UPDATE SiteStatBean AS s SET s.uvCount=s.uvCount+? WHERE s.statDate=? AND s.source=? AND s.siteId=?
+	</query>
+	
+	<query name="UPDATE_SITE_STAT_2">
+		UPDATE SiteStatBean AS s SET s.uvCount=s.uvCount+? WHERE s.siteId IS NULL AND s.statDate=? AND s.source=?
+	</query>
+	
+	<query name="LIST_SITES_ORDER_BY_USERCOUNT">
+		SELECT u.site.id,u.site.uniqueName,u.site.friendlyName,COUNT(u.site.id) FROM UserBean u WHERE u.site IS NOT NULL GROUP BY u.site.id,u.site.friendlyName ORDER BY 4 DESC
+	</query>
+	
+	<query name="LIST_SITES_ORDER_BY_DIARYCOUNT">
+		SELECT u.site.id,u.site.uniqueName,u.site.friendlyName,COUNT(u.site.id) FROM DiaryOutlineBean u WHERE u.site IS NOT NULL GROUP BY u.site.id,u.site.friendlyName ORDER BY 4 DESC
+	</query>
+	
+	<query name="LIST_SITES_ORDER_BY_PHOTOCOUNT">
+		SELECT u.site.id,u.site.uniqueName,u.site.friendlyName,COUNT(u.site.id) FROM PhotoOutlineBean u WHERE u.site IS NOT NULL GROUP BY u.site.id,u.site.friendlyName ORDER BY 4 DESC
+	</query>
+	
+	<query name="LIST_SITES_ORDER_BY_MUSICCOUNT">
+		SELECT u.site.id,u.site.uniqueName,u.site.friendlyName,COUNT(u.site.id) FROM MusicBean u WHERE u.site IS NOT NULL GROUP BY u.site.id,u.site.friendlyName ORDER BY 4 DESC
+	</query>
+	
+	<query name="LIST_SITES_ORDER_BY_TOPICCOUNT">
+		SELECT u.site.id,u.site.uniqueName,u.site.friendlyName,COUNT(u.site.id) FROM TopicOutlineBean u WHERE u.site IS NOT NULL GROUP BY u.site.id,u.site.friendlyName ORDER BY 4 DESC
+	</query>
+	
+	<query name="LIST_RECOMMEND_SITES">
+		FROM SiteBean s WHERE s.level > 1 AND s.status=0 ORDER BY s.level DESC
+	</query>
+	
+</hibernate-mapping>

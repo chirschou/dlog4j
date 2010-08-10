@@ -1,0 +1,142 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  diary view
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_diary.vm")
+#set($page_title="网络日记")
+###############################################################################
+#if(!$LOGS_PER_PAGE)#set($LOGS_PER_PAGE = 5)#end
+#set($catalog_id = $dlog.param("cat_id", -1))
+#set($p_page = $dlog.param("page",1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+#set($p_year = $dlog.param("year", -1))
+#set($p_month = $dlog.param("month", -1))
+#set($p_date = $dlog.param("date", -1))
+#set($current_catalog=$g_site.catalog($catalog_id))
+#if($current_catalog)
+    #set($log_count = ${current_catalog.articleCount})
+#else
+    #set($log_count = $DIARY_tool.diary_count($g_site, $g_user, -1, $p_year, $p_month, $p_date))
+#end
+#set($page_count = $dlog.page_count($log_count, $LOGS_PER_PAGE))
+<div class="page_top">
+	#if(${current_catalog.detail})
+    <div class="detail">${current_catalog.detail}</div>
+	<div class="spacer_1"></div>
+	#end
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			<b>$dlog.show_time($p_year,$p_month,$p_date)</b>
+    		#if($current_catalog)
+    			${current_catalog.name}
+    			<a href="$dlog.root()/rss.vm?sid=$g_site_id&amp;tid=1&amp;cid=${current_catalog.id}">$html.img("rss.png",null,"RSS","absmiddle",0)</a>&nbsp;&nbsp;
+    		#end
+    		共有<b>${log_count}</b>篇 每页<b>${LOGS_PER_PAGE}</b>篇 第<b>${p_page}</b>页 共<b>${page_count}</b>页
+		</div>
+		<div class="pagecontent_right fright">
+			#if($page_count > 1)
+				<form name="dform" action=""><!-- 翻页控制条 -->
+				<input type="hidden" name="sid" value="$g_site_id" />
+				#if($current_catalog)
+                <input type="hidden" name="cat_id" value="$current_catalog.id" />
+                #end
+        		#if($p_year > 0)<input type="hidden" name="year" value="$p_year" />#end
+                #if($p_month > 0)<input type="hidden" name="month" value="$p_month" />#end
+                #if($p_date > 0)<input type="hidden" name="date" value="$p_date" />#end
+                    #set($date_param = $dlog.make_date_params("cat_id",$catalog_id,$p_year,$p_month,$p_date))
+                    #if($p_page > 1)
+                    <a href="?sid=${g_site_id}${date_param}">首页</a>#end
+                    #if($p_page>1)<a href="?sid=${g_site_id}${date_param}&amp;page=$pre_page">上页</a>#end
+                    #if($p_page < $page_count)<a href="?sid=${g_site_id}${date_param}&amp;page=$next_page">下页</a>#end
+                    #if($p_page < $page_count)<a href="?sid=${g_site_id}${date_param}&amp;page=$page_count">尾页</a>#end
+                        到 <select name="page" onchange="dform.submit();">
+                        #foreach($p in [1..$page_count])
+                        <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                        #end
+						</select> 页
+				</form>
+			#end
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="spacer_1"></div>
+</div>
+<div class="page_content">
+	#set($logs = $DIARY_tool.list_diary($g_site, $g_user, $catalog_id, $p_year,$p_month,$p_date, $p_page, $LOGS_PER_PAGE))
+    #foreach($log in $logs)
+    #set($show_log_url = "$dlog.root()/html/diary/showlog.vm?sid=$g_site_id&amp;cat_id=$catalog_id&amp;log_id=${log.id}")
+	<div class="diary">
+    	<div class="diary_title">
+    		 #invoke("_log_title_bar.vm")
+    	</div>
+    	<div class="diary_content">
+			#set($preview_content = ${log.previewContent})
+			<div class="diary_preview_content">
+    		${preview_content}
+			</div>
+			#if($preview_content.length() < $log.content.length())
+    		<div id="diary_read_more">
+				<p><a href="$show_log_url" class="more">阅读全文...</a></p>
+			</div>
+			#end
+			#if($dlog.not_empty($log.keyword))
+			<div class="keyword">
+				<b>关键字: </b>&nbsp;
+				#foreach($tag in $log.keywords)
+					<a href="$dlog.root()/html/showtag.vm?sid=$g_site_id&amp;type=1&amp;tag=$link.encodeURL($tag)"><b>${tag}</b></a>&nbsp;&nbsp;
+				#end
+			</div>
+			#end
+    	</div>
+    	<div class="diary_foot">
+    		#invoke("_log_bottom_bar.vm")
+    	</div>
+	</div>
+	<div class="line_dashed"></div>
+	<div class="spacer_10"></div>
+	#end
+</div>
+<div class="page_footer">
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft"></div>
+		<div class="pagecontent_right fright">
+			#if($page_count > 1)
+                <form name="dform2" action=""><!-- 翻页控制条 -->
+                <input type="hidden" name="sid" value="$g_site_id" />
+                #if($current_catalog)
+                    <input type="hidden" name="cat_id" value="$current_catalog.id" />
+                #end
+                #if($p_year > 0)<input type="hidden" name="year" value="$p_year" />#end
+                #if($p_month > 0)<input type="hidden" name="month" value="$p_month" />#end
+                #if($p_date > 0)<input type="hidden" name="date" value="$p_date" />#end
+                    #if($p_page > 1)<a href="?sid=${g_site_id}${date_param}">首页</a>#end
+                    #if($p_page>1)<a href="?sid=${g_site_id}${date_param}&amp;page=$pre_page">上页</a>#end
+                    #if($p_page < $page_count)<a href="?sid=${g_site_id}${date_param}&amp;page=$next_page">下页</a>#end
+                    #if($p_page < $page_count)<a href="?sid=${g_site_id}${date_param}&amp;page=$page_count">尾页</a>#end
+                        到 <select name="page" onchange="dform2.submit();">
+                    #foreach($p in [1..$page_count])
+                        <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                    #end
+                    </select> 页
+                </form>
+			#end
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>

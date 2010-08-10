@@ -1,0 +1,234 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of discussion channel
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_bbs.vm")
+#set($topic_id = $dlog.param("tid",-1))
+#set($topic = $BBS_tool.topic($g_site, $g_user, $topic_id))
+#set($page_title=${topic.title})
+#set($is_owner = $dlog.is_owner($g_site,$g_user))
+###############################################################################
+#if(${topic.forum.status}==3 && !$is_owner)
+	#show_msg_box("论坛已被站长关闭，暂时不可用！")
+#elseif($is_owner || ($topic && $topic.status==0))
+    #set($PAGE_SIZE = 20)
+    #set($p_page = $dlog.param("page", 1))
+    #set($pre_page = $p_page - 1)
+    #set($next_page = $p_page + 1)
+    #set($page_count = $dlog.page_count(${topic.replyCount}, $PAGE_SIZE))
+    #set($is_owner = $dlog.is_owner($g_site,$g_user))
+    <div class="page_top">
+    	<div class="pagecontent">
+    		<div class="fleft">
+				<a href="$dlog.root()/html/bbs/?sid=$g_site_id">论坛首页</a>&nbsp;&raquo;&nbsp;
+    			<a href="$dlog.root()/html/bbs/forum.vm?sid=$g_site_id&amp;fid=${topic.forum.id}">${topic.forum.name}</a>
+    		</div>
+    		<div class="pagecontent_right fright">
+				<form name="fForm" action="$dlog.root()/html/bbs/forum.vm">
+                	#set($prev_topic = $BBS_tool.prev_topic($topic))
+                    #if($prev_topic)<a href="$dlog.root()/html/bbs/topic.vm?sid=$g_site_id&amp;fid=${prev_topic.forum.id}&amp;tid=${prev_topic.id}" title="$text.html($prev_topic.title)" class="Cprevious">上一篇</a>#end
+                    &nbsp;&nbsp;
+                	#set($next_topic = $BBS_tool.next_topic($topic))
+                    #if($next_topic)<a href="$dlog.root()/html/bbs/topic.vm?sid=$g_site_id&amp;fid=${next_topic.forum.id}&amp;tid=${next_topic.id}" title="$text.html($next_topic.title)" class="Cnext">下一篇</a>#end
+					#set($forums = $BBS_tool.forums($request, $g_site, $g_user))
+					#if($forums && $forums.size()>1)
+                	&nbsp;&nbsp;快速跳转：
+                    <input type="hidden" name="sid" value="$g_site_id" />
+                    <select name="fid" onchange="fForm.submit()">
+                        #foreach($f in $forums)
+                            <option value="${f.id}" #if(${topic.forum.id}==${f.id})selected#end>$text.html(${f.name})</option>
+                        #end
+                    </select>
+					#end
+                </form>
+    		</div>
+    	</div>
+    	<div class="line_dashed"></div>
+    </div>
+	<div class="page_content">
+    	<div class="bbs">
+        	<div class="bbs_top">
+    			<div class="spacer_10"></div>
+    			<div class="forum_nav">
+        			<a class="thread_reply" href="$dlog.root()/html/bbs/reply.vm?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">回复此主题</a>
+                    <a class="thread_new" href="$dlog.root()/html/bbs/new_topic.vm?sid=$g_site_id&amp;fid=${topic.forum.id}">发新帖</a>
+					<a class="thread_search" href="$dlog.root()/html/bbs/search.vm?sid=$g_site_id&amp;fid=${topic.forum.id}">搜索论坛</a>
+                    <form name="bookmarkForm" action="$link.setAction("html/bookmark")" method="post">
+                        <input type="hidden" name="sid" value="${g_site_id}" />
+                        <input type="hidden" name="title" value="${topic.title}" />
+                        <input type="hidden" name="parentId" value="${topic.id}" />
+                        <input type="hidden" name="parentType" value="4" />
+                        <input type="hidden" name="fromPage" value="$dlog.get_request_url()" />
+                        <input type="hidden" name="eventSubmit_Add" value="1" />    
+                    </form>
+                    <a class="thread_bookmark" href="#" onclick="#if(!$g_user) alert('必须登录后才能保存文章到书签') #else bookmarkForm.submit() #end ;return false;">加入书签</a>
+                    <a class="thread_back" href="$dlog.root()/html/bbs/forum.vm?sid=$g_site_id&amp;fid=${topic.forum.id}">返回到主题列表</a>
+    			</div>
+    			<div class="spacer_1"></div>
+    			<div class="pager_nav">
+        			<div class="fleft">
+        				共有回复${topic.replyCount}篇 每页显示${PAGE_SIZE}篇 第${p_page}页 共${page_count}页
+            		</div>
+            		<div class="fright">
+						#if($page_count > 1)
+                			<form name="dform" action="">
+                            <input type="hidden" name="sid" value="$g_site_id" />
+                            <input type="hidden" name="fid" value="$topic.forum.id" />
+                            <input type="hidden" name="tid" value="$topic.id" />
+                            #if($p_page>1)
+                                <a href="?sid=${g_site_id}&amp;fid=${forum.id}">首页</a>
+                                <a href="?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;page=$pre_page">上页</a>
+                            #end
+                            #if($p_page < $page_count)
+                                <a href="?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;page=$next_page">下页</a>
+                                <a href="?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;page=$page_count">尾页</a>
+                            #end
+                			转到&nbsp;
+                            <select name="page" onchange="dform.submit();">
+                                #foreach($p in [1..$page_count])
+                                    <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                                #end
+                            </select>&nbsp;页
+                			</form>
+                		#end
+					</div>
+					<div class="spacer_1"></div>
+    			</div>
+        	</div>
+        	<div class="bbs_body">
+    			<div class="spacer_10"></div>
+    			#if($p_page == 1)
+				<div class="bbs_topic">
+					<div class="thread_top_title">
+						<div class="thread_title_info">
+						<div class="fleft">
+        					#if(${topic.top})
+        						<img src="$dlog.style($g_site, "images/thread_top.gif")" alt="top" align="absmiddle" border="0" />
+        					#elseif(${topic.elite})
+        						<img src="$dlog.style($g_site, "images/thread_query.gif")" alt="query" align="absmiddle" border="0" />
+        					#end
+        					<b>$text.html(${topic.title})</b>
+						</div>
+						<div class="fright">
+        					#if(${topic.user.id}==$g_user_id || $is_owner)
+                			<a href="$dlog.root()/html/bbs/edit_topic.vm?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">编辑</a>
+                			<a href="$link.setAction("html/bbs/topic")?sid=${g_site_id}&amp;forum=${topic.forum.id}&amp;id=${topic.id}&amp;eventSubmit_DeleteTopic" onclick="return confirm('您确认要删除这篇帖子吗？');">删除</a>
+        					#end				
+        					#if(${topic.forum.status}!=1)
+                			<a href="$dlog.root()/html/bbs/reply.vm?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">回复</a>
+    						#end
+						</div>
+						<div class="spacer_1"></div>
+						</div>
+					</div>
+					<div class="thread_top_usr">
+        				作者: <a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${topic.user.id}">$text.html(${topic.user.nickname})</a>#if(${topic.user.onlineStatus}==1)(在线)#else(离线)#end
+						提交时间:$date.format("yy-MM-dd HH:mm",${topic.createTime})
+						##<a href="$dlog.root()/dlog/sendmsg.vm?sid=$g_site_id&amp;uid=${topic.user.id}">[发消息]</a>&nbsp;&nbsp;
+                        ##&nbsp;&nbsp;发帖数: ${topic.user.count.topic}&nbsp;&nbsp;回帖数: ${topic.user.count.topicReply} 
+                        ###<br />注册时间: $date.format("yyyy-MM-dd", ${topic.user.regTime})&nbsp;&nbsp;最近访问: $!date.format("yyyy-MM-dd HH:mm", ${topic.user.lastTime})
+					</div>
+    				<div class="spacer_2"></div>
+    				<div class="line_dashed"></div>
+    				<div class="spacer_5"></div>
+    				<div class="bbs_content">${topic.content}</div>
+    			</div>
+				#end
+        	</div>
+        	<div class="bbs_foot">
+    			## show replies
+                #set($replies = $BBS_tool.replies($topic, $p_page, $PAGE_SIZE))
+                #foreach($reply in $replies)
+    			<div class="spacer_5"></div>
+				<div class="bbs_reply">
+                <a name="$reply.id"></a>
+				<div class="thread_reply_title">
+					<div class="thread_title_info">
+					<div class="fleft">
+						<b>${reply.title}</b>
+					</div>
+					<div class="fright">
+    					#if($reply.user.id==$g_user_id || $is_owner)
+        				<a href="$dlog.root()/html/bbs/edit_reply.vm?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;rid=${reply.id}&amp;page=${p_page}">编辑</a>
+        				<a href="$link.setAction("html/bbs/reply")?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;id=${reply.id}&amp;page=${p_page}&amp;eventSubmit_DeleteReply" onclick="return confirm('您确认要删除这篇回帖吗？');">删除</a>
+						#end
+						#if(${topic.forum.status}!=1)
+        				<a href="$dlog.root()/html/bbs/reply.vm?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">回复</a>
+						#end
+					</div>
+					<div class="spacer_1"></div>
+					</div>
+				</div>
+				<div class="thread_reply_usr">
+    				回复作者: <a href="$dlog.root()/dlog/viewuser.vm?sid=$g_site_id&amp;uid=${reply.user.id}">$text.html(${reply.user.nickname})</a>#if(${reply.user.onlineStatus}==1)(在线)#else(离线)#end&nbsp;&nbsp;回复时间: $date.format($reply.replyTime)
+					###注册时间: $date.format("yyyy-MM-dd", ${reply.user.regTime})最近访问: $!date.format("yyyy-MM-dd HH:mm", ${reply.user.lastTime})当前状态: #if(${reply.user.onlineStatus}==1)在线#else 离线#end<a href="$dlog.root()/html/sendmsg.vm?sid=$g_site_id&amp;uid=${reply.user.id}">[发消息]</a>
+                    &nbsp;&nbsp;发帖数: ${reply.user.count.topic}&nbsp;&nbsp;回帖数: ${reply.user.count.topicReply}
+				</div>
+				<div class="spacer_2"></div>
+    			<div class="line_dashed"></div>
+				<div class="spacer_5"></div>
+				<div class="thread_content">${reply.content}</div>
+				</div>
+				#end
+				$BBS_tool.visit_topic($g_site, $topic)
+        	</div>
+        </div>
+    	<div class="spacer_10"></div>
+    </div>
+	#if($replies.size()>5)
+	<div class="page_bottom">
+    	<div class="line_dashed"></div>
+		<div class="pager_nav">
+    		<div class="fleft">
+				共有回复${topic.replyCount}篇 每页显示${PAGE_SIZE}篇 第${p_page}页 共${page_count}页
+    		</div>
+    		<div class="fright">
+				#if($page_count > 1)
+            		<form name="dform_2" action="">
+                    <input type="hidden" name="sid" value="$g_site_id" />
+                    <input type="hidden" name="fid" value="$topic.forum.id" />
+                    <input type="hidden" name="tid" value="$topic.id" />
+                    #if($p_page>1)
+                        <a href="?sid=${g_site_id}&amp;fid=${forum.id}">首页</a>
+                        <a href="?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;page=$pre_page">上页</a>
+                    #end
+                    #if($p_page < $page_count)
+                        <a href="?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;page=$next_page">下页</a>
+                        <a href="?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}&amp;page=$page_count">尾页</a>
+                    #end
+            		转到&nbsp;
+                    <select name="page" onchange="dform_2.submit();">
+                        #foreach($p in [1..$page_count])
+                            <option value="$p"#if($p_page==$p) selected#end>$p</option>
+                        #end
+                    </select>&nbsp;页
+            		</form>
+            	#end
+    		</div>
+    	</div>
+		<div class="spacer_20"></div>
+		<div class="forum_nav">
+			<a class="thread_reply" href="$dlog.root()/html/bbs/reply.vm?sid=${g_site_id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">回复此主题</a>
+            <a class="thread_new" href="$dlog.root()/html/bbs/new_topic.vm?sid=$g_site_id&amp;fid=${topic.forum.id}">发新帖</a>
+			<a class="thread_search" href="$dlog.root()/html/bbs/search.vm?sid=$g_site_id&amp;fid=${topic.forum.id}">搜索论坛</a>            
+            <a class="thread_bookmark" href="#" onclick="#if(!$g_user) alert('必须登录后才能保存文章到书签') #else bookmarkForm.submit() #end ;return false;">加入书签</a>
+            <a class="thread_back" href="$dlog.root()/html/bbs/forum.vm?sid=$g_site_id&amp;fid=${topic.forum.id}">返回到主题列表</a>
+		</div>
+    </div>
+	#end
+#end   

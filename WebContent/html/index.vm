@@ -1,0 +1,39 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  Home page of DLOG4J
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+
+##读取留言簿的新留言数
+#set($from_idx = $dlog.get_cookie_as_int("guestbook"))
+#set($guest_msg_count = $dlog.get_guest_msg_count_after($g_site, $from_idx))
+#if($guest_msg_count > 0)
+	<div id="guest_msg_tip">留言簿有${guest_msg_count}条新的留言您还没有阅读。<a href="$dlog.root()/html/guestbook.vm?sid=$g_site_id">现在阅读</a></div>
+	<div class="spacer_10"></div>
+#end
+#if($g_site && ${g_site.functionStatus.diary}!=2)
+#invoke("_sub/_main_daily.vm")
+<div class="spacer_10"></div>
+#end
+#if($g_site && ${g_site.functionStatus.photo}!=2)
+#invoke("_sub/_main_photo.vm")
+<div class="spacer_10"></div>
+#end
+#if($g_site && ${g_site.functionStatus.music}!=2)
+#invoke("_sub/_main_music.vm")
+#end

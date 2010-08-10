@@ -1,0 +1,11 @@
+#set($objs = $SEARCH_tool.search_photo($g_site, $g_user, $key))
+<b>照片:</b>共有<b>$!{objs.size()}</b>项符合<b>${key}</b>的查询结果，(搜索用时<b>${SEARCH_tool.get_search_time()}</b>毫秒)<br/><br/>
+#if($objs && $objs.size() > 0)
+<table cellspacing=1 cellpadding=3 width="100%" border="0" class="table">
+<tr class="table_cell"><td>
+#foreach($obj in $objs)
+	<a href="$dlog.root()/html/photo/show.vm?sid=$obj.site.id&amp;pid=$obj.id"><img src="$dlog.root()${obj.previewURL}" alt="" border="0"/></a>
+#end
+</td></tr>
+</table>
+#end

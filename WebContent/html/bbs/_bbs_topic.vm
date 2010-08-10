@@ -1,0 +1,11 @@
+<div class="module_title"><b>×îÐÂÌû×Ó</b></div>
+<div class="module_content">
+	#set($new_topics = $BBS_tool.all_topics($g_site,1,10))
+    #foreach($topic in $new_topics)
+		<a href="$dlog.root()/html/bbs/topic.vm?sid=$g_site_id&amp;fid=$topic.forum.id&amp;tid=$topic.id"><img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>&nbsp;$text.html(${topic.title})(${topic.replyCount})</a><br/>
+	#end
+	<div class="module_more">
+	<a href="$dlog.root()/html/bbs/topics.vm?sid=$g_site_id">more...</a>
+	</div>
+</div>
+<div class="module_foot"></div>

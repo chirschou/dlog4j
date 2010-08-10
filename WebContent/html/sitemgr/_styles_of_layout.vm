@@ -1,0 +1,10 @@
+#set($__layout_name = $dlog.param("layout","1"))
+#set($__layout = $dlog.get_layout($__layout_name))
+<table width="80%" border="0" class="table">
+<tr height="16">
+	<td bgcolor="#ffffff" align="center"><input type="radio" name="cssFile" value="main.css" checked/></td>
+	#foreach($css in $__layout.getStyles())
+	<td bgcolor="#$css.color" align="center"><input type="radio" name="cssFile" value="$css.fileName"/></td>
+	#end
+</tr>
+</table>

@@ -1,0 +1,11 @@
+<div class="module_title"></div>
+##<b>$text.ui("label.site_support")</b>
+<div class="module_content" align="center">
+	#if(!$rss_type)#set($rss_type=1)#end
+	<a class="sm_support" href="$dlog.root()/rss.vm?sid=$g_site_id&amp;tid=$rss_type"><img src="${app_url}$dlog.root()/images/rss.gif" border="0"/></a>
+	<a class="sm_support" href="http://validator.w3.org/check?uri=referer" target="_blank"><img src="${app_url}$dlog.root()/images/xhtml.png" border="0"/></a>
+	<a class="sm_support" href="http://jigsaw.w3.org/css-validator/" target="_blank"><img src="${app_url}$dlog.root()/images/css.png" border="0"/></a>
+	<a class="sm_support" href="http://www.mozilla.org/products/firefox/" target="_blank"><img src="${app_url}$dlog.root()/images/firefox.gif" border="0"/></a>
+	<a class="sm_support" href="http://www.opera.com/" target="_blank"><img src="${app_url}$dlog.root()/images/opera.gif" border="0"/></a>
+</div>
+<div class="module_foot"></div>

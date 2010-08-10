@@ -1,0 +1,152 @@
+#set($uform = $form.getBean())
+<p><h3>注册新用户</h3></p>
+<form method="POST" action="$link.setAction("html/user")" onsubmit="return validateUserForm(this);">
+    <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()" />
+    <input type="hidden" name="sid" value="$g_site_id" />
+    <p><strong>用户基本信息(必填):</strong></p>
+    <dl>
+        <dd>
+        <table>
+            <tr>
+                <td>用户名:</td>
+                <td>
+                    <input type="text" size="20" maxlength="20" name="name" value="$!{uform.name}" />
+                    #struts_message("name")
+                </td>
+            </tr>
+            <tr>
+                <td>昵称:</td>
+                <td>
+                    <input type="text" size="20" maxlength="20" name="nickname" value="$!{uform.nickname}" />
+                    #struts_message("nickname")
+                </td>
+            </tr>
+            <tr>
+                <td>密码:</td>
+                <td>
+                    <input type="password" size="20" maxlength="20" name="password" />
+                    #struts_message("password")
+                </td>
+            </tr>
+            <tr>
+                <td>密码确认:</td>
+                <td><input type="password" size="20" maxlength="20" name="password2" /></td>
+            </tr>
+            <tr>
+                <td>校验码:</td>
+                <td>
+                    <input type="text" size="5" maxlength="4" name="verifyCode" />
+                    <img src="$dlog.root()/servlet/verify.img" alt="verify" />
+                    #struts_message("verifyCode")
+                </td>
+            </tr>
+        </table>
+        </dd>
+    </dl>
+    <p><strong>联系信息(可选):</strong></p>
+    <dl>
+        <dd>
+        <table>
+            <tr>
+                <td colspan="2"><font color="red">提示：请认真填写电子邮件，以便您忘记密码时系统可以将密码发送到该邮箱。</font></td>
+            </tr>
+            <tr>
+                <td>电子邮件:</td>
+                <td>
+                    <input type="text" size="30" maxlength="50" name="email" value="$!{uform.email}" />                    
+                    #struts_message("email")
+                </td>
+            </tr>
+            <tr>
+                <td>QQ:</td>
+                <td>
+                    <input type="text" size="16" maxlength="16" name="qq" value="$!{uform.qq}" />                                        
+                    #struts_message("qq")
+                </td>
+            </tr>
+            <tr>
+                <td>MSN:</td>
+                <td>
+                    <input type="text" size="30" maxlength="50" name="msn" value="$!{uform.msn}" />                    
+                    #struts_message("msn")
+                </td>
+            </tr>
+            <tr>
+                <td>个人网址:</td>
+                <td>
+                    <input type="text" size="50" maxlength="50" name="homePage" value="$!{uform.homePage}" />                    
+                    #struts_message("homePage")
+                </td>
+            </tr>
+        </table>
+        </dd>
+    </dl>
+    <p>
+        <strong>您的性别？</strong>
+        <input type="radio" name="sex" value="0" #if(!$uform || $uform.sex==0)checked#end />保密
+        <input type="radio" name="sex" value="1" #if($uform.sex==1)checked#end />男 
+        <input type="radio" name="sex" value="2" #if($uform.sex==2)checked#end />女
+    </p>
+    <p>
+        <strong>您的生日？</strong>
+        <span id="show_birth">$!{uform.birth}</span>
+        <input type="hidden" name="birth" id="f_date_birth" value="$!{uform.birth}" />
+		<img src="$dlog.style($g_site, "pic/date_sel.gif")" alt="date" align="absmiddle" id="f_trigger_birth" border="0" />&nbsp;&lt;--点击这里进行设置
+        #calendar_setup("f_date_birth" "show_birth" "f_trigger_birth")
+    </p>
+    <p><strong>个人宣言(可选):</strong>#struts_message("resume")</p>
+    <dl>
+        <dd><textarea name="resume" rows="5" cols="42">$!{uform.resume}</textarea></dd>
+    </dl>
+    <p><strong>登录信息:</strong>
+        <select name="keepDays">
+            <option value="-1">不保存</option>
+            <option value="1">保存一天</option>
+            <option value="7">保存一周</option>
+            <option value="30">保存一月</option>
+            <option value="365">保存一年</option>
+        </select>
+    </p>
+    <table width="70%">
+        <tr>
+            <td align="center">
+                <input type="submit" name="eventSubmit_Create" value="提交注册" />&nbsp;&nbsp;
+                <input type="reset" value="重新填写" />
+            </td>
+        </tr>
+    </table>
+</form>
+<script language="javascript" type="text/javascript">
+
+    function validateUserForm(uForm){
+        with(uForm){
+            if(is_empty(name.value)){
+                alert("username is required.");
+                name.focus();
+                return false;
+            }
+            if(is_empty(nickname.value)){
+                alert("nickname is required.");
+                nickname.focus();
+                return false;
+            }
+            if(is_empty(password.value)){
+                alert("password is required.");
+                password.focus();
+                return false;
+            }
+            if(!equals(password.value, password2.value)){
+                alert("password doesn't match.");
+                password.focus();
+                return false;
+            }
+            if(is_empty(verifyCode.value)){
+                alert("verifyCode is required.");
+                verifyCode.focus();
+                return false;
+            }
+        }
+        return true;
+    }
+    
+</script>

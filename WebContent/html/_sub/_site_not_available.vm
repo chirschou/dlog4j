@@ -1,0 +1,4 @@
+<p>
+	<strong>site #${g_site_id} not available.</strong>
+</p>
+<a href="$dlog.root()/">HOME</a>

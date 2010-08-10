@@ -1,0 +1,93 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  show all replies
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_photo.vm")
+#set($page_title="所有照片评论")
+###############################################################################
+#set($LOGS_PER_PAGE = 10)
+#set($p_page = $dlog.param("page",1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+#set($_photo = 1) ## 用于控制_reply_bottom_bar.vm的行为
+#set($reply_count = $PHOTO_tool.photo_reply_count($g_site, $g_user))
+#set($page_count = $dlog.page_count($reply_count, $LOGS_PER_PAGE))
+<div class="page_top">
+	<div class="adcontent"></div>
+	<div class="pagecontent">
+		<div class="pagecontent_left fleft">
+			相册中共有评论${reply_count}条 每页显示${LOGS_PER_PAGE}条 第${p_page}页 共${page_count}页
+		</div>
+		<div class="pagecontent_right fright">
+			#if($page_count > 1)
+				#if($p_page > 1)<a href="?sid=$g_site_id">首页</a>#end
+                #if($p_page>1)<a href="?sid=$g_site_id&amp;page=$pre_page">上页</a>#end
+                #if($p_page < $page_count)<a href="?sid=$g_site_id&amp;page=$next_page">下页</a>#end
+                #if($p_page < $page_count)<a href="?sid=$g_site_id&amp;page=$page_count">尾页</a>#end
+				到<select name="page">
+                #foreach($p in [1..$page_count])
+                <option value="$p" #if($p_page==$p)selected#end>$p</option>
+                #end
+                </select>页
+			#end
+		</div>        
+	</div>
+	<div class="spacer_1"></div>
+</div>
+## $catalog_id 已经在_catalog_and_calendar.vm中定义
+#set($replies = $PHOTO_tool.list_photo_replies($g_site, $p_page, $LOGS_PER_PAGE, $g_user))
+<div class="page_content">
+	#foreach($reply in $replies)
+	#set($show_log_url = "show.vm?sid=$g_site_id&amp;pid=${reply.photo.id}#${reply.id}")   
+	<div class="comment">
+		<div class="comment_title">
+			<a name="${reply.id}"></a>
+			<div class="fleft">
+			#if($reply.authorURL)<a href="$reply.authorURL">#end<span class="log_reply_author">$text.html($reply.author)</span>#if($reply.authorURL)</a>#end 网友说：
+			</div>
+			<div class="fright">
+			$date.format("yyyy/MM/dd HH:mm",${reply.replyTime}) &nbsp;&nbsp;
+            #if($g_user && (${g_site.owner.id}==$g_user_id || (${reply.user} && ${reply.user.id}==$g_user_id)))
+              <a href="#" onclick="if(confirm('您真的要删除该评论吗？')) deleteRForm_${reply.id}.submit(); return false;"">
+        		  $html.img("icon_delete.gif",null,"DEL","absmiddle",0)
+              </a>
+              <a href="$dlog.root()/html/photo/show.vm?sid=$g_site_id&amp;pid=${reply.photo.id}&reply_id=${reply.id}#reply">
+        		  $html.img("icon_edit.gif",null,"EDIT","absmiddle",0)
+              </a>
+            <form name="deleteRForm_${reply.id}" action="$link.setAction("html/reply")" method="post">
+                <input type="hidden" name="sid" value="${g_site_id}" />
+                <input type="hidden" name="pid" value="${reply.photo.id}" />
+                <input type="hidden" name="fromPage" value="$dlog.get_request_url()" />
+                <input type="hidden" name="eventSubmit_DeletePhotoReply" value="${reply.id}" />
+            </form>
+            #end
+			</div>
+		</div>
+		<div class="comment_content">
+            ${reply.content}
+		</div>
+		<div class="comment_footerlist">
+			<div class="photo_log">
+				<a href="$show_log_url"><img src="$dlog.root()${reply.photo.previewURL}" border="0" alt="photo" /></a>
+			</div>
+		</div>
+	</div>
+	<div class="spacer_10"></div>
+	#end
+</div>
+<div class="page_bottom"></div>

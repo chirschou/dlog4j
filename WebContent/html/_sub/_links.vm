@@ -1,0 +1,23 @@
+#set($linkid=$dlog.param("linkid",-1))
+<div class="module_title">
+	<b>$text.ui("label.links")</b>#if($dlog.is_owner($g_site, $g_user))&nbsp;(<a href="$dlog.root()/html/sitemgr/links.vm?sid=$g_site_id">+</a>)#end
+</div>
+<div class="module_content">
+	<ul>
+	#set($links = $link.links($g_site,1, -1))
+    #foreach($lnk in $links)
+    	#if(${lnk.status}!=1 || ${g_site.owner.id}==$g_user_id)
+    	#if($linkid==$lnk.id)<b><i>#end
+        #if(${lnk.type}>=2 && ${lnk.type}<=4)
+    		<li><a href="$dlog.root()/html/rssview.vm?sid=$g_site_id&amp;linkid=$lnk.id">$escape.html(${lnk.title})</a></li>
+    	#elseif(${lnk.type}==5)
+    		<li><a href="$dlog.root()/?sid=${lnk.url}">$escape.html(${lnk.title})</a></li>
+    	#elseif(${lnk.type}!=6)
+    		<li><a href="$dlog.root()/redirect.vm?${lnk.url}" target="_blank">$escape.html(${lnk.title})</a></li>
+    	#end
+    	#if($linkid==${lnk.id})</i></b>#end
+    	#end
+    #end
+	</ul>
+</div>
+<div class="module_foot"></div>

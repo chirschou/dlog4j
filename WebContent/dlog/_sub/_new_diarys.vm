@@ -1,0 +1,45 @@
+#set($diary_count = $DIARY_tool.public_diary_count())
+#set($PAGE_SIZE = 20)
+#set($page_count = $dlog.page_count($diary_count, $PAGE_SIZE))
+#set($p_page = $dlog.param("p",1))
+#set($pre_page = $p_page - 1)
+#set($next_page = $p_page + 1)
+<div id="new_diarys_area">
+	第<b>$p_page</b>页,共<b>$page_count</b>页
+	#if($page_count > 1)
+	#if($p_page>1)
+		<a href="#" onclick="return go_page(1);">首页</a>
+		<a href="#" onclick="return go_page($pre_page);">上页</a>
+	#end
+	#if($p_page < $page_count)
+		<a href="#" onclick="return go_page($next_page);">下页</a>
+		<a href="#" onclick="return go_page($page_count);">尾页</a>
+	#end
+	#end
+	<div class="spacer_5"></div>
+	<div class="line_dashed"></div>
+	<div class="spacer_5"></div>
+	#set($logs = $DLOG4J_tool.list_new_articles($p_page, $PAGE_SIZE))
+	<div>
+	#foreach($log in $logs)
+		<img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>
+		<a href="$dlog.root()/html/diary/showlog.vm?sid=${log.site.id}&amp;log_id=${log.id}" target="show_diary">$text.html(${log.title})</a>[$date.format("yy/MM/dd",${log.writeTime})]<br/>	
+	#end
+	</div>
+</div>
+	
+<script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function go_page(pageidx){
+		var random = Math.random()+'';
+		var url = '$dlog.root()/dlog/_sub/_new_diarys.vm?p='+pageidx+'&n='+random;
+    	var myAjax = new Ajax.Request(url,
+    	    {method: 'get', onComplete: ajax_new_diary_response}
+    	);
+		return false;
+	}
+	function ajax_new_diary_response(originalRequest) {
+		var d = $('new_diarys_area');
+		d.innerHTML = originalRequest.responseText;
+    }
+</script>

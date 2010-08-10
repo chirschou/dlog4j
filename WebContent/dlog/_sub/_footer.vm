@@ -1,0 +1,10 @@
+<div>
+	<a href="#">关于我们</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+	<a href="#">服务条款</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+	<a href="#">隐私权政策</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+	<a href="mailto:dlog4j@gmail.com">联系我们</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+	<a href="http://dlog4j.sourceforge.net">Powered by DLOG4J ${app_version}</a>	
+</div>
+<div>
+	Copyright &nbsp;&copy; 2006 Winter Lau &nbsp;&nbsp;&nbsp;&nbsp;
+</div>

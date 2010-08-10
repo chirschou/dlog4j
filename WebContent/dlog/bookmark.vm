@@ -1,0 +1,82 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  bookmark view
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($page_title="我的书签")
+
+#if($g_user)
+	#set($bookmarks = $dlog.bookmarks($g_user))
+	#if($bookmarks.size()>0)
+        <div class="page_top" align="right">您共有${bookmarks.size()}个书签！</div>
+        <hr size="1" noshade color="#CCCCCC">
+		<form action="$link.setAction("html/bookmark")" method="post" onsubmit="return confirm('是否真的把选中的书签都删除吗？');">
+        <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+        <input type="hidden" name="fromPage" value="/dlog/bookmark.vm?sid=$g_site_id"/>
+        <input type="hidden" name="sid" value="$g_site_id"/>		
+		<div class="page_body">
+        <table cellspacing="1" cellpadding="3" border="0" class="table" width="100%">
+		<tr class="table_head">
+			<td nowrap></td>
+			<td nowrap></td>
+			<td nowrap>书签名</td>
+			<td nowrap></td>
+			<td nowrap>添加时间</td>
+			<td nowrap>来自</td>
+    		<td nowrap>删除</td>
+		</tr>
+        #foreach($bm in $bookmarks)
+        <tr class="table_cell">
+            <td><input type="checkbox" name="bid" value="${bm.id}"/></td>
+			<td nowrap>${velocityCount}.</td>
+			<td width="100%">
+			<a href="$dlog.gen_bookmark_hyperlink($bm)">
+				<span class="log_title">${bm.title}</span>
+			</a>
+			</td>
+			<td nowrap>
+				#if(${bm.parentType}==5)[站点]#end
+				#if(${bm.parentType}==1)[日记]#end
+				#if(${bm.parentType}==2)[照片]#end
+				#if(${bm.parentType}==3)[音乐]#end
+				#if(${bm.parentType}==4)[讨论]#end
+			</td>
+			<td nowrap>$date.format("yyyy/MM/dd HH:mm",$bm.createTime)</td>
+			<td align="right" nowrap>
+    		[<a href="$dlog.root()/?sid=${bm.site.id}">#if(${bm.site.id}==$g_site_id)本站#else${bm.site.friendlyName}#end</a>]
+			</td>
+			<td align="center">
+				<a href="$link.setAction("html/bookmark")?sid=${g_site_id}&amp;eventSubmit_Delete=$bm.id" onclick="return confirm('真的要删除该书签嘛？');">
+					$html.img("icon_delete.gif")
+				</a>
+			</td>
+        </tr>
+    	#end	
+        </table>
+		</div>
+		<div class="page_footer">
+            <input type="checkbox" name="bt_all" value="" onclick="return select_all('bid',this.checked)"/>全选		
+            <input type="submit" name="eventSubmit_DeleteBookmarks" value="删除选中"/>
+		</div>
+		</form>
+	#else
+		#show_msg_box("您还有添加任何书签。")  
+	#end                         
+#else
+	#show_msg_box($text.ui("login.tip","$dlog.root()/dlog/login.vm?sid=$g_site_id&fromPage=$link.encodeURL($dlog.get_request_url())"))
+#end

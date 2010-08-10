@@ -1,0 +1,3 @@
+<div class="msgbox">
+	对不起，你没有足够的访问权限，点击<a href="$dlog.root()/dlog/login.vm?sid=$g_site_id&amp;fromPage=$link.encodeURL($dlog.get_request_url())">$text.ui("label.login")</a>使用其他帐号进入。<br /><br /><a href="#" onclick="history.go(-1);return false;">$text.ui("back_to_prev")</a>
+</div>

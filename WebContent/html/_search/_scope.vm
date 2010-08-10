@@ -1,0 +1,10 @@
+#if(!$scope)#set($scope=0)#end
+<select name="scope">
+    <option value="0" #if($scope==0)selected#end>所有内容</option>
+    <option value="100" #if($scope==100)selected#end>&nbsp;&#8226;&nbsp;注册用户</option>
+    <option value="101" #if($scope==101)selected#end>&nbsp;&#8226;&nbsp;个人网记</option>
+    <option value="1" #if($scope==1)selected#end>&nbsp;&#8226;&nbsp;&#8226;&nbsp;日记</option>
+    <option value="3" #if($scope==3)selected#end>&nbsp;&#8226;&nbsp;&#8226;&nbsp;照片</option>
+    <option value="5" #if($scope==5)selected#end>&nbsp;&#8226;&nbsp;&#8226;&nbsp;音乐</option>
+    <option value="4" #if($scope==4)selected#end>&nbsp;&#8226;&nbsp;&#8226;&nbsp;论坛</option>
+</select>

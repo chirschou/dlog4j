@@ -1,0 +1,10 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Keywords" content="网记,DLOG,DLOG4J,Blog,日记,博客,相册,音乐,论坛,${g_site.friendlyName}"/>
+<meta name="Description" content="网记——个人信息门户(DLOG.CN)"/>
+<meta name="Robots" content="index,follow"/>
+<title>$!{g_site.siteTitle}#if($dlog.not_empty($page_title)) | ${page_title}#end</title>
+<script type="text/javascript" src="${app_url}$dlog.root()/js/common.js"></script>
+<script type="text/javascript" src="${app_url}$dlog.root()/fckeditor.js"></script>
+<!--<link rel="SHORTCUT ICON" href="http://www.dlog.cn/favicon.ico"/>-->
+<link rel="alternate" type="application/rss+xml" title="RSS" href="$link.getContextURL()/rss.vm?sid=$g_site_id" />
+#select_css()

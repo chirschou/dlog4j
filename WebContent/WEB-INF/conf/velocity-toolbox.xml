@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolbox>
+
+  <tool>
+     <key>dlog</key>
+     <scope>request</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_VelocityTool</class>
+	 <parameter name="saveRefer" value="true"/>
+  </tool>
+	
+  <tool>
+     <key>html</key>
+     <scope>request</scope>
+     <class>com.liusoft.dlog4j.velocity.HtmlVelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>DLOG4J_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Home_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>COMMENT_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Comment_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>TYPE_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Type_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>USER_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_User_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>STAT_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Stat_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>TAG_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Tag_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>SEARCH_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Search_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>DIARY_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Diary_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>BBS_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_BBS_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>MUSIC_tool</key>
+     <scope>application</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Music_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>PHOTO_tool</key>
+     <scope>request</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Photo_VelocityTool</class>
+  </tool>
+	
+  <tool>
+     <key>text</key>
+     <scope>request</scope>
+     <class>com.liusoft.dlog4j.velocity.VelocityTextTool</class>
+  </tool>
+  
+  <tool>
+    <key>date</key>
+    <scope>application</scope>
+    <class>org.apache.velocity.tools.generic.DateTool</class>
+  </tool>
+	
+  <tool>	  
+    <key>escape</key>
+    <scope>application</scope>
+    <class>org.apache.velocity.tools.generic.EscapeTool</class>
+  </tool>
+	
+  <!--
+  <tool>
+    <key>list</key>
+	<scope>application</scope>
+    <class>org.apache.velocity.tools.generic.ListTool</class>
+  </tool>
+  -->
+  <tool>
+     <key>math</key>
+     <scope>application</scope>
+     <class>org.apache.velocity.tools.generic.MathTool</class>
+  </tool>
+  <!--
+  <tool>
+     <key>sniffer</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.view.tools.BrowserSnifferTool</class>
+  </tool>
+  -->
+  <tool>
+     <key>cookie</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.view.tools.CookieTool</class>
+  </tool>
+
+  <tool>
+     <key>link</key>
+     <scope>request</scope>
+     <class>com.liusoft.dlog4j.velocity.DLOG_Link_VelocityTool</class>
+  </tool>
+
+  <!-- ordinarily the SecureLinkTool would simply replace the StrutsLinkTool
+  	if SSL Ext. is in use - in that case the key would be 'link' but it's
+        'slink' here to distinguish between the two. -->
+  <!--
+  <tool>
+     <key>slink</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.struts.SecureLinkTool</class>
+  </tool>
+  -->
+  <!--
+  <tool>
+     <key>errors</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.struts.ErrorsTool</class>
+  </tool>
+  -->
+  <tool>
+     <key>messages</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.struts.ActionMessagesTool</class>
+  </tool>
+
+  <tool>
+     <key>form</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.struts.FormTool</class>
+  </tool>
+  <!--
+  <tool>
+     <key>tiles</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.struts.TilesTool</class>
+  </tool>
+  -->
+  <!--
+  <tool>
+     <key>validator</key>
+     <scope>request</scope>
+     <class>org.apache.velocity.tools.struts.ValidatorTool</class>
+  </tool>
+  -->
+  <!-- data -->
+  <data type="number">
+     <key>app_version</key>
+     <value>3.0</value>
+  </data>
+  <data type="string">
+     <key>app_name</key>
+     <value>网记</value>
+  </data>
+  <data type="string">
+     <key>app_url</key>
+     <value></value>
+  </data>
+
+
+</toolbox>

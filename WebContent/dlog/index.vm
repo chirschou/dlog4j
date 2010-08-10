@@ -1,0 +1,233 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  home page of DLOG4J v3
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#set($layout = "home.vm")
+#set($page_title = "DLOG4J 3.0")
+
+<div class="left_panels">
+	<div class="panel">
+		#set($logs = $DLOG4J_tool.list_new_articles(1, 11))
+		<div class="panel_head">
+			<div>
+        		<div class="fleft">最新发布日记</div>
+				<div class="fright">
+					<a href="$dlog.root()/rss.vm?tid=1">$html.img("rss.png","RSS")</a>
+				</div>
+			</div>
+			<div class="spacer_1"></div>
+		</div>
+		#if($logs.size()>0)
+			#set($top_log = ${logs.get(0)})
+			$DIARY_tool.fill_diary_content($top_log)
+    		<div class="panel_top">
+				<a href="$dlog.root()/html/diary/showlog.vm?sid=${top_log.site.id}&amp;log_id=${top_log.id}">
+				$escape.html(${top_log.title})
+				</a>
+				#set($__nothing = ${top_log.site.friendlyName})
+			</div>
+			<div class="panel_top_body">
+				$dlog.abbreviate($dlog.plain_text(${top_log.content}), 100)
+			</div>
+			<div class="spacer_5"></div>
+			<div class="line_dashed"></div>
+		#end
+		<div class="panel_body">
+			#foreach($log in $logs)
+			#if($velocityCount>1)
+			<img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>
+				<a href="$dlog.root()/html/diary/showlog.vm?sid=${log.site.id}&amp;log_id=${log.id}">$escape.html(${log.title})</a>&nbsp;&nbsp;
+				[<a href="$dlog.root()/?sid=${log.site.id}">$escape.html(${log.site.friendlyName})</a>]<br/>
+			#end
+			#end
+		</div>
+	</div>
+	<div class="spacer_5"></div>
+	<div class="panel">
+		#set($logs = $DLOG4J_tool.list_hot_articles(7, 11))
+		<div class="panel_head">本周热门日记(<a href="$dlog.root()/dlog/diarys.vm">更多...</a>)</div>
+		#if($logs.size()>0)
+			#set($top_log = ${logs.get(0)})
+			$DIARY_tool.fill_diary_content($top_log)
+    		<div class="panel_top">
+				<a href="$dlog.root()/html/diary/showlog.vm?sid=${top_log.site.id}&amp;log_id=${top_log.id}">
+				$escape.html(${top_log.title})
+				</a>
+				#set($__nothing = ${top_log.site.friendlyName})
+			</div>
+			<div class="panel_top_body">
+				$dlog.abbreviate($dlog.plain_text(${top_log.content}), 100)
+			</div>
+			<div class="spacer_5"></div>
+			<div class="line_dashed"></div>
+		#end
+		<div class="panel_body">
+			#foreach($log in $logs)
+			#if($velocityCount>1)
+			<img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>
+				<a href="$dlog.root()/html/diary/showlog.vm?sid=${log.site.id}&amp;log_id=${log.id}">$escape.html(${log.title})</a>&nbsp;&nbsp;
+				[<a href="$dlog.root()/?sid=${log.site.id}">$escape.html(${log.site.friendlyName})</a>]<br/>
+			#end
+			#end
+		</div>
+	</div>
+	<div class="spacer_5"></div>
+	<div class="panel">
+		<div class="panel_head">
+			<div>
+        		<div class="fleft">最新上传照片</div>
+				<div class="fright">
+					<a href="$dlog.root()/rss.vm?tid=2">$html.img("rss.png","RSS")</a>
+				</div>
+			</div>
+			<div class="spacer_1"></div>
+		</div>
+		<div class="panel_body">
+			<table border="0" cellspacing="2" cellpadding="0" width="100%">
+			#set($photos = $DLOG4J_tool.list_new_photos(0,6))
+			#set($COL_COUNT = 3)
+            #set($ROW_COUNT = $dlog.page_count($photos.size(),$COL_COUNT) - 1)  ##两行
+            #foreach($row in [0..$ROW_COUNT])
+                <tr>
+                    #set($begin_idx = $row * $COL_COUNT)
+                    #set($end_idx = $begin_idx + $COL_COUNT - 1)				
+                    #foreach($idx in [$begin_idx..$end_idx])
+                    #if($idx < $photos.size())
+                        #set($_photo = $photos.get($idx))
+                		<td class="photo_box">
+                			<div class="photo_cen"><a href="$dlog.root()/html/photo/show.vm?sid=${_photo.site.id}&amp;pid=${_photo.id}"><img src="$dlog.root()${_photo.previewURL}" border="0" title="$escape.html(${_photo.name})"/></a></div>
+                        </td>
+    				#end
+    				#end
+                </tr>
+    		#end
+    		</table>
+		</div>
+	</div>
+	#set($topics = $DLOG4J_tool.list_hot_topics(7, 10))
+	#if($topics && $topics.size()>0)
+	<div class="spacer_5"></div>
+	<div class="panel">
+		<div class="panel_head">本周热门话题</div>
+		<div class="panel_body">				
+			#foreach($topic in $topics)
+			<img src="$dlog.root()/images/arrow.gif" border="0" align="absmiddle"/>
+				<a href="$dlog.root()/html/bbs/topic.vm?sid=${topic.site.id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">$escape.html(${topic.title})</a>&nbsp;&nbsp;
+				[<a href="$dlog.root()/?sid=${topic.site.id}">$escape.html(${topic.site.friendlyName})</a>]<br/>
+			#end
+		</div>
+	</div>
+	#end
+</div>
+<div class="right_panels">
+	<div class="panel">
+		<div class="panel_head">本周热门照片(<a href="$dlog.root()/dlog/photos.vm">更多...</a>)</div>
+		<div class="panel_body">
+			<table border="0" cellspacing="2" cellpadding="0" width="100%">
+    		#set($photos = $DLOG4J_tool.list_hot_photos(7, 10))
+            #set($ROW_COUNT = 2)  ##三行
+            #foreach($row in [0..$ROW_COUNT]) ##最多显示三行
+                <tr>
+                    #set($begin_idx = $row * $ROW_COUNT)
+                    #set($end_idx = $begin_idx + $ROW_COUNT - 1)				
+                    #foreach($idx in [$begin_idx..$end_idx])
+                    #if($idx < $photos.size())
+                        #set($_photo = $photos.get($idx))
+                		<td class="photo_box">
+                			<div class="photo_cen"><a href="$dlog.root()/html/photo/show.vm?sid=${_photo.site.id}&amp;pid=${_photo.id}"><img src="$dlog.root()${_photo.previewURL}" border="0" title="$escape.html(${_photo.name})"/></a></div>
+                        </td>
+    				#end
+    				#end
+                </tr>
+    		#end
+    		</table>
+		</div>
+	</div>
+	<!--
+	<div class="spacer_5"></div>
+	<div class="panel">
+		<div class="panel_head">最受欢迎音乐</div>
+		<div class="panel_body">
+			TODO: 列出音乐
+		</div>
+	</div>
+	-->
+	<div class="spacer_5"></div>
+	<div class="panel">
+		<div class="panel_head">热门日记站点</div>
+		<div class="panel_body">
+			#set($sites = $DLOG4J_tool.list_hot_sites_via_diary(1,20))
+			#foreach($site in $sites)
+				<a href="$dlog.root()/?sid=${site.id}">$escape.html(${site.friendlyName})</a>&nbsp;
+			#end
+		</div>
+	</div>
+	<div class="spacer_5"></div>
+	<div class="panel">
+		<div class="panel_head">热门相册站点</div>
+		<div class="panel_body">
+			#set($sites = $DLOG4J_tool.list_hot_sites_via_photo(1,20))
+			#foreach($site in $sites)
+				<a href="$dlog.root()/?sid=${site.id}">$escape.html(${site.friendlyName})</a>&nbsp;
+			#end
+		</div>
+	</div>
+	<div class="spacer_5"></div>
+	<div class="panel">
+		<div class="panel_head">热门讨论站点</div>
+		<div class="panel_body">
+			#set($sites = $DLOG4J_tool.list_hot_sites_via_topic(1,20))
+			#foreach($site in $sites)
+				<a href="$dlog.root()/?sid=${site.id}">$escape.html(${site.friendlyName})</a>&nbsp;
+			#end
+		</div>
+	</div>
+	<div class="spacer_5"></div>
+	<div class="panel">
+		<div class="panel_head">最新注册站点(<a href="$dlog.root()/dlog/sites.vm">更多...</a>)</div>
+		<div class="panel_body">
+			#set($sites = $DLOG4J_tool.list_newest_sites(1,50))
+			#foreach($site in $sites)
+				<a href="$dlog.root()/?sid=${site.id}">$escape.html(${site.friendlyName})</a>&nbsp;
+			#end
+		</div>
+	</div>
+</div>
+<div class="spacer_5"></div>
+<div class="panel">
+	<div class="panel_head">友情链接</div>
+	<div class="panel_body">
+		<table border="0" cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+				<td width="80%">
+				#set($links = $DLOG4J_tool.list_links_of_site(1))
+        		#foreach($lnk in $links)
+        			#if(${lnk.type}>=2 && ${lnk.type}<=4)
+                        <a href="$dlog.root()/html/rssview.vm?sid=${lnk.siteId}&amp;linkid=$lnk.id">$escape.html(${lnk.title})</a>&nbsp;
+                	#elseif(${lnk.type}==5)
+                		<a href="$dlog.root()/?sid=${lnk.url}">$escape.html(${lnk.title})</a>&nbsp;
+					#elseif(${lnk.type}!=6)
+                		<a href="$lnk.url" target="_blank">$escape.html(${lnk.title})</a>&nbsp;
+        			#end
+        		#end
+				</td>
+            </tr>
+		</table>
+		<div class="spacer_1"></div>
+	</div>
+</div>

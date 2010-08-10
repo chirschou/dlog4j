@@ -1,0 +1,35 @@
+<div class="page_top">
+#if($messages.exist())
+	<div class="spacer_5"></div>
+	<div class="error_msg">$!messages.getAll()</div>
+	<div class="spacer_5"></div>
+#end
+</div>
+<div class="page_content">
+<form action="$link.setAction("html/album")" method="post">
+	<input type="hidden" name="sid" value="$g_site_id"/>
+	<input type="hidden" name="id" value="$album_id"/>
+	<input type="hidden" name="aid" value="$album_id"/>
+	<input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+    <input type="hidden" name="eventSubmit_AlbumVerify" value="HTML"/> 
+    <div class="form">
+		<div class="form_note">此相册需要密码验证正确后才能查看，请输入访问密码</div>
+    	<div class="form_row">
+    		<div class="form_row_title fleft">
+    			访问密码:
+    		</div>
+    		<div class="form_row_content">
+    			<input type="password" name="verifyCode" value=""/>
+    		</div>
+    	</div>
+		<div class="spacer_1"></div>
+    	<div class="form_row">
+    		<div class="form_row_submit">
+    			<input type="submit" name="bt_ok" value="进入相簿"/> 
+    			<input type="button" value="返回上页" onclick="history.go(-1)" />
+    		</div>
+    	</div>
+	</div>
+</form>
+</div>
+<div class="page_bottom"></div>

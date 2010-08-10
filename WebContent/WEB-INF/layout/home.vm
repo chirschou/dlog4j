@@ -1,0 +1,50 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  home page of DLOG4J v3
+##
+###############################################################################
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	<title>${page_title}</title>
+    <meta name="Keywords" content="网记,DLOG,日记,DLOG4J,博客,BLOG"/>
+	<meta name="Description" content="网记——个人信息门户(DLOG.CN)"/>
+	<meta name="Robots" content="index,follow"/>
+	<link rel="alternate" type="application/rss+xml" title="RSS" href="$link.getContextURL()/rss.vm" />
+	<link rel="stylesheet" href="$dlog.root()/styles/dlog.css" type="text/css" media="all"/>
+	<link rel="stylesheet" href="$dlog.root()/styles/dlogcn.css" type="text/css" media="all"/>
+	<link rel="stylesheet" href="$dlog.root()/styles/global.css" type="text/css" media="all"/>
+</head>
+<body onload="document.getElementById('q').focus();">
+##显示主频道栏
+<div id="dlog_home">
+	##搜索栏
+    #parse("/dlog/_index_top.vm")
+    <div class="spacer_10"></div>
+    ##显示当前用户信息以及日期信息
+    #parse("/dlog/_user_bar.vm")
+    <div class="spacer_10"></div>
+    <div>${screen_content}</div>
+    ##版权信息
+    <div class="spacer_10"></div>
+    <div class="line_solid"></div>
+    <div id="footer_bar">
+		#parse("/dlog/_sub/_footer.vm")
+	</div>    
+</div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+#set($img_url = $dlog.param("img"))
+#if($dlog.not_empty($img_url))
+<p align="center">
+    <img src="$img_url" border="0" align="absmiddle"/><br/>
+    <a href="" onclick="history.go(-1);return false">·µ»Ø</a>
+    <a href="" onclick="window.close();return false">¹Ø±Õ</a>
+</p>
+#else
+$dlog.redirect("$dlog.root()/")
+#end

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.liusoft.dlog4j.beans">
+
+	<class name="SiteBean" table="dlog_site" batch-size="50" dynamic-update="true">
+		<!--
+		<cache usage="read-write"/>
+		-->
+    	<id name="id" column="site_id">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="catalog" column="dlog_type_id" cascade="none"/>
+		
+		<property name="uniqueName"   column="site_name" update="false"/>
+		<property name="friendlyName" column="site_c_name"/>
+		
+		<property name="url"    column="site_url"/>
+		<property name="title"  column="site_title"/>		
+		<property name="detail" column="site_detail"/>
+		
+		<property name="icpNumber" column="site_icp"/>
+		
+		<component name="style">
+			<property name="logo"     column="site_logo"/>
+			<property name="css"      column="site_css"/>			
+			<property name="layout"   column="site_layout"/>
+			<property name="language" column="site_lang"/>
+		</component>
+		
+		<component name="functionStatus">
+			<property name="diary"     column="diary_status"/>
+			<property name="photo"     column="photo_status"/>			
+			<property name="music"     column="music_status"/>
+			<property name="forum"     column="forum_status"/>
+			<property name="guestbook" column="guestbook_status"/>
+		</component>
+		
+		<!--<component name="functionName">-->
+			<property name="diary"     column="diary_cname"/>
+			<property name="photo"     column="photo_cname"/>			
+			<property name="music"     column="music_cname"/>
+			<property name="forum"     column="bbs_cname"/>
+			<property name="guestbook" column="guestbook_cname"/>
+		<!--</component>-->
+		
+		<component name="capacity">
+			<property name="photoTotal" column="photo_space_total"/>
+			<property name="photoUsed"  column="photo_space_used"/>	
+			<property name="diaryTotal" column="diary_space_total"/>
+			<property name="diaryUsed"  column="diary_space_used"/>	
+			<property name="mediaTotal" column="media_space_total"/>
+			<property name="mediaUsed"  column="media_space_used"/>	
+		</component>
+		
+		<property name="createTime"  type="timestamp" column="create_time" update="false"/>
+		<property name="lastTime"    type="timestamp" column="last_time" insert="false"/>
+		<property name="expiredTime" type="timestamp" column="expired_time"/>
+		
+		<property name="lastExportTime" type="timestamp" column="last_exp_time" insert="false"/>
+		
+		<property name="status"/>
+		<property name="flag" column="site_flag"/>
+		<property name="type" column="site_type"/>
+		<property name="level" column="site_level"/>
+		
+		<property name="accessMode" column="access_mode"/>
+		<property name="accessCode" column="access_code"/>
+		
+		<many-to-one name="owner" column="userid" cascade="none"/>
+		
+		<bag name="links" lazy="true" inverse="true" cascade="delete" order-by="sort_order">
+			<key column="site_id"/>
+			<one-to-many class="LinkBean"/>
+		</bag>
+			
+		<bag name="catalogs" lazy="true" inverse="true" cascade="delete" order-by="sort_order">
+			<key column="site_id"/>
+			<one-to-many class="CatalogBean"/>
+		</bag>
+		
+		<!-- only the albums which has no parent node -->
+		<bag name="albums" lazy="true" inverse="true" cascade="delete" order-by="sort_order" where="dlo_album_id IS NULL">
+			<key column="site_id"/>
+			<one-to-many class="AlbumBean"/>
+		</bag>
+			
+		<bag name="forums" lazy="true" inverse="true" cascade="delete" order-by="sort_order">
+			<key column="site_id"/>
+			<one-to-many class="ForumBean"/>
+		</bag>
+		
+		<bag name="musicBoxes" lazy="true" inverse="true" cascade="delete" order-by="sort_order">
+			<key column="site_id"/>
+			<one-to-many class="MusicBoxBean"/>
+		</bag>
+		
+		<bag name="musicsRecommend" lazy="true" inverse="true" cascade="delete" where="status=16">
+			<key column="site_id"/>
+			<one-to-many class="MusicBean"/>
+		</bag>
+		
+		<bag name="songs" lazy="true" inverse="true" cascade="none" where="status=0" order-by="music_id DESC">
+			<key column="site_id"/>
+			<one-to-many class="MusicBean"/>
+		</bag>
+		
+	</class>
+	
+	<class name="UserBean" table="dlog_user" batch-size="50" dynamic-update="true">
+		
+		<cache usage="read-write"/>
+		
+    	<id name="id" column="userid">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="ownSiteId" column="own_site_id"/>
+		<property name="name" column="username" update="false" unique="true"/>
+		
+		<property name="cryptPassword" column="password"/>
+		
+		<property name="portrait"/>
+		<property name="nickname"/>
+		<property name="sex"/>
+		<property name="birth" type="date"/>	
+		
+		<property name="role" column="user_role"/>
+		
+		<!--<component name="contactInfo">-->
+			<property name="qq" />
+			<property name="msn"/>			
+			<property name="email" />
+			<property name="mobile"/>
+			<property name="homePage"/>
+			<property name="nation"/>
+			<property name="province"/>
+			<property name="city"/>
+			<property name="tel"/>
+			<property name="fax"/>
+			<property name="industry"/>
+			<property name="company"/>
+			<property name="job"/>
+			<property name="zip"/>
+			<property name="address"/>
+		<!--</component>-->
+		
+		<component name="count">			
+			<property name="article"  column="article_count"/>
+			<property name="articleReply" column="article_reply_count"/>			
+			<property name="photo"  column="photo_count"/>
+			<property name="photoReply" column="photo_reply_count"/>		
+			<property name="topic"  column="topic_count"/>
+			<property name="topicReply" column="topic_reply_count"/>
+			<property name="guestbook" column="guestbook_count"/>
+			<property name="bookmark" column="bookmark_count"/>
+		</component>
+		
+		<property name="resume"/>
+						
+		<property name="regTime"  type="timestamp" column="regtime" update="false"/>
+		<property name="lastTime" type="timestamp" column="last_time"/>
+		<property name="lastAddr" column="last_ip"/>
+		
+		<property name="onlineStatus" column="online_status"/>
+		
+		<property name="level" column="user_level"/>
+		<property name="status"/>
+		
+		<property name="keepDays" column="keep_days"/>
+		
+		<bag name="bookmarks" lazy="true" inverse="true" cascade="none">
+			<key column="userid"/>
+			<one-to-many class="BookmarkBean"/>
+		</bag>
+			
+		<bag name="msgs" lazy="true" inverse="true" cascade="none" order-by="status, msgid DESC">
+			<key column="userid"/>
+			<one-to-many class="MessageBean"/>
+		</bag>
+		
+		<!-- NOTICE: this property isn't suitable to MSAccess database. -->
+		<bag name="friends" lazy="true" inverse="true" cascade="none">
+			<key column="user_id"/>
+			<one-to-many class="FriendBean"/>
+		</bag>
+			
+		<many-to-one name="site" column="site_id" cascade="none"/>
+		
+	</class>
+	
+	<class name="SiteStatBean" table="dlog_site_stat" batch-size="50">
+		
+    	<id name="id" column="site_stat_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="siteId"  column="site_id"/>
+		
+		<property name="uvCount"  column="uv_count"/>
+		<property name="pvCount"  column="pv_count"/>
+		<property name="source"  column="v_source"/>
+		<property name="statDate" column="stat_date" update="false"/>
+		<property name="updateTime" type="timestamp" column="update_time"/>
+		
+	</class>
+	
+	<class name="TypeBean" table="dlog_type" batch-size="50" mutable="false">
+		
+		<cache usage="read-only"/>
+		
+    	<id name="id" column="dlog_type_id">
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" column="type_name"/>
+		<property name="sortOrder" column="sort_order"/>
+		
+		<many-to-one name="parent" column="dlo_dlog_type_id" cascade="none"/>
+		
+		<bag name="subTypes" lazy="true" inverse="true" cascade="none">
+			<key column="dlo_dlog_type_id"/>
+			<one-to-many class="TypeBean"/>
+		</bag>
+		
+	</class>
+	
+	<class name="FriendBean" table="dlog_friend" batch-size="50">
+		
+		<composite-id> 
+			<key-property name="owner" column="user_id"/>
+			<key-many-to-one name="friend" column="friend_id" class="UserBean"/>
+		</composite-id>
+        
+		<property name="type" column="friend_type"/>
+		<property name="role" column="friend_role"/>		
+		
+		<property name="addTime" type="timestamp" column="add_time" update="false"/>
+		
+	</class>
+	
+	<class name="MyBlackListBean" table="dlog_my_blacklist" batch-size="50">
+		
+		<composite-id> 
+			<key-property name="myId" column="my_user_id"/>
+			<key-many-to-one name="other" column="other_user_id" class="UserBean"/>
+		</composite-id>
+        
+		<property name="type" column="bl_type"/>
+		
+		<property name="addTime" type="timestamp" column="add_time" update="false"/>
+		
+	</class>
+	
+	<class name="CommentBean" table="dlog_comments" batch-size="20">
+		
+    	<id name="id" column="comment_id">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>	
+		<many-to-one name="parent" column="dlo_comment_id" cascade="none" update="false"/>		
+		
+		<property name="title"/>
+		<property name="content"/>
+		<property name="format" column="content_format"/>
+		
+		<property name="eid"   column="entity_id"/>
+		<property name="etype" column="entity_type"/>
+		
+		<property name="createTime" type="timestamp" column="comment_time" update="false"/>
+		
+		<property name="flag" column="comment_flag"/>
+		<property name="status" column="comment_status"/>
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" column="client_ip" update="false"/>
+			<property name="type" column="client_type" update="false"/>
+			<property name="userAgent" column="client_user_agent" update="false"/>
+		</component>
+		
+		<component name="author" class="com.liusoft.dlog4j.base.AuthorInfo">
+			<property name="id" column="author_id"/>
+			<property name="name" column="author_name"/>
+			<property name="email" column="author_email"/>
+			<property name="url" column="author_url"/>
+		</component>
+		
+		<bag name="comments" lazy="true" inverse="true" cascade="delete">
+			<key column="dlo_comment_id"/>
+			<one-to-many class="CommentOutlineBean"/>
+		</bag>
+		
+	</class>
+	
+	<class name="CommentOutlineBean" table="dlog_comments" batch-size="20">
+		
+    	<id name="id" column="comment_id">
+			<generator class="identity"/>
+		</id>
+		
+		<many-to-one name="site" column="site_id" cascade="none" update="false"/>	
+		<many-to-one name="parent" column="dlo_comment_id" cascade="none" update="false"/>
+		
+		<property name="title"/>
+		
+		<property name="format" column="content_format"/>
+		
+		<property name="eid" column="entity_id"/>
+		<property name="etype" column="entity_type"/>
+		
+		<property name="createTime" type="timestamp" column="comment_time" update="false"/>
+		
+		<property name="flag" column="comment_flag"/>
+		<property name="status" column="comment_status"/>
+		
+		<component name="client" class="com.liusoft.dlog4j.base.ClientInfo">
+			<property name="addr" column="client_ip" update="false"/>
+			<property name="type" column="client_type" update="false"/>
+			<property name="userAgent" column="client_user_agent" update="false"/>
+		</component>
+		
+		<component name="author" class="com.liusoft.dlog4j.base.AuthorInfo">
+			<property name="id" column="author_id"/>
+			<property name="name" column="author"/>
+			<property name="email" column="author_email"/>
+			<property name="url" column="author_url"/>
+		</component>
+		
+		<bag name="comments" lazy="true" inverse="true" cascade="delete">
+			<key column="dlo_comment_id"/>
+			<one-to-many class="CommentOutlineBean"/>
+		</bag>
+		
+	</class>
+	
+</hibernate-mapping>

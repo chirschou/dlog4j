@@ -1,0 +1,148 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  edit a photo
+##
+###############################################################################
+#parse("/html/_sub/_global.vm")
+#select_layout("p_photo.vm")
+#set($page_title="修改照片信息")
+###############################################################################
+#if(!$dlog.is_owner($g_site, $g_user))
+	#parse("/html/_illegal_access.vm")
+#else
+    #set($photo_id = $dlog.param("pid", -1))
+    #set($edit_photo = $PHOTO_tool.photo($g_site, $g_user, $photo_id))
+    #set($fbean = $form.getBean())
+    #if(!$fbean)
+        #set($fbean = $edit_photo)
+    #end
+    #show_error_msg()
+    <div class="page_top">
+    	<div class="pagecontent">
+    		<div class="pagecontent_left fleft">
+    			<b>修改照片信息</b>
+    		</div>
+    		<div class="pagecontent_right fright">
+				<a href="#" onclick="rotate('Left');return false;">向左旋转</a>
+				<a href="#" onclick="rotate('Right');return false;">向右旋转</a>
+    		</div>        
+    	</div>
+    	<div class="spacer_1"></div>
+    </div>
+    <div class="page_content">
+		<div class="photo_cen">
+			<img id="photo_img" src="$dlog.root()${edit_photo.imageURL}" width="$math.min(500, ${edit_photo.photoInfo.width})" border="0"/>
+		</div>
+        <form action="$link.setAction("html/photo")" method="post">
+        <input type="hidden" name="sid" value="$g_site_id"/>
+        <input type="hidden" name="id" value="$photo_id"/>
+        <input type="hidden" name="pid" value="$photo_id"/>
+        <input type="hidden" name="__ClientId" value="$dlog.gen_client_id()"/>
+        <input type="hidden" name="fromPage" value="$dlog.get_request_url()"/>
+        <input type="hidden" name="eventSubmit_Update" value="HTML" />    
+    	<div class="form">
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片名称:
+        		</div>
+        		<div class="form_row_content">
+    				<input type="text" name="name" value="$!{fbean.name}" />
+    				#struts_message("name")
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片关键字:
+        		</div>
+        		<div class="form_row_content">
+    				<input type="text" name="keyword" size="30" value="$!{fbean.keyword}" /> 多个关键字用空格隔开
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片描述:
+        		</div>
+        		<div class="form_row_content">
+    				&nbsp;&nbsp;支持纯文字介绍 100字以内!
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+    			<div class="form_row_content">
+        			<div class="spacer_5"></div>
+    				<textarea name="desc" rows="3" cols="58">$!{fbean.desc}</textarea>
+            		<div class="spacer_5"></div>
+    			</div>
+    		</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			存放相簿:
+        		</div>
+        		<div class="form_row_content">
+    				<select name="album">
+                        #foreach($album in $g_site.albums)
+                        <option value="${album.id}" #if(${album.id}==$edit_photo.album.id)selected#end>$text.html(${album.name})</option>
+                        #foreach($s_album in $album.childs)
+                        <option value="${s_album.id}" #if(${s_album.id}==$edit_photo.album.id)selected#end>                &nbsp;&#8226;&nbsp;$text.html(${s_album.name})</option>
+                        #end
+                        #end
+                    </select>
+                    <input type="checkbox" name="cover" value="1" /> 设为相簿封面
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+        		<div class="form_row_title fleft">
+        			照片属性:
+        		</div>
+        		<div class="form_row_content">
+    				<input type="radio" name="status" value="0" #if($fbean.status==0)checked#end /> 公开 
+    				<input type="radio" name="status" value="2" #if($fbean.status==2)checked#end /> 隐藏
+    			</div>
+        	</div>
+			<div class="spacer_1"></div>
+    		<div class="form_row">
+    			<div class="form_row_submit">
+    				<input type="submit" name="eventSubmit_Update" value="更新照片" />    
+    				<input type="button" value="返回上页" onclick="history.go(-1)" />
+    			</div>
+        	</div>
+    	</div>
+        </form>
+    </div>
+    <div class="page_bottom"></div>
+	
+    <script src="$dlog.root()/js/prototype.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    	function rotate(orient){
+			if(confirm('选择可能会丢失一些照片细节，是否继续？')){
+        		var random = Math.random()+'';
+        		var url = '$link.setAction("html/photo")?sid=${g_site_id}&eventSubmit_Rotate' + orient + '=$photo_id' + '&r=' + random;			
+            	var myAjax = new Ajax.Request(url,
+            	    {method: 'get', onComplete: ajax_response}
+            	);
+			}
+    	}
+    	function ajax_response(originalRequest) {
+    		var random = Math.random()+'';
+			var photo = $('photo_img');
+			photo.src = '$dlog.root()${edit_photo.imageURL}' + '?sid=${g_site_id}&r='+random;
+        }
+    </script>
+#end

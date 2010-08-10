@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">
+<wml>
+<card title="登录" ontimer="room.vm?room=1212">
+<p>  
+	<a href="index.vm">首页</a><br/>	
+	用户名:<input type="text" name="username" size="15"/>
+     密码:<input type="text" name="password" size="15"/>
+	<br/>
+	<anchor>现在登录
+		<go href="user.do" method="get">
+    		<postfield name="name" value="$(username)"/>
+    		<postfield name="password" value="$(password)"/>
+    		<postfield name="page" value="$wcp.replace($tpage,"&","&amp;")"/>
+    		<postfield name="eventSubmit_Login" value="WML"/>
+		</go>
+	</anchor><br/>
+	<select ivalue="0"> 
+		<option onpick="/wap/myroom/index.vm">我的摩堡</option>
+		<option onpick="/wap/shop/index.vm">摩网商城</option>
+		<option onpick="/wap/show/index.vm">摩秀</option>
+	</select>
+</p>
+</card>
+</wml>

@@ -1,0 +1,100 @@
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU Library General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+##
+##  show all tags
+##
+###############################################################################
+#invoke("_sub/_global.vm")
+#select_layout("p_main.vm")
+#set($tag_type = $dlog.param("type",0))
+#set($tag = $dlog.param("tag",""))
+#set($page_title=$tag)
+<div class="show_tag">
+<div class="page_top">
+<form action="">
+	<input type="hidden" name="sid" value="$g_site_id" />
+	关键字:
+	<input type="text" name="tag" value="$!{tag}" size="20" />
+	<select name="type">
+		<option value="0" #if($tag_type==0)selected#end>全部</option>
+		<option value="1" #if($tag_type==1)selected#end>日记</option>
+		<option value="2" #if($tag_type==2)selected#end>照片</option>
+		<option value="4" #if($tag_type==4)selected#end>讨论</option>
+	</select>
+	<input type="submit" name="" value="搜索关键字" />
+</form>
+#set($hot_tags = $TAG_tool.list_hot_tags($g_site, 10))
+#if($hot_tags.size()>0)
+	<b>热门关键字:</b>
+	#foreach($t_tag in $hot_tags)
+		#if($velocityCount>1),#end
+		<a href="?sid=$g_site_id&amp;type=$tag_type&amp;tag=${t_tag}">${t_tag}</a>
+	#end
+#end
+</div>
+<div class="page_content">
+<hr size="1" color="#cccccc" noshade/>
+#set($start_time = $dlog.current_timestamp())
+#if($tag_type==0 || $tag_type==1)
+	##日记
+	#set($diary_c = $TAG_tool.diary_count_of_tag($g_site, $tag))
+	#if($diary_c>0)
+		#set($diarys = $TAG_tool.diarys_of_tag($g_site, $tag, 1, 10))
+	#end
+#end
+#if($tag_type==0 || $tag_type==2)
+	##照片
+	#set($photo_c = $TAG_tool.photo_count_of_tag($g_site, $tag))
+	#if($photo_c>0)
+		#set($photos = $TAG_tool.photos_of_tag($g_site, $tag, 1, 5))
+	#end
+#end
+#if($tag_type==0 || $tag_type==4)
+	##讨论
+	#set($topic_c = $TAG_tool.topic_count_of_tag($g_site, $tag))
+	#if($topic_c>0)
+		#set($topics = $TAG_tool.topics_of_tag($g_site, $tag, 1, 10))
+	#end
+#end
+#set($time_used = $dlog.time_consume($start_time))
+共有#if($diary_c)日记 <b>${diary_c}</b> 篇，#end#if($photo_c)照片 <b>${photo_c}</b> 张，#end#if($topic_c)讨论 <b>${topic_c}</b> 篇，#end 查询耗时 <b>${time_used}</b> 毫秒。					
+<hr size="1" color="#cccccc" noshade/>
+#if($diarys)
+	日记${diary_c}篇#if($diary_c>$diarys.size())(<a href="tag1.vm?sid=$g_site_id&amp;tag=$link.encodeURL($tag)">更多...</a>)#end<br /><br />
+	#foreach($diary in $diarys)
+		<li>${velocityCount}.
+			<a href="$dlog.root()/html/diary/showlog.vm?sid=${diary.site.id}&amp;log_id=${diary.id}">$text.html($diary.title)</a>
+		</li>
+	#end
+	<br />
+#end
+#if($photos)
+	<br/><b>照片${photo_c}张</b>#if($photo_c>$photos.size())(<a href="tag2.vm?sid=$g_site_id&amp;tag=$link.encodeURL($tag)">更多...</a>)#end<br /><br />
+	#foreach($photo in $photos)
+		<a href="$dlog.root()/html/photo/show.vm?sid=${photo.site.id}&amp;aid=${photo.album.id}&amp;pid=${photo.id}" title="$text.html(${photo.name})"><img src="$dlog.root()$photo.previewURL" border="0" alt="${photo.name}" /></a>
+	#end
+	<br />
+#end
+#if($topics)
+	<br/><b>讨论${topic_c}篇</b>#if($topic_c>$topics.size())(<a href="tag4.vm?sid=$g_site_id&amp;tag=$link.encodeURL($tag)">更多...</a>)#end<br /><br />
+	#foreach($topic in $topics)
+		<li>${velocityCount}.
+			<a href="$dlog.root()/html/bbs/topic.vm?sid=${topic.site.id}&amp;fid=${topic.forum.id}&amp;tid=${topic.id}">$text.html($topic.title)</a>
+		</li>
+	#end
+	<br />
+#end
+</div>
+</div>

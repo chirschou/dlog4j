@@ -1,0 +1,43 @@
+/* ======================================================================== */
+/* dlog.cnÊ×Ò³µÄcss											*/
+/* ======================================================================== */
+
+a:link {text-decoration: none;color: #004A9C;}
+a:visited {text-decoration: none;color: #377CBD;}
+a:hover {text-decoration: underline;color: #F00;}
+a:active {text-decoration: none;color: #004A9C;}
+
+#dlog_home {margin:0 auto;clear:both;width:550px;margin-top:0px;text-align:center;}
+
+#channel_bar {margin:0 auto; clear:both; height:60px; margin-top:20px; text-align:center;}
+#channel_bar #serv{float:left;display:block;width:75px;margin-top:5px;}
+#channel_bar #serv img{margin-bottom:5px;}
+#channel_bar #serv a{text-decoration:none !important;text-decoration:underline;}
+#channel_bar #lg{position:relative;float:left;height:55px;width:245px;}
+#channel_bar #lg a{position:absolute;margin-top:-1.3em;left:2.35em;}
+
+#search_box{text-align:left;padding:10px;border:#CCCCCC 1px solid}
+#search_box #search_form{}
+#search_box #hot_tag{}
+
+
+#date_tip_bar{text-align:right;font-size:10.5pt;font-weight:bold;padding:2px;margin:0}
+#date_tip_bar a{font-size:10.5pt;font-weight:bold}
+
+#reg_site_bar{text-align:right;font-size:12pt;font-weight:bold;padding:10px;margin:0}
+#reg_site_bar a{font-size:12pt;font-weight:bold;}
+
+#footer_bar{padding:5px}
+
+.left_panels{width:60%;float:left}
+.right_panels{width:39%;float:right}
+.panel{text-align:left;padding:2px;border:#CCCCCC 1px solid}
+.panel_head{font-weight:bold;padding:2px;background-color:#eeeeee}
+.panel_top{font-weight:bold;color:#0000aa;padding:2px}
+.panel_top_body{padding:5px;color:#0000aa;}
+.panel_body{padding:5px;}
+
+.photo_box{text-align:center;border:2px solid #DDDDDD;background:#F4F4F4}
+
+#netcom_tip{color:red;font-weight:bold}
+#netcom_tip a{color:red;font-weight:bold}

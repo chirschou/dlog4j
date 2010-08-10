@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+		
+	<display-name>DLOG4J</display-name>	
+	<description>DLOG4J v3.0 (http://dlog4j.sourceforge.net)</description>
+
+	<!-- ========== Form Bean Definitions =================================== -->
+	<form-beans>
+
+        <form-bean name="userForm"     type="com.liusoft.dlog4j.formbean.UserForm" />
+        <form-bean name="catalogForm"  type="com.liusoft.dlog4j.formbean.CatalogForm" />
+        <form-bean name="albumForm"    type="com.liusoft.dlog4j.formbean.AlbumForm" />
+        <form-bean name="diaryForm"    type="com.liusoft.dlog4j.formbean.DiaryForm" />
+        <form-bean name="replyForm"    type="com.liusoft.dlog4j.formbean.ReplyForm" />
+        <form-bean name="photoForm"    type="com.liusoft.dlog4j.formbean.PhotoForm" />
+        <form-bean name="bookmarkForm" type="com.liusoft.dlog4j.formbean.BookmarkForm" />
+        <form-bean name="messageForm"  type="com.liusoft.dlog4j.formbean.MessageForm" />
+        <form-bean name="gBookForm"    type="com.liusoft.dlog4j.formbean.GuestBookForm" />
+        <form-bean name="uploadForm"   type="com.liusoft.dlog4j.formbean.UploadFileForm" />
+        <form-bean name="tbForm"       type="com.liusoft.dlog4j.formbean.TrackBackForm" />
+        <form-bean name="linkForm"     type="com.liusoft.dlog4j.formbean.LinkForm" />
+        <form-bean name="siteForm"     type="com.liusoft.dlog4j.formbean.SiteForm" />
+		
+		<!-- BBS -->
+		<form-bean name="BBSForumForm" type="com.liusoft.dlog4j.formbean.BBSForumForm"/>
+		<form-bean name="BBSTopicForm" type="com.liusoft.dlog4j.formbean.BBSTopicForm"/>
+		<form-bean name="BBSReplyForm" type="com.liusoft.dlog4j.formbean.BBSReplyForm"/>
+		<form-bean name="BBSSearchForm" type="com.liusoft.dlog4j.formbean.BBSSearchForm"/>
+		
+		<!-- Music -->
+		<form-bean name="mboxForm" type="com.liusoft.dlog4j.formbean.MusicBoxForm"/>
+		<form-bean name="musicForm" type="com.liusoft.dlog4j.formbean.MusicForm"/>
+		
+	</form-beans>
+	
+	<!-- ========== Action Mapping Definitions ============================== -->
+	<action-mappings>
+
+        <action
+			validate="false"
+            path="/validate"
+            scope="request"
+            type="com.liusoft.dlog4j.action.ValidateAction">			
+        </action>
+		
+        <action
+			validate="false"
+            path="/dlog/type"
+            scope="request"
+            type="com.liusoft.dlog4j.action.DlogTypeAction">			
+        </action>
+		
+	</action-mappings>
+	
+	<!-- ========== Controller Configuration ================================ -->
+	<controller bufferSize="8192" maxFileSize="16M" memFileSize="128K"/>
+	
+	<!-- ========== Message Resources Definitions =========================== -->
+
+    <message-resources parameter="html"/>
+    <message-resources parameter="ui" key="ui"/>
+    <message-resources parameter="festival" key="festival"/>
+
+	<!-- ========== Plug Ins Configuration ================================== -->
+	
+	<plug-in className="com.liusoft.dlog4j.plugin.SearchEnginePlugIn">
+		
+		<set-property property="basePath" value="/WEB-INF/lucene_idx"/>
+		
+		<set-property property="dataProvider0" value="com.liusoft.dlog4j.dao.DiaryDAO"/>
+		<set-property property="dataProvider1" value="com.liusoft.dlog4j.search.DiaryReplyProvider"/>
+		<set-property property="dataProvider2" value="com.liusoft.dlog4j.dao.PhotoDAO"/>
+		<set-property property="dataProvider3" value="com.liusoft.dlog4j.search.PhotoReplyProvider"/>
+		<set-property property="dataProvider4" value="com.liusoft.dlog4j.dao.BBSTopicDAO"/>
+		<set-property property="dataProvider5" value="com.liusoft.dlog4j.dao.BBSReplyDAO"/>
+		<set-property property="dataProvider6" value="com.liusoft.dlog4j.dao.MusicDAO"/>
+		<set-property property="dataProvider7" value=""/>
+		<set-property property="dataProvider8" value=""/>
+		<set-property property="dataProvider9" value=""/>
+		
+		<set-property property="activeInterval" value="120"/>
+		<set-property property="timeSlice" value="1"/>
+		<set-property property="enabled" value="true"/>
+		
+	</plug-in>
+	
+</struts-config>
